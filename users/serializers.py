@@ -31,3 +31,10 @@ class ShortUserSerializer(serializers.ModelSerializer):
     class Meta():
         model = User
         fields = ('id', 'nick_name', 'first_name', 'last_name')
+
+
+from django.contrib.auth.models import Group
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group

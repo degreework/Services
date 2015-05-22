@@ -1,9 +1,12 @@
 
 
-from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer
-from rest_framework.permissions import AllowAny
+from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, GroupSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from rest_framework import viewsets
+
+
+from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
 class CreateUserView(viewsets.ModelViewSet):
     """
@@ -22,7 +25,7 @@ class UserUpdate(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UpdateUserSelializer
-    permission_classes = (IsSelf, )
+    permission_classes = (IsSelf, TokenHasReadWriteScope)
 
 
 from rest_framework.views import APIView
@@ -46,3 +49,12 @@ class UserDetail(APIView):
         user = self.get_object(pk)
         serializer = ShortUserSerializer(user)
         return Response(serializer.data)
+
+
+from django.contrib.auth.models import Group
+
+class GroupViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, TokenHasScope]
+    required_scopes = ['groups']
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer

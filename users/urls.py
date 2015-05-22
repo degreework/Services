@@ -1,7 +1,7 @@
 
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import CreateUserView, UserDetail, UserUpdate
+from .views import CreateUserView, UserDetail, UserUpdate, GroupViewSet
 
 
 #urls for Updating
@@ -10,6 +10,11 @@ routerDetail = UserUpdate.as_view({
     'put': 'update',
     'delete': 'destroy',
 })
+
+from rest_framework import routers
+
+routerGroups = routers.DefaultRouter()
+routerGroups.register(r'groups', GroupViewSet)
 
 
 routerUser = format_suffix_patterns([
@@ -25,3 +30,9 @@ routerUser = format_suffix_patterns([
     url(r'^detail/(?P<pk>[0-9]+)/$', UserDetail.as_view(), name='user-detail'),
 
     ])
+
+
+from rest_framework import routers
+
+routerGroups = routers.DefaultRouter()
+routerGroups.register(r'settings', GroupViewSet)

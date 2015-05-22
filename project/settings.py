@@ -43,6 +43,11 @@ INSTALLED_APPS = (
 
     #App REST for Users
     'users',
+
+
+    #Oauth
+    'oauth2_provider',
+    #'rest_framework',
     
 )
 
@@ -110,3 +115,28 @@ STATIC_URL = '/static/'
 
 #setting model for login
 AUTH_USER_MODEL = 'users.User'
+
+
+
+
+
+#oauth
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+    )
+}
+
+
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+}
+
+REST_FRAMEWORK = {
+    # ...
+
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}

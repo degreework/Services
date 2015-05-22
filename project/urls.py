@@ -16,9 +16,11 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from users.urls import routerUser
+from users.urls import routerUser, routerGroups
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^API/users/', include(routerUser)),
+    url(r'^API/groups/', include(routerGroups.urls)),
+    url(r'^API/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
