@@ -1,7 +1,7 @@
 
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import CreateUserView, UserDetail, UserUpdate, GroupViewSet
+from .views import CreateUserView, UserDetail, UserUpdate, GroupViewSet, UserCurrent
 
 
 #urls for Updating
@@ -28,6 +28,9 @@ routerUser = format_suffix_patterns([
 
     #detail
     url(r'^detail/(?P<pk>[0-9]+)/$', UserDetail.as_view(), name='user-detail'),
+
+    #get current user
+    url(r'^me$', UserCurrent.as_view() , name='user-current'),
 
     ])
 

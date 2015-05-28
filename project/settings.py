@@ -139,14 +139,14 @@ OAUTH2_PROVIDER = {
 }
 
 REST_FRAMEWORK = {
-    # ...
-
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+        ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+        )
     }
 
-# cross-origin
+# Cross-origin
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:8000/', )
-
+CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:8000', )

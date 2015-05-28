@@ -52,9 +52,24 @@ class UserDetail(APIView):
 
 
 from django.contrib.auth.models import Group
+from oauth2_provider.ext.rest_framework import OAuth2Authentication
 
 class GroupViewSet(viewsets.ModelViewSet):
+    authentication_classes = [OAuth2Authentication]
+    permission_classes = [TokenHasReadWriteScope]
     permission_classes = [IsAuthenticated, TokenHasScope]
     required_scopes = ['groups']
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+
+class UserCurrent(APIView):
+    """
+    Retrieve
+    """
+    permission_classes = (AllowAny, )
+
+    def get(self, request):
+        user = request.user
+        serializer = ShortUserSerializer(user)
+        return Response(serializer.data)
