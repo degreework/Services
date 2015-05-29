@@ -67,7 +67,7 @@ class UserCurrent(APIView):
     """
     Retrieve
     """
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request):
         user = request.user

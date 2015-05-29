@@ -10,7 +10,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
     """
     class Meta():
         model = User
-        fields = ('nick_name', 'first_name', 'last_name', 'email', 'codigo', 'plan', 'password')
+        fields = ('nick_name', 'photo','first_name', 'last_name', 'email', 'codigo', 'plan', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
 
@@ -20,7 +20,7 @@ class UpdateUserSelializer(serializers.ModelSerializer):
     """
     class Meta():
         model = User
-        fields = ('nick_name', 'first_name', 'last_name', 'email', 'codigo', 'plan', 'is_active')
+        fields = ('nick_name', 'photo', 'first_name', 'last_name', 'email', 'codigo', 'plan', 'is_active')
         read_only_fields = ('codigo', 'plan')
 
 
@@ -28,9 +28,19 @@ class ShortUserSerializer(serializers.ModelSerializer):
     """
     Serializer class to show info User "summary"
     """
+    thumb = serializers.SerializerMethodField()
+
     class Meta():
         model = User
-        fields = ('id', 'nick_name', 'first_name', 'last_name')
+        fields = ('id', 'nick_name', 'thumb', 'first_name', 'last_name')
+
+    def get_thumb(self, object):
+        try:
+            return object.photo['mini'].url
+        except:
+            #poner algo menos feo XD
+            return "No found"
+
 
 
 from django.contrib.auth.models import Group

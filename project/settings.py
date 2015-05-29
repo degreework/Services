@@ -51,6 +51,10 @@ INSTALLED_APPS = (
 
     #cross-origin
     'corsheaders',
+
+    #for create thumbnails and optimize uploaded images
+    'easy_thumbnails', 
+    'easy_thumbnails.optimize',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -150,3 +154,23 @@ REST_FRAMEWORK = {
 # Cross-origin
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:8000', )
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+MEDIA_URL = "/media/"
+
+
+#settings for thumbnails
+#THUMBNAIL_BASEDIR = 'thum'
+#THUMBNAIL_EXTENSION = 'jpg'
+#THUMBNAIL_NAMER = 'easy_thumbnails.namers.hashed'
+
+#sizes for images
+THUMBNAIL_ALIASES = {
+    '': {
+        'mini': {'size': (50, 50), 'crop': False},
+        'user_profile': {'size': (200, 200), 'crop': False},
+    },
+}
+
+DEFAULT_USER_IMAGE_SETTING = THUMBNAIL_ALIASES['']['user_profile']

@@ -26,3 +26,9 @@ ________________________
 
 ### Sprint 6
  * Testing
+
+
+###Requeriments
+    sudo apt-get install python2.7
+    sudo apt-get install python2.7-dev
+    sudo apt-get install libjpeg-dev
