@@ -41,11 +41,19 @@ class UserManager(BaseUserManager):
                                  **extra_fields)
 
 
+from easy_thumbnails.fields import ThumbnailerImageField
+from django.conf import settings
+
 #Anexo 1
 class User(AbstractBaseUser, PermissionsMixin):
     """
     Class User, define a user
-    """
+    """ 
+    def content_file_name(instance, filename):
+        out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )
+        return '/'.join(['photos', u'%s' % (instance.id), out_file])
+
+
 
     #Codes are Hardcoded, this shouldn't be so
     PLAN_TEC = 2222
@@ -57,7 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         (PLAN_ING, str('Ingeniería de sistemas')),
     )
 
-
+    photo = ThumbnailerImageField(upload_to=content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True)
     nick_name = models.CharField(max_length=8, blank=True)
     first_name = models.CharField(max_length=20, blank=False)
     last_name = models.CharField(max_length=20, blank=False)
@@ -92,3 +100,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         return self.__str__()
 
+    def save(self, *args, **kwargs):
+        if not self.is_superuser:
+            self.set_password(self.password)
+        super(User, self).save(*args, **kwargs)
