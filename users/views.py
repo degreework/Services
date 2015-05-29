@@ -25,8 +25,8 @@ class UserUpdate(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UpdateUserSelializer
-    permission_classes = (IsSelf, IsAuthenticated, TokenHasReadWriteScope)
-
+    #permission_classes = (IsAuthenticated, IsSelf,, TokenHasReadWriteScope)
+    permission_classes = (AllowAny, )
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
