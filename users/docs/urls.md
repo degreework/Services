@@ -14,6 +14,9 @@
 ## Retrieve, Update, destroy a user by hiself
         /<pk>
 
+## Update password
+		/password/<pk>
+
 
 ##Detail of User
     /users
