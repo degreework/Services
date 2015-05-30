@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.conf import settings
 
 from users.urls import routerUser, routerGroups
 
@@ -23,4 +24,5 @@ urlpatterns = [
     url(r'^API/users/', include(routerUser)),
     url(r'^API/groups/', include(routerGroups.urls)),
     url(r'^API/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 ]
