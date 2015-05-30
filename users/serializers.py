@@ -20,8 +20,7 @@ class UpdateUserSelializer(serializers.ModelSerializer):
     """
     class Meta():
         model = User
-        fields = ('nick_name', 'photo', 'first_name', 'last_name', 'email', 'codigo', 'plan', 'is_active')
-        read_only_fields = ('codigo', 'plan')
+        fields = ('nick_name', 'first_name', 'last_name', 'email', 'codigo', 'plan')
 
 
 class ShortUserSerializer(serializers.ModelSerializer):
@@ -41,6 +40,13 @@ class ShortUserSerializer(serializers.ModelSerializer):
             #poner algo menos feo XD
             return "No found"
 
+class UpdatePasswordUserSelializer(serializers.ModelSerializer):
+    """
+    Serializer class to update password User
+    """
+    class Meta():
+        model = User
+        fields = ('password', )
 
 
 from django.contrib.auth.models import Group

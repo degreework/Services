@@ -1,6 +1,6 @@
 
 
-from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, GroupSerializer
+from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, GroupSerializer, UpdatePasswordUserSelializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from rest_framework import viewsets
@@ -25,7 +25,7 @@ class UserUpdate(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UpdateUserSelializer
-    #permission_classes = (IsAuthenticated, IsSelf,, TokenHasReadWriteScope)
+    #permission_classes = (IsAuthenticated, IsSelf, TokenHasReadWriteScope)
     permission_classes = (AllowAny, )
 
 from rest_framework.views import APIView
@@ -73,3 +73,21 @@ class UserCurrent(APIView):
         user = request.user
         serializer = ShortUserSerializer(user)
         return Response(serializer.data)
+
+
+from rest_framework import status
+from rest_framework import generics
+
+class UserPassword(generics.UpdateAPIView):
+    """
+    API endpoint for retrieve, update, destroy a User
+    """
+    serializer_class = UpdatePasswordUserSelializer
+    #permission_classes = (IsAuthenticated, IsSelf, TokenHasReadWriteScope)
+    permission_classes = (IsAuthenticated, )
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        user.set_password(request.data['password'])
+        user.save()
+        return Response({}, status=status.HTTP_200_OK)
