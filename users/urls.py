@@ -24,7 +24,7 @@ routerUser = format_suffix_patterns([
     url(r'^$', CreateUserView.as_view({'post': 'create'}), name='user-create'),
 
     #retrieve, update, destroy
-    url(r'^(?P<pk>[0-9]+)/$', routerDetail, name='user-update'),
+    url(r'^(?P<pk>[0-9]+)$', routerDetail, name='user-update'),
 
     #detail
     url(r'^detail/(?P<pk>[0-9]+)/$', UserDetail.as_view(), name='user-detail'),
