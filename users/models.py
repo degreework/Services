@@ -99,8 +99,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         return self.__str__()
-
+"""
     def save(self, *args, **kwargs):
         if not self.is_superuser:
             self.set_password(self.password)
         super(User, self).save(*args, **kwargs)
+"""
