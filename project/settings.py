@@ -55,12 +55,30 @@ INSTALLED_APPS = (
     #for create thumbnails and optimize uploaded images
     'easy_thumbnails', 
     'easy_thumbnails.optimize',
+
+    
+    #'pybb',
+
+    'post_framework',
+    'forum',
+    'comment',
+    
+    #3
+    'waliki',
+    'waliki.git',
+
+    'wiki',
+
+    
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    #forum
+    #'pybb.middleware.PybbMiddleware',
+    #forum
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
@@ -83,6 +101,9 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                #forum
+                #'pybb.context_processors.processor',
+                #
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -174,3 +195,10 @@ THUMBNAIL_ALIASES = {
 }
 
 DEFAULT_USER_IMAGE_SETTING = THUMBNAIL_ALIASES['']['user_profile']
+
+
+
+#waliki
+
+WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
+WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')

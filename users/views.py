@@ -8,7 +8,7 @@ from rest_framework import viewsets
 
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
-class CreateUserView(viewsets.ModelViewSet):
+class UserCreateView(viewsets.ModelViewSet):
     """
     API endpoint for creating a User
     """
@@ -25,8 +25,7 @@ class UserUpdate(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UpdateUserSelializer
-    #permission_classes = (IsAuthenticated, IsSelf, TokenHasReadWriteScope)
-    permission_classes = (AllowAny, )
+    permission_classes = (TokenHasReadWriteScope, IsSelf, )
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -67,7 +66,7 @@ class UserCurrent(APIView):
     """
     Retrieve
     """
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (TokenHasReadWriteScope, IsSelf, )
 
     def get(self, request):
         user = request.user
@@ -83,8 +82,8 @@ class UserPassword(generics.UpdateAPIView):
     API endpoint for retrieve, update, destroy a User
     """
     serializer_class = UpdatePasswordUserSelializer
-    #permission_classes = (IsAuthenticated, IsSelf, TokenHasReadWriteScope)
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (TokenHasReadWriteScope, IsSelf, )
+    
 
     def put(self, request, *args, **kwargs):
         user = request.user
