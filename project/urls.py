@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.conf import settings
 
 from users.urls import routerUser, routerGroups
+from forum.urls import routerAsk, routerAnswer
+from wiki.urls import routerWiki
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -25,4 +27,11 @@ urlpatterns = [
     url(r'^API/groups/', include(routerGroups.urls)),
     url(r'^API/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    ##forum
+    #url(r'^forum/', include('pybb.urls', namespace='pybb')),
+    url(r'^API/forum/ask/', include(routerAsk)),
+    url(r'^API/forum/answer/', include(routerAnswer)),
+
+    url(r'^wiki/', include('waliki.urls')),
+    url(r'^API/wiki/', include(routerWiki)),
 ]
