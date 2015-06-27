@@ -199,6 +199,13 @@ DEFAULT_USER_IMAGE_SETTING = THUMBNAIL_ALIASES['']['user_profile']
 
 
 #waliki
+#Walikis content path. By default its <project_root>/waliki_data
+#WALIKI_DATA_DIR = <path>
 
+#The slug of the index page
+#WALIKI_INDEX_SLUG = 'index'
 WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
 WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
+
+
+WALIKI_PAGINATE_BY = 10

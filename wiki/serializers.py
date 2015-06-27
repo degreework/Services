@@ -20,6 +20,7 @@ class PageCreateSerializer(serializers.ModelSerializer):
         model = Page
         fields = ('title', 'slug', 'markup')
 
+
 from waliki.signals import page_saved, page_preedit, page_moved
 
 class PageUpdateSelializer(serializers.ModelSerializer):
@@ -35,7 +36,9 @@ class PageUpdateSelializer(serializers.ModelSerializer):
         print 'save'
         print self.context['request']
         slug = self.context['view'].get_object().slug
+        print "before"
         views.edit(self.context['request'], slug)
+        print "after"
 
     def get_extra_data(self, obj):
         return {
@@ -50,4 +53,28 @@ class PageUpdateSelializer(serializers.ModelSerializer):
         read_only_fields = ('slug',)
 
 
-#extra_data:{"parent": "715377a"}
+class PageListSerializer(serializers.ModelSerializer):
+    """
+    Serializer class to show list of Pages
+    """
+
+    class Meta():
+        model = Page
+        fields = ('id', 'title', 'slug', )
+        read_only_fields = ('id', 'title', 'slug', )
+
+
+class PageDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer class to show list of Answer
+    """
+    parent = serializers.SerializerMethodField()
+
+    def get_parent(self, obj):
+        return page_preedit.send(sender=None, page=obj)[0][1]['form_extra_data']['parent']
+
+
+    class Meta():
+        model = Page
+        fields = ('id', 'title', 'slug', 'raw', 'parent')
+        read_only_fields = ('id', 'title', 'slug', 'raw', 'parent')
