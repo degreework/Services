@@ -12,7 +12,7 @@ class AskCreateView(viewsets.ModelViewSet):
     API endpoint for creating a Ask
     """
     serializer_class = CreateAskSerializer
-    permission_classes = (TokenHasReadWriteScope, )
+    permission_classes = (AllowAny, )
 
 from .models import Ask
 from post_framework.permissions import IsAuthor
