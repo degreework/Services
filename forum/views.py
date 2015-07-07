@@ -26,6 +26,26 @@ class AskUpdateView(viewsets.ModelViewSet):
     permission_classes = (TokenHasReadWriteScope, IsAuthor,)
 
 
+from rest_framework.views import APIView
+from rest_framework import authentication
+
+class AskList(viewsets.ModelViewSet):
+    """
+    View to list all aks in the foro.
+    """
+
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        """
+        Return a list of all users.
+        """
+        asks = Ask.objects.all()
+        serializers = ShortAskSerializer(asks, many=True)
+        return Response(serializers.data)
+        #return Response(asks)
+
 
 """Classes for Answers"""
 

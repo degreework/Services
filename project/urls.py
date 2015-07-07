@@ -30,6 +30,7 @@ urlpatterns = [
     ##forum
     #url(r'^forum/', include('pybb.urls', namespace='pybb')),
     url(r'^API/forum/ask/', include(routerAsk)),
+    #url(r'^API/forum/allAsks/', include(routerAsk)),
     url(r'^API/forum/answer/', include(routerAnswer)),
 
     url(r'^wiki/', include('waliki.urls')),
