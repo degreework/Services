@@ -1,9 +1,9 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
-from .serializers import CreateAskSerializer, UpdateAskSelializer, AnswerCreateSerializer, AnswerUpdateSelializer
+from .serializers import CreateAskSerializer, UpdateAskSelializer, AnswerCreateSerializer, AnswerUpdateSelializer, ShortAskSerializer
 
 """Classes for Ask"""
 
@@ -29,22 +29,17 @@ class AskUpdateView(viewsets.ModelViewSet):
 from rest_framework.views import APIView
 from rest_framework import authentication
 
-class AskList(viewsets.ModelViewSet):
+class AskList(generics.ListAPIView):
     """
     View to list all aks in the foro.
     """
 
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (AllowAny,)
+    queryset = Ask.objects.all()
+    serializer_class = ShortAskSerializer
+    paginate_by = 10
 
-    def get(self, request):
-        """
-        Return a list of all users.
-        """
-        asks = Ask.objects.all()
-        serializers = ShortAskSerializer(asks, many=True)
-        return Response(serializers.data)
-        #return Response(asks)
 
 
 """Classes for Answers"""
