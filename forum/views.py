@@ -41,6 +41,16 @@ class AskList(generics.ListAPIView):
     paginate_by = 10
 
 
+class AskDetail(viewsets.ReadOnlyModelViewSet):
+    """
+    View to list all aks in the foro.
+    """
+
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (AllowAny,)
+    queryset = Ask.objects.all()
+    serializer_class = ShortAskSerializer
+
 
 """Classes for Answers"""
 
