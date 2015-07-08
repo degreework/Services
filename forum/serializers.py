@@ -62,7 +62,7 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Answer
-        fields = ('ask', 'html', 'text', 'summary')
+        fields = ('html', 'text')
 
 class AnswerUpdateSelializer(serializers.ModelSerializer):
     """
@@ -80,4 +80,5 @@ class AnswerShortSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Answer
-        fields = ('id', 'summary')
+        fields = ('id', 'summary', 'added_at')
+

@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import AskCreateView, AskUpdateView, AskList, AskDetail, AnswerCreateView, AnswerUpdateView
+from .views import AskCreateView, AskUpdateView, AskList, AskDetail, AnswerCreateView, AnswerUpdateView, AnswerList
 
 
 """urls for Asks"""
@@ -47,5 +47,9 @@ routerAnswer = format_suffix_patterns([
 
     #retrieve, update, destroy
     url(r'^(?P<pk>[0-9]+)$', routerAnswerDetail, name='answer-update'),
+
+    #get all answers
+    url(r'^all$', AnswerList.as_view() , name='answer-list'),
+
 
     ])

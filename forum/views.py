@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
-from .serializers import CreateAskSerializer, UpdateAskSelializer, AnswerCreateSerializer, AnswerUpdateSelializer, ShortAskSerializer
+from .serializers import CreateAskSerializer, UpdateAskSelializer, AnswerCreateSerializer, AnswerUpdateSelializer, ShortAskSerializer, AnswerShortSerializer
 
 """Classes for Ask"""
 
@@ -59,7 +59,8 @@ class AnswerCreateView(viewsets.ModelViewSet):
     API endpoint for creating a Answer
     """
     serializer_class = AnswerCreateSerializer
-    permission_classes = (TokenHasReadWriteScope, )
+    #permission_classes = (TokenHasReadWriteScope, )
+    permission_classes = (AllowAny,)
 
 from .models import Answer
 
@@ -70,3 +71,16 @@ class AnswerUpdateView(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerUpdateSelializer
     permission_classes = (TokenHasReadWriteScope, IsAuthor,)
+
+
+
+class AnswerList(generics.ListAPIView):
+    """
+    View to list all aks in the foro.
+    """
+
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (AllowAny,)
+    queryset = Answer.objects.all()
+    serializer_class = AnswerShortSerializer
+    paginate_by = 10
