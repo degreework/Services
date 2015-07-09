@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
-from .serializers import CreateAskSerializer, UpdateAskSelializer, AnswerCreateSerializer, AnswerUpdateSelializer, ShortAskSerializer, AnswerShortSerializer
+from .serializers import CreateAskSerializer, UpdateAskSelializer, AnswerCreateSerializer, AnswerUpdateSelializer, ShortAskSerializer, AnswerShortSerializer, AskDetailSerializer
 
 """Classes for Ask"""
 
@@ -49,7 +49,7 @@ class AskDetail(viewsets.ReadOnlyModelViewSet):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (AllowAny,)
     queryset = Ask.objects.all()
-    serializer_class = ShortAskSerializer
+    serializer_class = AskDetailSerializer
 
 
 """Classes for Answers"""
