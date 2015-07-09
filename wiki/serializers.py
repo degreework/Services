@@ -18,7 +18,8 @@ class PageCreateSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Page
-        fields = ('title', 'slug', 'markup')
+        fields = ('id', 'title', 'slug', 'markup')
+        read_only_fields = ('id',)
 
 
 from waliki.signals import page_saved, page_preedit, page_moved
