@@ -13,7 +13,7 @@ class CreateAskSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         try:
             author = self.context['request'].user.id
-            validated_data['author'] = author
+            #validated_data['author'] = author
             return Ask.objects.create(**validated_data)
 
         except IntegrityError, e:
@@ -21,7 +21,7 @@ class CreateAskSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Ask
-        fields = ('title', 'html', 'text', 'summary')
+        fields = ('title', 'text')
 
 
 class UpdateAskSelializer(serializers.ModelSerializer):
@@ -40,8 +40,16 @@ class ShortAskSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Ask
-        fields = ('id', 'title', 'summary')
+        fields = ('id', 'title', 'added_at')
 
+class AskDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer class to show detailed Ask
+    """
+
+    class Meta():
+        model = Ask
+        fields = ('id', 'title', 'text', 'added_at')
 
 
 """Classes for Answers"""

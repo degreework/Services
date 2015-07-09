@@ -99,6 +99,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         return self.__str__()
+
+    @property
+    def username(self):
+        return self.email
 """
     def save(self, *args, **kwargs):
         if not self.is_superuser:

@@ -127,7 +127,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -209,3 +209,12 @@ WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
 
 
 WALIKI_PAGINATE_BY = 10
+
+#########################
+#slumber
+SLUMBER_DIRECTORY = {
+    'users': 'users',
+    'post_framework': 'post_framework',
+}
+SLUMBER_SERVICE = 'users'
+SLUMBER_CLIENT_APPS = ['post_framework']
