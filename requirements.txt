@@ -5,3 +5,4 @@ django-cors-headers==1.1.0
 easy-thumbnails==2.2
 django-slumber==0.8.1
 waliki==0.5
+Markdown==2.6.2

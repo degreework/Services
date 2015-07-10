@@ -11,10 +11,14 @@ class PageCreateSerializer(serializers.ModelSerializer):
     """
     Serializer Class to create Page Wiki
     """
+    id = serializers.SerializerMethodField()
     
     def save(self):
         """call to waliki new function"""
         views.new(self.context['request'])
+
+    def get_id(self, obj):
+        return Page.objects.get(slug=obj['slug']).id
 
     class Meta():
         model = Page
@@ -34,12 +38,9 @@ class PageUpdateSelializer(serializers.ModelSerializer):
 
     def save(self):
         """call to waliki edit function"""
-        print 'save'
         print self.context['request']
         slug = self.context['view'].get_object().slug
-        print "before"
         views.edit(self.context['request'], slug)
-        print "after"
 
     def get_extra_data(self, obj):
         return {
@@ -50,8 +51,8 @@ class PageUpdateSelializer(serializers.ModelSerializer):
 
     class Meta():
         model = Page
-        fields = ('title', 'markup', 'slug', 'raw', 'extra_data')
-        read_only_fields = ('slug',)
+        fields = ('raw', 'extra_data')
+        #read_only_fields = ('slug',)
 
 
 class PageListSerializer(serializers.ModelSerializer):
