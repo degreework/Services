@@ -1,7 +1,7 @@
 
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import UserCreateView, UserDetail, UserUpdate, GroupViewSet, UserCurrent, UserPassword
+from .views import UserCreateView, UserDetail, UserUpdate, UserList, GroupViewSet, UserCurrent, UserPassword
 
 
 #urls for Updating
@@ -34,6 +34,9 @@ routerUser = format_suffix_patterns([
 
     #update password
     url(r'^password/(?P<pk>[0-9]+)$', UserPassword.as_view(), name='user-password'),
+
+    #get all asks 
+    url(r'^all$', UserList.as_view() , name='user-list'),
 
     ])
 

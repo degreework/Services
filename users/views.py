@@ -1,5 +1,4 @@
-
-
+from rest_framework import viewsets, generics
 from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, GroupSerializer, UpdatePasswordUserSelializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
@@ -48,6 +47,21 @@ class UserDetail(APIView):
         user = self.get_object(pk)
         serializer = ShortUserSerializer(user)
         return Response(serializer.data)
+
+
+from rest_framework.views import APIView
+from rest_framework import authentication
+
+class UserList(generics.ListAPIView):
+    """
+    View to list all aks in the foro.
+    """
+
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (AllowAny,)
+    queryset = User.objects.all()
+    serializer_class = ShortUserSerializer
+    paginate_by = 10
 
 
 from django.contrib.auth.models import Group
