@@ -40,4 +40,4 @@ class CommentList(generics.ListAPIView):
     permission_classes = (AllowAny,)
     queryset = Comment.objects.all()
     serializer_class = ShortCommentSerializer
-    paginate_by = 10
+    paginate_by = 3

@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import serializers
 
 from .models import Ask, Answer
@@ -54,23 +55,36 @@ class AskDetailSerializer(serializers.ModelSerializer):
 
 """Classes for Answers"""
 
-
 class AnswerCreateSerializer(serializers.ModelSerializer):
     """
     Serializer Class to create Answer
     """
+    ask = serializers.CharField(required=True)
+
+
+    def validate_ask(self, value):
+        try:
+            ask = Ask.objects.get(pk=value)
+        except Ask.DoesNotExist:
+            raise Http404("La pregunta no existe")
+        return ask
+
     def create(self, validated_data):
         try:
             author = self.context['request'].user.id
-            validated_data['author'] = author
+            #print validated_data['ask']
+            #validated_data['author'] = author
+            #validated_data['ask'] = Ask.objects.get(pk=validated_data['parent'])
             return Answer.objects.create(**validated_data)
 
         except IntegrityError, e:
+            print e
             raise PermissionDenied
 
     class Meta():
         model = Answer
-        fields = ('ask', 'text')
+        fields = ('id', 'ask', 'text', 'added_at')
+        read_only_fields = ('id', 'added_at', )
 
 class AnswerUpdateSelializer(serializers.ModelSerializer):
     """

@@ -7,10 +7,13 @@ class Ask(Post, models.Model):
     title = models.CharField(null=False, max_length=300)
     text = models.TextField(null=False)
 
+
+    def __str__(self):
+        return u'%s' % self.id
+
     class Meta:
         verbose_name = "Ask"
         verbose_name_plural = "Asks"
-
 
 
 class Answer(Post, models.Model):
@@ -18,4 +21,5 @@ class Answer(Post, models.Model):
     text = models.TextField(null=False)
     class Meta:
         verbose_name = "Answer"
-        verbose_name_plural = "Answers"   
+        verbose_name_plural = "Answers"
+        #ordering = ['added_at']

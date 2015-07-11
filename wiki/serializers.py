@@ -32,15 +32,18 @@ class PageUpdateSelializer(serializers.ModelSerializer):
     """
     Serializer class to update a Page from wiki
     """
-    raw = serializers.CharField()
+    raw = serializers.SerializerMethodField()
     extra_data = serializers.SerializerMethodField()
     #extra_data = serializers.DictField(child=serializers.SerializerMethodField('get_extra_data'))
 
     def save(self):
         """call to waliki edit function"""
-        print self.context['request']
+        print 'save serializers'
         slug = self.context['view'].get_object().slug
+        print slug
+        print "before"
         views.edit(self.context['request'], slug)
+        print "after"
 
     def get_extra_data(self, obj):
         return {
@@ -48,11 +51,17 @@ class PageUpdateSelializer(serializers.ModelSerializer):
             'parent': page_preedit.send(sender=None, page=obj)[0][1]['form_extra_data']['parent'],
             }
 
+    def get_raw(self, obj):
+        print "get raw"
+        print self.context['request'].POST
+        return obj.raw
+
 
     class Meta():
         model = Page
-        fields = ('raw', 'extra_data')
-        #read_only_fields = ('slug',)
+        fields = ('title', 'slug', 'raw', 'extra_data')
+        read_only_fields = ('slug',)
+        extra_kwargs = {'raw': {'write_only': True}}
 
 
 class PageListSerializer(serializers.ModelSerializer):
