@@ -12,18 +12,38 @@ class PageCreateSerializer(serializers.ModelSerializer):
     Serializer Class to create Page Wiki
     """
     id = serializers.SerializerMethodField()
+    raw = serializers.SerializerMethodField()
+    #extra_data = serializers.SerializerMethodField()
     
     def save(self):
         """call to waliki new function"""
+        #call waliki new page
         views.new(self.context['request'])
+        
+        slug = self.context['request'].POST['slug']
+        #call waliki page edition
+        views.edit(self.context['request'], slug)
+
 
     def get_id(self, obj):
         return Page.objects.get(slug=obj['slug']).id
 
+    """
+    def get_extra_data(self, obj):
+        print "get extra_data"
+        return {
+            'message': '',
+            'parent': page_preedit.send(sender=None, page=obj)[0][1]['form_extra_data']['parent'],
+            }
+    """
+
+    def get_raw(self, obj):
+        return self.context['request'].POST['raw']
+
     class Meta():
         model = Page
-        fields = ('id', 'title', 'slug', 'markup')
-        read_only_fields = ('id',)
+        fields = ('id', 'title', 'slug', 'raw', )
+        read_only_fields = ('id', )
 
 
 from waliki.signals import page_saved, page_preedit, page_moved
@@ -38,12 +58,8 @@ class PageUpdateSelializer(serializers.ModelSerializer):
 
     def save(self):
         """call to waliki edit function"""
-        print 'save serializers'
         slug = self.context['view'].get_object().slug
-        print slug
-        print "before"
         views.edit(self.context['request'], slug)
-        print "after"
 
     def get_extra_data(self, obj):
         return {
@@ -52,16 +68,18 @@ class PageUpdateSelializer(serializers.ModelSerializer):
             }
 
     def get_raw(self, obj):
-        print "get raw"
-        print self.context['request'].POST
-        return obj.raw
+        try:
+            raw = self.context['request'].POST['raw']
+        except Exception, e:
+            raw = ''
+        return raw
 
 
     class Meta():
         model = Page
-        fields = ('title', 'slug', 'raw', 'extra_data')
+        fields = ('id', 'title', 'slug', 'raw', 'extra_data')
         read_only_fields = ('slug',)
-        extra_kwargs = {'raw': {'write_only': True}}
+        #extra_kwargs = {'raw': {'write_only': True}}
 
 
 class PageListSerializer(serializers.ModelSerializer):

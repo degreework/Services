@@ -209,6 +209,7 @@ WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
 
 
 WALIKI_PAGINATE_BY = 10
+WALIKI_AVAILABLE_MARKUPS = ['Markdown']
 
 #########################
 #slumber
