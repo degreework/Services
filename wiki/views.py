@@ -1,9 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
 from .serializers import PageCreateSerializer, PageUpdateSelializer, PageDetailSerializer, PageListSerializer
+
+from waliki.models import Page
 
 """Classes for Page from Wiki"""
 
@@ -11,12 +13,18 @@ class PageCreateView(viewsets.ModelViewSet):
     """
     API endpoint for creating a Page
     """
+    lookup_field = 'slug'
     serializer_class = PageCreateSerializer
     permission_classes = (AllowAny, )
     #permission_classes = (TokenHasReadWriteScope, )
 
+    def get_queryset(self):
+        queryset = Page.objects.all()
+        slug = self.request.QUERY_PARAMS.get('slug', None)
+        if slug is not None:
+            queryset = queryset.filter(slug=slug)
+        return queryset
 
-from waliki.models import Page
 
 class PageUpdateView(viewsets.ModelViewSet):
     """
@@ -26,6 +34,13 @@ class PageUpdateView(viewsets.ModelViewSet):
     serializer_class = PageUpdateSelializer
     permission_classes = (AllowAny, )
     #permission_classes = (TokenHasReadWriteScope, IsAuthor,)
+
+    def get_queryset(self):
+        queryset = Page.objects.all()
+        slug = self.request.QUERY_PARAMS.get('slug', None)
+        if slug is not None:
+            queryset = queryset.filter(slug=slug)
+        return queryset
 
 
 from rest_framework.response import Response
