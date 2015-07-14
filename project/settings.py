@@ -190,7 +190,7 @@ MEDIA_URL = "/media/"
 THUMBNAIL_ALIASES = {
     '': {
         'mini': {'size': (50, 50), 'crop': True},
-        'user_profile': {'size': (200, 200), 'crop': False},
+        'user_profile': {'size': (168, 168), 'crop': True},
     },
 }
 
