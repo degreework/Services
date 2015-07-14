@@ -42,7 +42,7 @@ class PageCreateSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Page
-        fields = ('id', 'title', 'slug', 'markup' ,'raw', )
+        fields = ('id', 'title', 'slug', 'raw', )
         read_only_fields = ('id', )
 
 
@@ -77,7 +77,7 @@ class PageUpdateSelializer(serializers.ModelSerializer):
 
     class Meta():
         model = Page
-        fields = ('id', 'title', 'slug', 'markup', 'raw', 'extra_data')
+        fields = ('id', 'title', 'slug', 'raw', 'extra_data')
         read_only_fields = ('slug',)
         #extra_kwargs = {'raw': {'write_only': True}}
 
@@ -105,5 +105,5 @@ class PageDetailSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Page
-        fields = ('id', 'title', 'slug', 'markup', 'raw', 'parent')
-        read_only_fields = ('id', 'title', 'slug', 'markup', 'raw', 'parent')
+        fields = ('id', 'title', 'slug', 'raw', 'parent')
+        read_only_fields = ('id', 'title', 'slug', 'raw', 'parent')
