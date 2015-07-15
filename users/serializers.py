@@ -20,8 +20,9 @@ class UpdateUserSelializer(serializers.ModelSerializer):
     """
     class Meta():
         model = User
-        fields = ('nick_name', 'first_name', 'last_name', 'email', 'codigo', 'plan')
+        fields = ('nick_name', 'first_name', 'last_name', 'email', 'codigo', 'plan', 'photo')
 
+    
 
 class ShortUserSerializer(serializers.ModelSerializer):
     """
@@ -35,7 +36,8 @@ class ShortUserSerializer(serializers.ModelSerializer):
 
     def get_thumb(self, object):
         try:
-            return object.photo['mini'].url
+            photos = [object.photo['mini'].url, object.photo['user_profile'].url]
+            return photos
         except:
             #poner algo menos feo XD
             return "No found"
