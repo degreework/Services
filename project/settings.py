@@ -38,6 +38,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #3
+    'waliki',
+    'waliki.git',
+
     #3 parties
     'rest_framework',
 
@@ -63,9 +67,7 @@ INSTALLED_APPS = (
     'forum',
     'comment',
     
-    #3
-    'waliki',
-    'waliki.git',
+    
 
     'wiki',
 
@@ -101,9 +103,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                #forum
-                #'pybb.context_processors.processor',
-                #
+
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -204,8 +204,12 @@ DEFAULT_USER_IMAGE_SETTING = THUMBNAIL_ALIASES['']['user_profile']
 
 #The slug of the index page
 #WALIKI_INDEX_SLUG = 'index'
-WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
-WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
+
+#WALIKI_COMMITTER_EMAIL = email@alg
+#WALIKI_COMMITTER_NAME = name
+
+#WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
+WALIKI_LOGGED_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
 
 
 WALIKI_PAGINATE_BY = 10

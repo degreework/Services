@@ -47,18 +47,46 @@ class PageCreateSerializer(serializers.ModelSerializer):
 
 
 from waliki.signals import page_saved, page_preedit, page_moved
+from django.http import QueryDict
 
 class PageUpdateSelializer(serializers.ModelSerializer):
     """
     Serializer class to update a Page from wiki
     """
-    raw = serializers.SerializerMethodField()
+    #raw = serializers.SerializerMethodField(required=True)
     extra_data = serializers.SerializerMethodField()
     #extra_data = serializers.DictField(child=serializers.SerializerMethodField('get_extra_data'))
 
     def save(self):
+        print "##################3  Update ##########"
         """call to waliki edit function"""
-        slug = self.context['view'].get_object().slug
+        slug = self.instance.slug
+        print self.context['request'].POST
+
+        self.context['request'].POST = self.context['request'].POST.copy()
+
+        self.context['request'].POST['title'] = "jack"
+        self.context['request'].POST['extra_data'] = {
+            'parent': self.context['request'].POST['parent'],
+            'message': self.context['request'].POST['message']
+        }
+
+
+        data = {
+            'title': self.context['request'].POST['title'],
+            'markup': 'Markdown',
+            'raw': self.context['request'].POST['raw'],
+            'extra_data':
+                {
+                'parent': self.context['request'].POST['parent'],
+                'message': self.context['request'].POST['message']
+                }
+            }
+
+
+        print "REQUEST:"
+        print self.context['request'].POST
+        print "Edit:"
         views.edit(self.context['request'], slug)
 
     def get_extra_data(self, obj):
@@ -67,13 +95,17 @@ class PageUpdateSelializer(serializers.ModelSerializer):
             'parent': page_preedit.send(sender=None, page=obj)[0][1]['form_extra_data']['parent'],
             }
 
+    """
+    def get_raw(self, obj):
+        return obj.raw
+    
     def get_raw(self, obj):
         try:
             raw = self.context['request'].POST['raw']
         except Exception, e:
             raw = ''
         return raw
-
+    """
 
     class Meta():
         model = Page
@@ -107,3 +139,4 @@ class PageDetailSerializer(serializers.ModelSerializer):
         model = Page
         fields = ('id', 'title', 'slug', 'raw', 'parent')
         read_only_fields = ('id', 'title', 'slug', 'raw', 'parent')
+
