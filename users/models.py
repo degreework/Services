@@ -66,7 +66,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     photo = ThumbnailerImageField(upload_to=content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True)
-    nick_name = models.CharField(max_length=8, blank=True)
     first_name = models.CharField(max_length=20, blank=False)
     last_name = models.CharField(max_length=20, blank=False)
 
