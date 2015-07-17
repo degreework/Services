@@ -50,7 +50,6 @@ class UpdatePasswordUserSelializer(serializers.ModelSerializer):
         model = User
         fields = ('password', )
 
-
 from django.contrib.auth.models import Group
 
 class GroupSerializer(serializers.ModelSerializer):
