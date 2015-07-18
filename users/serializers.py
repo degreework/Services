@@ -15,7 +15,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = User
-        fields = ('nick_name', 'first_name', 'last_name', 'email', 'codigo', 'plan', 'password')
+        fields = ('first_name', 'last_name', 'email', 'codigo', 'plan', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
 
@@ -25,7 +25,7 @@ class UpdateUserSelializer(serializers.ModelSerializer):
     """
     class Meta():
         model = User
-        fields = ('nick_name', 'first_name', 'last_name', 'email', 'codigo', 'plan', 'photo')
+        fields = ('first_name', 'last_name', 'email', 'codigo', 'plan', 'photo')
 
     
 
@@ -37,7 +37,7 @@ class ShortUserSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = User
-        fields = ('id', 'nick_name', 'thumb', 'first_name', 'last_name')
+        fields = ('id', 'thumb', 'first_name', 'last_name')
 
     def get_thumb(self, object):
         try:
@@ -54,7 +54,6 @@ class UpdatePasswordUserSelializer(serializers.ModelSerializer):
     class Meta():
         model = User
         fields = ('password', )
-
 
 from django.contrib.auth.models import Group
 

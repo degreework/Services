@@ -104,3 +104,29 @@ class UserPassword(generics.UpdateAPIView):
         user.set_password(request.data['password'])
         user.save()
         return Response({}, status=status.HTTP_200_OK)
+
+
+
+from django.contrib.auth import authenticate
+from django.http import JsonResponse
+import json
+class UserConfirmPassword(APIView):
+    
+    #permission_classes = (AllowAny,)
+    permission_classes = (TokenHasReadWriteScope, IsSelf, )
+
+    def post(self, request, pk, format=None):
+        
+        email = User.objects.get(pk=pk).email
+        password = request.POST['old_password']
+
+        user = authenticate(username=email, password=password)
+        response_data = {}
+
+        if user is not None and user.is_active:        
+            response_data['message'] = 'iguales'
+            return JsonResponse(response_data)
+        else:
+            response_data['message'] = 'desiguales'
+            return JsonResponse(response_data)
+

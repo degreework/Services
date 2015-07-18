@@ -38,10 +38,14 @@ class ShortAskSerializer(serializers.ModelSerializer):
     """
     Serializer class to show list of Asks
     """
+    count = serializers.SerializerMethodField()
+
+    def get_count(self,obj):
+        return Answer.objects.filter(ask=obj).count()
 
     class Meta():
         model = Ask
-        fields = ('id', 'title', 'added_at')
+        fields = ('id', 'title', 'added_at', 'count')
 
 class AskDetailSerializer(serializers.ModelSerializer):
     """
