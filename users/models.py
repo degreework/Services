@@ -102,9 +102,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def username(self):
         return self.email
-"""
-    def save(self, *args, **kwargs):
-        if not self.is_superuser:
-            self.set_password(self.password)
-        super(User, self).save(*args, **kwargs)
-"""
+
+    class Meta:
+        app_label = 'users'

@@ -7,4 +7,7 @@ class Degree(models.Model):
 
     def __unicode__(self):
         return u'%s - %s' % (self.code, self.name)
+
+    class Meta:
+    	app_label = 'degree'
     
