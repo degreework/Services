@@ -41,12 +41,14 @@ INSTALLED_APPS = (
     #3
     'waliki',
     'waliki.git',
+    'waliki.rest',
 
     #3 parties
     'rest_framework',
 
     #App REST for Users
     'users',
+    'degree',
 
 
     #Oauth
@@ -78,15 +80,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    #forum
-    #'pybb.middleware.PybbMiddleware',
-    #forum
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    #'waliki.rest.middleware.CoffeehouseMiddleware',
 
 
 )
@@ -148,16 +148,6 @@ AUTH_USER_MODEL = 'users.User'
 
 
 
-
-
-#oauth
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
-    )
-}
-
-
 OAUTH2_PROVIDER = {
     # this is the list of available scopes
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
@@ -168,6 +158,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
         ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        #temp
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        #end
         'oauth2_provider.ext.rest_framework.OAuth2Authentication',
         )
     }
@@ -208,11 +202,11 @@ DEFAULT_USER_IMAGE_SETTING = THUMBNAIL_ALIASES['']['user_profile']
 #WALIKI_COMMITTER_EMAIL = email@alg
 #WALIKI_COMMITTER_NAME = name
 
-#WALIKI_ANONYMOUS_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
 WALIKI_LOGGED_USER_PERMISSIONS = ('view_page', 'add_page', 'change_page')
+WALIKI_ANONYMOUS_USER_PERMISSIONS = ()#WALIKI_LOGGED_USER_PERMISSIONS
 
 
-WALIKI_PAGINATE_BY = 10
+WALIKI_PAGINATE_BY = 5
 WALIKI_AVAILABLE_MARKUPS = ['Markdown']
 
 #########################

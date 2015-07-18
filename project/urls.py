@@ -17,14 +17,16 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf import settings
 
+from degree.urls import routerDegree
 from users.urls import routerUser, routerGroups
 from forum.urls import routerAsk, routerAnswer
-from wiki.urls import routerWiki
+#from wiki.urls import routerWiki
 from comment.urls import routerComment
 import slumber
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^API/degree/', include(routerDegree)),
     url(r'^API/users/', include(routerUser)),
     url(r'^API/groups/', include(routerGroups.urls)),
     url(r'^API/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
@@ -36,7 +38,7 @@ urlpatterns = [
     url(r'^API/forum/answer/', include(routerAnswer)),
 
     url(r'^wiki/', include('waliki.urls')),
-    url(r'^API/wiki/', include(routerWiki)),
+    #url(r'^API/wiki/', include(routerWiki)),
     url(r'^API/comment/', include(routerComment)),
     url(r'^slumber/', include('slumber.urls')),
 ]

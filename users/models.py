@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 #from django.utils import timezone
-
+from degree.models import Degree
 
 class UserManager(BaseUserManager):
     """
@@ -72,7 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
     codigo = models.IntegerField(blank=False, unique=True)
-    plan = models.SmallIntegerField(choices=PLAN_CHOICES)
+    plan = models.ForeignKey(Degree, null=True)
 
     email = models.EmailField(unique=True)
     
@@ -88,11 +88,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     #requires this fields
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'plan', 'codigo']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'codigo']
 
 
     def __str__(self):
-        return u'%s-%s : %s %s' % (self.plan, self.codigo, self.first_name, self.last_name)
+        return u'%s : %s %s' % (self.codigo, self.first_name, self.last_name)
 
     def get_short_name(self):
         return u'%s %s' % (self.first_name, self.last_name)
