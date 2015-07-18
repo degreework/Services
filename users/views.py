@@ -1,4 +1,8 @@
-from rest_framework import viewsets, generics
+# -*- coding: utf-8 -*-
+
+from django.contrib.auth import authenticate
+
+from rest_framework import viewsets, generics, status
 from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, GroupSerializer, UpdatePasswordUserSelializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
@@ -78,7 +82,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 class UserCurrent(APIView):
     """
-    Retrieve
+    Retrieve current logged user
     """
     permission_classes = (TokenHasReadWriteScope, IsSelf, )
 
@@ -88,45 +92,29 @@ class UserCurrent(APIView):
         return Response(serializer.data)
 
 
-from rest_framework import status
-from rest_framework import generics
-
 class UserPassword(generics.UpdateAPIView):
     """
-    API endpoint for retrieve, update, destroy a User
+    API endpoint for change User password
     """
     serializer_class = UpdatePasswordUserSelializer
     permission_classes = (TokenHasReadWriteScope, IsSelf, )
     
 
-    def put(self, request, *args, **kwargs):
-        user = request.user
-        user.set_password(request.data['password'])
-        user.save()
-        return Response({}, status=status.HTTP_200_OK)
-
-
-
-from django.contrib.auth import authenticate
-from django.http import JsonResponse
-import json
-class UserConfirmPassword(APIView):
-    
-    #permission_classes = (AllowAny,)
-    permission_classes = (TokenHasReadWriteScope, IsSelf, )
-
-    def post(self, request, pk, format=None):
+    def post(self, request, *args, **kwargs):
+        response_status = status.HTTP_401_UNAUTHORIZED
+        response_data = ""
         
-        email = User.objects.get(pk=pk).email
-        password = request.POST['old_password']
-
-        user = authenticate(username=email, password=password)
-        response_data = {}
-
-        if user is not None and user.is_active:        
-            response_data['message'] = 'iguales'
-            return JsonResponse(response_data)
+        if request.POST.get('new', False) == request.POST.get('old', False):
+            response_data = "No se hizo nada"
         else:
-            response_data['message'] = 'desiguales'
-            return JsonResponse(response_data)
-
+            email = request.user.email
+            user = authenticate(username=email, password=request.POST['old'])
+            if user is not None and user.is_active:
+                user.set_password(request.POST['new'])
+                user.save()
+                response_data = "Cambiado"
+                response_status = status.HTTP_200_OK
+            else:
+                response_data = "Contraseña incorrecta"
+        print response_data
+        return Response(response_data, status=response_status)
