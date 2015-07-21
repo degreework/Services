@@ -37,7 +37,7 @@ urlpatterns = [
     #url(r'^API/forum/allAsks/', include(routerAsk)),
     url(r'^API/forum/answer/', include(routerAnswer)),
 
-    url(r'^wiki/', include('waliki.urls')),
+    url(r'^API/wiki/', include('waliki.urls')),
     #url(r'^API/wiki/', include(routerWiki)),
     url(r'^API/comment/', include(routerComment)),
     url(r'^slumber/', include('slumber.urls')),

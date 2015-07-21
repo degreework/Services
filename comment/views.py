@@ -25,7 +25,8 @@ class CommentUpdateView(viewsets.ModelViewSet):
     """
     queryset = Comment.objects.all()
     serializer_class = UpdateCommentSelializer
-    permission_classes = (TokenHasReadWriteScope, IsAuthor,)
+    #permission_classes = (TokenHasReadWriteScope, IsAuthor,)
+    permission_classes = (AllowAny, )
 
 
 from rest_framework.views import APIView
