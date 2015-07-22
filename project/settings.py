@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     #3
     'waliki',
     'waliki.git',
-    'waliki.rest',
+    #'waliki.rest',
 
     #3 parties
     'rest_framework',
