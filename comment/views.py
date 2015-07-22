@@ -14,8 +14,8 @@ class CommentCreateView(viewsets.ModelViewSet):
     API endpoint for creating a Comment
     """
     serializer_class = CreateCommentSerializer
-    permission_classes = (IsAuthenticated, )
-
+    #permission_classes = (IsAuthenticated, )
+    permission_classes = (AllowAny, )
 
 from post_framework.permissions import IsAuthor
 

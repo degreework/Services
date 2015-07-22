@@ -59,7 +59,8 @@ class AnswerCreateView(viewsets.ModelViewSet):
     API endpoint for creating a Answer
     """
     serializer_class = AnswerCreateSerializer
-    permission_classes = (TokenHasReadWriteScope, )
+    permission_classes = (AllowAny, )
+    #permission_classes = (TokenHasReadWriteScope, )
 
 from .models import Answer
 
