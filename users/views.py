@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib.auth import authenticate
+from django.core.urlresolvers import reverse
 
 from rest_framework import viewsets, generics, status
-from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, GroupSerializer, UpdatePasswordUserSelializer
+from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, GroupSerializer, UpdatePasswordUserSelializer, RecoveryPasswordSelializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from rest_framework import viewsets
@@ -118,3 +119,85 @@ class UserPassword(generics.UpdateAPIView):
                 response_data = "Contraseña incorrecta"
         print response_data
         return Response(response_data, status=response_status)
+
+
+from django.core.mail import send_mail
+
+# Import the built-in password reset view and password reset confirmation view.
+from django.contrib.auth.views import password_reset, password_reset_confirm
+from django.template.context_processors import csrf
+
+class RecoveryPassword(APIView):
+    """
+    API endpoint for crecovery a User password
+    """
+    serializer_class = RecoveryPasswordSelializer
+    permission_classes = (AllowAny, )
+
+    def get(self, request, *args, **kwargs):
+        return Response(csrf(request))
+    
+
+    def post(self, request, *args, **kwargs):
+        print request.POST
+        """
+        send_mail(
+            'Important Advice',
+            'You has been hacked by an anonymous user at facebook.com, please go into facebook.com and changes right now your current password',
+            'app@gmail.com',
+            ['miguel.angel.bernal@correounivalle.edu.co'],
+            fail_silently=False
+            )
+        """
+        response = password_reset(
+            request,
+            template_name='reset.html',
+            extra_context = request.POST,
+            email_template_name='reset_email.html',
+            subject_template_name='reset_subject.txt',
+            post_reset_redirect=reverse('recovery-password'))
+        print response
+        print response.status_code
+
+        if 302 == response.status_code:
+            email = request.POST.get('email', False)
+            print response
+            return Response({'email':email}, status=status.HTTP_200_OK)
+
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+
+from django.views.decorators.debug import sensitive_post_parameters
+
+
+class RecoveryPassword_confirm(APIView):
+    """
+    API endpoint for recovery a User password
+    """
+    serializer_class = UpdatePasswordUserSelializer
+    permission_classes = (AllowAny, )
+    
+    def post(self, request, uidb64=None, token=None):
+        print request.POST
+        print uidb64
+        print token
+        response = password_reset_confirm(
+            request,
+            template_name='reset.html',
+            uidb64=uidb64,
+            token=token,
+            post_reset_redirect=reverse('password_reset_done'))
+
+        print response
+        
+        return Response({}, status=status.HTTP_200_OK)
+
+
+class RecoveryPasswordDone(APIView):
+    """
+    API endpoint for crecovery a User password
+    """
+    permission_classes = (AllowAny, )
+    
+    def get(request, *args, **kwargs):
+        return Response({'msg': 'Password changed'}, status=status.HTTP_200_OK)

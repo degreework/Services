@@ -55,6 +55,17 @@ class UpdatePasswordUserSelializer(serializers.ModelSerializer):
         model = User
         fields = ('password', )
 
+
+class RecoveryPasswordSelializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer class to update password User
+    """
+
+    class Meta():
+        model = User
+        fields = ('email', )
+
+
 from django.contrib.auth.models import Group
 
 class GroupSerializer(serializers.ModelSerializer):

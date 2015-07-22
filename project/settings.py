@@ -219,3 +219,14 @@ SLUMBER_DIRECTORY = {
 }
 SLUMBER_SERVICE = 'users'
 SLUMBER_CLIENT_APPS = ['post_framework']
+
+
+
+######################
+# Email settings
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'knowahora@gmail.com'
+EMAIL_HOST_PASSWORD = 'Gp4ssm41L'
