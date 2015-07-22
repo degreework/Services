@@ -69,7 +69,8 @@ class AnswerUpdateView(viewsets.ModelViewSet):
     """
     queryset = Answer.objects.all()
     serializer_class = AnswerUpdateSelializer
-    permission_classes = (TokenHasReadWriteScope, IsAuthor,)
+    #permission_classes = (TokenHasReadWriteScope, IsAuthor,)
+    permission_classes = (AllowAny, )
 
 
 
