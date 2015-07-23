@@ -104,8 +104,7 @@ class AnswerShortSerializer(serializers.ModelSerializer):
     """
     Serializer class to show list of Answer
     """
-
     class Meta():
         model = Answer
-        fields = ('id', 'text', 'added_at')
+        fields = ('id', 'text', 'added_at', 'ask')
 

@@ -49,7 +49,7 @@ routerAnswer = format_suffix_patterns([
     url(r'^(?P<pk>[0-9]+)$', routerAnswerDetail, name='answer-update'),
 
     #get all answers
-    url(r'^all$', AnswerList.as_view() , name='answer-list'),
+    url(r'^all/(?P<pk>[0-9]+)/$', AnswerList.as_view() , name='answer-list'),
 
 
     ])
