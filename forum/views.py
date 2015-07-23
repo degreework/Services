@@ -74,14 +74,20 @@ class AnswerUpdateView(viewsets.ModelViewSet):
     permission_classes = (AllowAny, )
 
 
-
+from django.shortcuts import get_object_or_404
 class AnswerList(generics.ListAPIView):
     """
     View to list all aks in the foro.
     """
+    #lookup_field = 'ask'
 
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (AllowAny,)
-    queryset = Answer.objects.all()
+    #ueryset = Answer.objects.all()
+    #queryset = Answer.objects.filter(ask = '48')
     serializer_class = AnswerShortSerializer
     paginate_by = 10
+
+    def get_queryset(self):
+        return Answer.objects.filter(ask = self.kwargs['pk'])
+        #print self.objects.filter(ask = )
