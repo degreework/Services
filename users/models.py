@@ -54,24 +54,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         return '/'.join(['photos', u'%s' % (instance.id), out_file])
 
 
-
-    #Codes are Hardcoded, this shouldn't be so
-    PLAN_TEC = 2222
-    PLAN_ING = 3743
-    #
-
-    PLAN_CHOICES = (
-        (PLAN_TEC, str('Tecnología de sistemas')),
-        (PLAN_ING, str('Ingeniería de sistemas')),
-    )
-
     photo = ThumbnailerImageField(upload_to=content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True)
     first_name = models.CharField(max_length=20, blank=False)
     last_name = models.CharField(max_length=20, blank=False)
 
 
     codigo = models.IntegerField(blank=False, unique=True)
-    plan = models.ForeignKey(Degree, null=True)
+    plan = models.ForeignKey(Degree, null=True, blank=True)
 
     email = models.EmailField(unique=True)
     
