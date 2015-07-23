@@ -1,6 +1,5 @@
 Services
 ===================
-________________________
 #Done
 ###Sprint 1
   * Users
@@ -27,8 +26,15 @@ ________________________
 ### Sprint 6
  * Testing
 
-
+______________________
 ###Requeriments
-    sudo apt-get install python2.7
-    sudo apt-get install python2.7-dev
+    sudo apt-get install python3.4
+    sudo apt-get install python3.4-dev
     sudo apt-get install libjpeg-dev
+
+###Installation
+
+
+Create default app for Oauth2
+
+	./manager.py Oauth
