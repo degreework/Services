@@ -20,7 +20,7 @@ from django.conf import settings
 from degree.urls import routerDegree
 from users.urls import routerUser, routerGroups
 from forum.urls import routerAsk, routerAnswer
-#from wiki.urls import routerWiki
+from wiki.urls import urlpatterns as wiki_url
 from comment.urls import routerComment
 import slumber
 
@@ -37,8 +37,8 @@ urlpatterns = [
     #url(r'^API/forum/allAsks/', include(routerAsk)),
     url(r'^API/forum/answer/', include(routerAnswer)),
 
+    url(r'^API/wiki/', include(wiki_url)),
     url(r'^API/wiki/', include('waliki.urls')),
-    #url(r'^API/wiki/', include(routerWiki)),
     url(r'^API/comment/', include(routerComment)),
     url(r'^slumber/', include('slumber.urls')),
 ]
