@@ -10,7 +10,6 @@ class UserManager(BaseUserManager):
     """
     This class improbe methods for create users and superusers
     """
-    use_in_migrations = True
 
     def _create_user(self, email, password,
                      is_staff, is_superuser, **extra_fields):
@@ -24,7 +23,7 @@ class UserManager(BaseUserManager):
                           is_superuser=is_superuser,
                           #date_joined=now,
                           **extra_fields)
-        user.set_password(password)
+        #user.set_password(password)
         user.save(using=self._db)
         return user
 
@@ -32,10 +31,12 @@ class UserManager(BaseUserManager):
         """
         create a user
         """
+        print "create_user"
         return self._create_user(email, password, False, False,
                                  **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
+        print "create_superuser"
         """used to create a superuser"""
         return self._create_user(email, password, True, True,
                                  **extra_fields)
@@ -93,10 +94,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def save(self, *args, **kwargs):
-        if not self.is_superuser:
+        if not self.pk:
             self.set_password(self.password)
         super(User, self).save(*args, **kwargs)
-    
 
     class Meta:
         app_label = 'users'
+        swappable = 'AUTH_USER_MODEL'

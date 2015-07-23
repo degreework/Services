@@ -6,6 +6,8 @@ from rest_framework import serializers, request
 
 import json
 
+from .models import Request
+from .signals import page_request
 
 class PageCreateSerializer(serializers.ModelSerializer):
     """
@@ -17,8 +19,10 @@ class PageCreateSerializer(serializers.ModelSerializer):
     extra_data = serializers.SerializerMethodField()
 
 
-    def get_extra_data(self, *args, **kwargs):
+    def get_extra_data(self, obj, *args, **kwargs):
         form_extra_data = {}
+        print "get_extra_data"
+        print obj
         page = Page.objects.get(slug=self.context['request'].POST.get('slug'))
 
         receivers_responses = page_preedit.send(sender=views.edit, page=page)
@@ -29,9 +33,8 @@ class PageCreateSerializer(serializers.ModelSerializer):
  
 
     def save(self, *args, **kwargs):
-        """call to waliki new function"""
-        print "MY HACK"
-        
+        """call to waliki new function""" 
+        print kwargs
         #call waliki new function
         response = views.new(self.context['request']._request, *args, **kwargs)
 
@@ -45,9 +48,34 @@ class PageCreateSerializer(serializers.ModelSerializer):
         kwargs['slug'] = self.context['request'].POST['slug']
 
         response = views.edit(self.context['request'],*args, **kwargs)
+        ##
+        page = Page.objects.filter(slug=kwargs['slug'])[0]
+        
+        #set new request
+        commit = json.loads(self.context['request'].POST['extra_data'])['parent']
+        page_request.send(sender=Request, page=page, commit=commit)
 
 
     class Meta():
         model = Page
         fields = ('id', 'title', 'slug', 'raw', 'markup' ,'message', 'extra_data', )
         read_only_fields = ('id', )
+
+
+
+class RequestSerializer(serializers.ModelSerializer):
+
+    page = serializers.SerializerMethodField()
+
+    def get_page(self, obj, *args, **kwargs):
+        data = {
+            'title': obj.page.title,
+            'slug': obj.page.slug
+        }
+
+        return data
+
+    class Meta():
+        model = Request
+        fields = ('id', 'page', 'commit' )
+        read_only_fields = fields
