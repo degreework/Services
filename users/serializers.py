@@ -9,10 +9,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
     Serializer Class to create users
     """
 
-    def get_plan(self):
-        print self
-        return '0'
-
     class Meta():
         model = User
         fields = ('first_name', 'last_name', 'email', 'codigo', 'plan', 'password')
