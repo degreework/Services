@@ -1,9 +1,8 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
 from .models import Degree
 
-
-class DegreeSerializer(serializers.ModelSerializer):
+class DegreeSerializer(ModelSerializer):
     """
     Serializer Class to Degree
     """

@@ -25,20 +25,23 @@ from comment.urls import routerComment
 import slumber
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
     url(r'^API/degree/', include(routerDegree)),
-    url(r'^API/users/', include(routerUser)),
-    url(r'^API/groups/', include(routerGroups.urls)),
+    url(r'^API/users/', include(routerUser, namespace='user')),
+    url(r'^API/groups/', include(routerGroups.urls, namespace='group')),
+    
     url(r'^API/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    ##forum
-    #url(r'^forum/', include('pybb.urls', namespace='pybb')),
-    url(r'^API/forum/ask/', include(routerAsk)),
-    #url(r'^API/forum/allAsks/', include(routerAsk)),
-    url(r'^API/forum/answer/', include(routerAnswer)),
+    
+    url(r'^API/forum/ask/', include(routerAsk, namespace='forum_ask')),
+    url(r'^API/forum/answer/', include(routerAnswer, namespace='forum_answer')),
 
-    url(r'^API/wiki/', include(wiki_url)),
-    url(r'^API/wiki/', include('waliki.urls')),
-    url(r'^API/comment/', include(routerComment)),
+    url(r'^API/wiki/', include(wiki_url, namespace='wiki')),
+    #url(r'^API/wiki/', include('waliki.urls')),
+
+    url(r'^API/comment/', include(routerComment, namespace='comment')),
+    
+    
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^slumber/', include('slumber.urls')),
+
 ]
