@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
-
 from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
+from django.http import Http404
 
 from rest_framework import viewsets, generics, status
-from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, GroupSerializer, UpdatePasswordUserSelializer, RecoveryPasswordSelializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
-
-from rest_framework import viewsets
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
+
+from .models import User
+from .permissions import IsSelf
+from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, UpdatePasswordUserSelializer, RecoveryPasswordSelializer
+
 
 class UserCreateView(viewsets.ModelViewSet):
     """
@@ -20,27 +23,20 @@ class UserCreateView(viewsets.ModelViewSet):
     permission_classes = (AllowAny, )
 
 
-from .models import User
-from .permissions import IsSelf
-
 class UserUpdate(viewsets.ModelViewSet):
     """
     API endpoint for retrieve, update, destroy a User
     """
     queryset = User.objects.all()
     serializer_class = UpdateUserSelializer
-    permission_classes = (TokenHasReadWriteScope, IsSelf, )
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.http import Http404
+    permission_classes = (IsSelf, )
 
 
 class UserDetail(APIView):
     """
     Retrieve a User
     """
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
     def get_object(self, pk):
         try:
@@ -54,51 +50,35 @@ class UserDetail(APIView):
         return Response(serializer.data)
 
 
-from rest_framework.views import APIView
-from rest_framework import authentication
-
+#from rest_framework import authentication
 class UserList(generics.ListAPIView):
     """
     View to list all aks in the foro.
     """
-
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (AllowAny,)
+    #authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (IsAuthenticated, )
     queryset = User.objects.all()
     serializer_class = ShortUserSerializer
     paginate_by = 10
-
-
-from django.contrib.auth.models import Group
-from oauth2_provider.ext.rest_framework import OAuth2Authentication
-
-class GroupViewSet(viewsets.ModelViewSet):
-    authentication_classes = [OAuth2Authentication]
-    permission_classes = [TokenHasReadWriteScope]
-    permission_classes = [IsAuthenticated, TokenHasScope]
-    required_scopes = ['groups']
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
 
 
 class UserCurrent(APIView):
     """
     Retrieve current logged user
     """
-    permission_classes = (TokenHasReadWriteScope, IsSelf, )
+    permission_classes = (IsAuthenticated, IsSelf, )
 
     def get(self, request):
-        user = request.user
-        serializer = ShortUserSerializer(user)
+        serializer = ShortUserSerializer(request.user)
         return Response(serializer.data)
 
 
-class UserPassword(generics.UpdateAPIView):
+class UserPassword(APIView):
     """
     API endpoint for change User password
     """
     serializer_class = UpdatePasswordUserSelializer
-    permission_classes = (TokenHasReadWriteScope, IsSelf, )
+    permission_classes = (IsAuthenticated, IsSelf, )
     
 
     def post(self, request, *args, **kwargs):
@@ -121,6 +101,8 @@ class UserPassword(generics.UpdateAPIView):
         return Response(response_data, status=response_status)
 
 
+
+## NO WORKS
 from django.core.mail import send_mail
 
 # Import the built-in password reset view and password reset confirmation view.
@@ -195,7 +177,7 @@ class RecoveryPassword_confirm(APIView):
 
 class RecoveryPasswordDone(APIView):
     """
-    API endpoint for crecovery a User password
+    API endpoint for recovery a User password
     """
     permission_classes = (AllowAny, )
     

@@ -1,13 +1,21 @@
-
 from rest_framework import serializers
 
 from .models import User
-
 
 class CreateUserSerializer(serializers.ModelSerializer):
     """
     Serializer Class to create users
     """
+
+    def save(self):
+        user = User.objects.create_user(
+            self.validated_data['email'],
+            self.validated_data['codigo'],
+            self.validated_data['first_name'],
+            self.validated_data['last_name'],
+            self.validated_data['password'],
+            )
+        return user
 
     class Meta():
         model = User
@@ -22,7 +30,6 @@ class UpdateUserSelializer(serializers.ModelSerializer):
     class Meta():
         model = User
         fields = ('first_name', 'last_name', 'email', 'codigo', 'plan', 'photo')
-
     
 
 class ShortUserSerializer(serializers.ModelSerializer):
@@ -37,11 +44,11 @@ class ShortUserSerializer(serializers.ModelSerializer):
 
     def get_thumb(self, object):
         try:
-            photos = [object.photo['mini'].url, object.photo['user_profile'].url]
-            return photos
+            return [object.photo['mini'].url, object.photo['user_profile'].url]
         except:
             #poner algo menos feo XD
-            return "No found"
+            return ""
+
 
 class UpdatePasswordUserSelializer(serializers.ModelSerializer):
     """
@@ -52,18 +59,8 @@ class UpdatePasswordUserSelializer(serializers.ModelSerializer):
         fields = ('password', )
 
 
-class RecoveryPasswordSelializer(serializers.HyperlinkedModelSerializer):
+class RecoveryPasswordSelializer(serializers.Serializer):
     """
-    Serializer class to update password User
+    Serializer class to recovery password User
     """
-
-    class Meta():
-        model = User
-        fields = ('email', )
-
-
-from django.contrib.auth.models import Group
-
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
+    email = serializers.EmailField()

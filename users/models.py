@@ -3,59 +3,56 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
-#from django.utils import timezone
 from degree.models import Degree
-
-class UserManager(BaseUserManager):
-    """
-    This class improbe methods for create users and superusers
-    """
-
-    def _create_user(self, email, password,
-                     is_staff, is_superuser, **extra_fields):
-        """
-        Creates and saves a User with the given email and password.
-        """
-        #now = timezone.now()
-        email = self.normalize_email(email)
-        user = self.model(email=email,
-                          is_staff=is_staff, is_active=True,
-                          is_superuser=is_superuser,
-                          #date_joined=now,
-                          **extra_fields)
-        #user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_user(self, email=None, password=None, **extra_fields):
-        """
-        create a user
-        """
-        print "create_user"
-        return self._create_user(email, password, False, False,
-                                 **extra_fields)
-
-    def create_superuser(self, email, password, **extra_fields):
-        print "create_superuser"
-        """used to create a superuser"""
-        return self._create_user(email, password, True, True,
-                                 **extra_fields)
 
 
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.conf import settings
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def _create_user(self, email, codigo, first_name, last_name,
+                    password, is_superuser=False, **extra_fields):
+        """
+        Creates and saves a User with the given username, email and password.
+        """
+        #now = timezone.now()
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        email = self.normalize_email(email)
+        user = self.model(email=email,
+                        first_name=first_name,
+                        last_name=last_name,
+                        codigo=codigo,
+                        is_superuser=is_superuser,
+                        **extra_fields)
+        
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, codigo, first_name, last_name, password=None, **extra_fields):
+        return self._create_user(email, codigo, first_name, last_name, password, False,
+                                 **extra_fields)
+
+    def create_superuser(self, email, codigo, first_name, last_name, password, **extra_fields):
+        return self._create_user( email, codigo, first_name, last_name, password, True,
+                                 **extra_fields)
 
 #Anexo 1
 class User(AbstractBaseUser, PermissionsMixin):
     """
     Class User, define a user
     """ 
-    def content_file_name(instance, filename):
+    def _content_file_name(instance, filename):
         out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )
         return '/'.join(['photos', u'%s' % (instance.id), out_file])
 
 
-    photo = ThumbnailerImageField(upload_to=content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True)
+    photo = ThumbnailerImageField(upload_to=_content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True)
     first_name = models.CharField(max_length=20, blank=False)
     last_name = models.CharField(max_length=20, blank=False)
 
@@ -67,7 +64,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     
 
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    #is_staff  = models.BooleanField(default=False)
+    date_joined = models.DateField(auto_now=True)
 
 
     objects = UserManager()
@@ -80,23 +78,23 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'codigo']
 
 
-    def __str__(self):
-        return u'%s : %s %s' % (self.codigo, self.first_name, self.last_name)
-
-    def get_short_name(self):
-        return u'%s %s' % (self.first_name, self.last_name)
-
-    def get_full_name(self):
-        return self.__str__()
-
     @property
     def username(self):
         return self.email
+    
+    @property
+    def is_staff(self):
+        return self.is_superuser
+    
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.set_password(self.password)
-        super(User, self).save(*args, **kwargs)
+    def __str__(self):
+        return u'%s %s' % (self.first_name, self.last_name)
+
+    def get_short_name(self):
+        return self.username
+
+    def get_full_name(self):
+        return self.__str__()
 
     class Meta:
         app_label = 'users'

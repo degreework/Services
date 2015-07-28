@@ -18,16 +18,15 @@ from django.contrib import admin
 from django.conf import settings
 
 from degree.urls import routerDegree
-from users.urls import routerUser, routerGroups
+from users.urls import routerUser
 from forum.urls import routerAsk, routerAnswer
 from wiki.urls import urlpatterns as wiki_url
 from comment.urls import routerComment
 import slumber
 
 urlpatterns = [
-    url(r'^API/degree/', include(routerDegree)),
+    url(r'^API/degree/', include(routerDegree, namespace='dregree')),
     url(r'^API/users/', include(routerUser, namespace='user')),
-    url(r'^API/groups/', include(routerGroups.urls, namespace='group')),
     
     url(r'^API/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     
