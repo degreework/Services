@@ -1,10 +1,10 @@
 from django.http import Http404
+from django.db import IntegrityError
+from django.core.exceptions import PermissionDenied
+
 from rest_framework import serializers
 
 from .models import Ask, Answer
-
-from django.db import IntegrityError
-from django.core.exceptions import PermissionDenied
 
 
 class CreateAskSerializer(serializers.ModelSerializer):
@@ -13,10 +13,8 @@ class CreateAskSerializer(serializers.ModelSerializer):
     """
     def create(self, validated_data):
         try:
-            author = self.context['request'].user.id
-            #validated_data['author'] = author
-            return Ask.objects.create(**validated_data)
-
+            user = self.context['request'].user
+            return Ask.objects.create(author=user, **validated_data)
         except IntegrityError, e:
             raise PermissionDenied
 
@@ -40,22 +38,31 @@ class ShortAskSerializer(serializers.ModelSerializer):
     Serializer class to show list of Asks
     """
     count = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
+
+    def get_author(self, obj):
+        return obj.author.get_full_name()
 
     def get_count(self,obj):
         return Answer.objects.filter(ask=obj).count()
 
     class Meta():
         model = Ask
-        fields = ('id', 'title', 'added_at', 'count')
+        fields = ('id', 'title', 'added_at', 'author', 'count')
+
 
 class AskDetailSerializer(serializers.ModelSerializer):
     """
     Serializer class to show detailed Ask
     """
+    author = serializers.SerializerMethodField()
+
+    def get_author(self, obj):
+        return obj.author.get_full_name()
 
     class Meta():
         model = Ask
-        fields = ('id', 'title', 'text', 'added_at')
+        fields = ('id', 'title', 'text', 'added_at', 'author', )
 
 
 """Classes for Answers"""
@@ -65,7 +72,10 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
     Serializer Class to create Answer
     """
     ask = serializers.CharField(required=True)
+    author = serializers.SerializerMethodField()
 
+    def get_author(self, obj):
+        return obj.author.get_full_name()
 
     def validate_ask(self, value):
         try:
@@ -76,11 +86,8 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
-            author = self.context['request'].user.id
-            #print validated_data['ask']
-            #validated_data['author'] = author
-            #validated_data['ask'] = Ask.objects.get(pk=validated_data['parent'])
-            return Answer.objects.create(**validated_data)
+            user = self.context['request'].user
+            return Answer.objects.create(author=user, **validated_data)
 
         except IntegrityError, e:
             print e
@@ -88,8 +95,9 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Answer
-        fields = ('id', 'ask', 'text', 'added_at')
-        read_only_fields = ('id', 'added_at', )
+        fields = ('id', 'ask', 'text', 'author', 'added_at')
+        read_only_fields = ('id', 'added_at', 'author', )
+
 
 class AnswerUpdateSelializer(serializers.ModelSerializer):
     """
@@ -104,7 +112,13 @@ class AnswerShortSerializer(serializers.ModelSerializer):
     """
     Serializer class to show list of Answer
     """
+    author = serializers.SerializerMethodField()
+
+    def get_author(self, obj):
+        print (obj.author.get_full_name())
+        return obj.author.get_full_name()
+
     class Meta():
         model = Answer
-        fields = ('id', 'text', 'added_at', 'ask')
+        fields = ('id', 'text', 'added_at', 'author', 'ask')
 

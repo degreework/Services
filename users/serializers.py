@@ -14,6 +14,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
             self.validated_data['first_name'],
             self.validated_data['last_name'],
             self.validated_data['password'],
+            self.validated_data['plan']
             )
         return user
 
@@ -50,13 +51,16 @@ class ShortUserSerializer(serializers.ModelSerializer):
             return ""
 
 
-class UpdatePasswordUserSelializer(serializers.ModelSerializer):
+class UpdatePasswordUserSelializer(serializers.Serializer):
     """
     Serializer class to update password User
     """
+    new = serializers.CharField(style={'input_type': 'password'})
+    old = serializers.CharField(style={'input_type': 'password'})
+    
     class Meta():
         model = User
-        fields = ('password', )
+        fields = ('new', 'old', )
 
 
 class RecoveryPasswordSelializer(serializers.Serializer):

@@ -14,7 +14,7 @@ class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, email, codigo, first_name, last_name,
-                    password, is_superuser=False, **extra_fields):
+                    password, is_superuser=False, plan=None, **extra_fields):
         """
         Creates and saves a User with the given username, email and password.
         """
@@ -28,14 +28,15 @@ class UserManager(BaseUserManager):
                         last_name=last_name,
                         codigo=codigo,
                         is_superuser=is_superuser,
+                        plan=plan,
                         **extra_fields)
         
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, codigo, first_name, last_name, password=None, **extra_fields):
-        return self._create_user(email, codigo, first_name, last_name, password, False,
+    def create_user(self, email, codigo, first_name, last_name, password=None, plan=None, **extra_fields):
+        return self._create_user(email, codigo, first_name, last_name, password, False, plan,
                                  **extra_fields)
 
     def create_superuser(self, email, codigo, first_name, last_name, password, **extra_fields):
