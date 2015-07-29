@@ -17,4 +17,3 @@ class RequestListView(generics.ListAPIView):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
     permission_classes = (permissions.AllowAny, )
-    

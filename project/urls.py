@@ -34,7 +34,6 @@ urlpatterns = [
     url(r'^API/forum/answer/', include(routerAnswer, namespace='forum_answer')),
 
     url(r'^API/wiki/', include(wiki_url, namespace='wiki')),
-    #url(r'^API/wiki/', include('waliki.urls')),
 
     url(r'^API/comment/', include(routerComment, namespace='comment')),
     

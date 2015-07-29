@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from waliki.settings import WALIKI_SLUG_PATTERN
 
 from .views import PageCreateView, RequestListView
@@ -11,5 +11,7 @@ urlpatterns = patterns('waliki.rest.views',
 	
 	#urls for request
 	url(r'^request/all$', RequestListView.as_view() , name='request_list'),
+
+	url(r'^', include('waliki.rest.urls')),
 
 )

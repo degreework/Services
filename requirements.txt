@@ -6,3 +6,4 @@ easy-thumbnails==2.2
 django-slumber==0.8.1
 waliki==0.5
 Markdown==2.6.2
+-e git+https://github.com/rizotas/waliki.git@rest#egg=waliki
