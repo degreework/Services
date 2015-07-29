@@ -103,9 +103,33 @@ class AnswerUpdateSelializer(serializers.ModelSerializer):
     """
     Serializer class to update Answer
     """
+    ask = serializers.CharField(required=True)
+    author = serializers.SerializerMethodField()
+
+    def get_author(self, obj):
+        return obj.author.get_full_name()
+
+    def validate_ask(self, value):
+        try:
+            ask = Ask.objects.get(pk=value)
+        except Ask.DoesNotExist:
+            raise Http404("La pregunta no existe")
+        return ask
+
+    def create(self, validated_data):
+        try:
+            user = self.context['request'].user
+            return Answer.objects.create(author=user, **validated_data)
+
+        except IntegrityError, e:
+            print e
+            raise PermissionDenied
+
+
     class Meta():
         model = Answer
-        fields = ('html', 'text', 'summary')
+        fields = ('id', 'ask', 'text', 'author', 'added_at')
+        read_only_fields = ('id', 'added_at', 'author', )
 
 
 class AnswerShortSerializer(serializers.ModelSerializer):
