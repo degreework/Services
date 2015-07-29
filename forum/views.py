@@ -81,7 +81,7 @@ class AnswerList(generics.ListAPIView):
     """
     #lookup_field = 'ask'
 
-    authentication_classes = (authentication.TokenAuthentication,)
+    #authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (AllowAny,)
     #ueryset = Answer.objects.all()
     #queryset = Answer.objects.filter(ask = '48')

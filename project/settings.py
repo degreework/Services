@@ -65,7 +65,7 @@ INSTALLED_APPS = (
     
     #'pybb',
 
-    'post_framework',
+    #'post_framework',
     'forum',
     'comment',
     
@@ -213,13 +213,14 @@ WALIKI_AVAILABLE_MARKUPS = ['Markdown']
 
 #########################
 #slumber
+"""
 SLUMBER_DIRECTORY = {
     'users': 'users',
     'post_framework': 'post_framework',
 }
 SLUMBER_SERVICE = 'users'
 SLUMBER_CLIENT_APPS = ['post_framework']
-
+"""
 
 
 ######################
