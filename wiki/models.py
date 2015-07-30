@@ -16,6 +16,8 @@ class Request(models.Model):
         return u'%s' % (self.commit, )
     
     class Meta:
+        #app_label = 'waliki'
+        #db_table = 'wiki_request'
         verbose_name = "Request"
         verbose_name_plural = "Requests"
 

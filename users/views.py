@@ -183,3 +183,19 @@ class RecoveryPasswordDone(APIView):
     
     def get(request, *args, **kwargs):
         return Response({'msg': 'Password changed'}, status=status.HTTP_200_OK)
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
+
+@api_view(('GET',))
+def api_root(request, format=None):
+    return Response({
+        'create': reverse('user_create', request=request, format=format),
+        
+        # due to DRF Issue #3190, this (parametrized url to api root) can't be enabled
+        #'update': reverse('user-update', request=request, format=format),
+        
+        'current': reverse('user-current', request=request, format=format),
+    })

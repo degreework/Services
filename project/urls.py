@@ -26,7 +26,7 @@ import slumber
 
 urlpatterns = [
     url(r'^API/degree/', include(routerDegree, namespace='dregree')),
-    url(r'^API/users/', include(routerUser, namespace='user')),
+    url(r'^API/users/', include(routerUser)),
     
     url(r'^API/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     
@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^API/forum/answer/', include(routerAnswer, namespace='forum_answer')),
 
     url(r'^API/wiki/', include(wiki_url, namespace='wiki')),
+    url(r'^restricted', include('waliki.urls')),
 
     url(r'^API/comment/', include(routerComment, namespace='comment')),
     

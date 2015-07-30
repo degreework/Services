@@ -2,15 +2,15 @@ from django.conf.urls import patterns, url
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from .views import UserCreateView, UserDetail, UserUpdate, UserList, UserCurrent, UserPassword, RecoveryPassword, RecoveryPassword_confirm, RecoveryPasswordDone
+from .views import api_root, UserCreateView, UserDetail, UserUpdate, UserList, UserCurrent, UserPassword, RecoveryPassword, RecoveryPassword_confirm, RecoveryPasswordDone
 
 
 routerUser = format_suffix_patterns([
-    #url(r'^$', api_root),
+    url(r'^$', api_root),
     
     #create
     url(
-        r'^$',
+        r'^new$',
         UserCreateView.as_view({'post': 'create'}),
         name='user_create'
     ),

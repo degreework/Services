@@ -98,5 +98,5 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.__str__()
 
     class Meta:
-        app_label = 'users'
+        #app_label = 'users'
         swappable = 'AUTH_USER_MODEL'

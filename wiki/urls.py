@@ -12,6 +12,7 @@ urlpatterns = patterns('waliki.rest.views',
 	#urls for request
 	url(r'^request/all$', RequestListView.as_view() , name='request_list'),
 
-	url(r'^', include('waliki.rest.urls')),
+	
+	#url(r'^', include('waliki.rest.urls')),
 
 )
