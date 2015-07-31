@@ -28,9 +28,17 @@ class UpdateAskSelializer(serializers.ModelSerializer):
     """
     Serializer class to update Asks
     """
+    def update(self, validated_data):
+        try:
+            user = self.context['request'].user
+            return Ask.objects.create(author=user, **validated_data)
+        except IntegrityError, e:
+            raise PermissionDenied
+
     class Meta():
         model = Ask
-        fields = ('title', 'html', 'text', 'summary')
+        fields = ('id', 'title', 'text')
+        read_only_fields = ('id')
 
 
 class ShortAskSerializer(serializers.ModelSerializer):
