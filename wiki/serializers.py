@@ -21,8 +21,6 @@ class PageCreateSerializer(serializers.ModelSerializer):
 
     def get_extra_data(self, obj, *args, **kwargs):
         form_extra_data = {}
-        print "get_extra_data"
-        print obj
         page = Page.objects.get(slug=self.context['request'].POST.get('slug'))
 
         receivers_responses = page_preedit.send(sender=views.edit, page=page)
@@ -34,9 +32,9 @@ class PageCreateSerializer(serializers.ModelSerializer):
 
     def save(self, *args, **kwargs):
         """call to waliki new function""" 
-        print kwargs
         #call waliki new function
         response = views.new(self.context['request']._request, *args, **kwargs)
+
 
         #if 'extra_data' no comming in payload
         if not self.context['request'].POST.get('extra_data', False):
@@ -51,8 +49,8 @@ class PageCreateSerializer(serializers.ModelSerializer):
         ##
         page = Page.objects.filter(slug=kwargs['slug'])[0]
         
-        #set new request
-        commit = json.loads(self.context['request'].POST['extra_data'])['parent']
+        #Create new reques
+        commit = json.loads(self.get_extra_data(self.instance))['parent']
         page_request.send(sender=Request, page=page, commit=commit)
 
 
@@ -61,6 +59,24 @@ class PageCreateSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'slug', 'raw', 'markup' ,'message', 'extra_data', )
         read_only_fields = ('id', )
 
+
+class PageRetrieveSerializer(serializers.ModelSerializer):
+    """
+    Serializer Class to retrieve a Page.
+    """
+    date = serializers.SerializerMethodField()
+
+    def get_date(self, obj, *args, **kwargs):
+        print obj.slug
+        print Request.objects.filter(page=obj)
+
+        return ''
+
+
+    class Meta():
+        model = Page
+        fields = ('id', 'title', 'slug', 'raw', 'markup', 'date' )
+        read_only_fields = fields    
 
 
 class RequestSerializer(serializers.ModelSerializer):
@@ -77,5 +93,5 @@ class RequestSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Request
-        fields = ('id', 'page', 'commit' )
+        fields = ('id', 'page', 'commit', 'created', 'approved', 'approved_by' )
         read_only_fields = fields

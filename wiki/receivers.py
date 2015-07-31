@@ -5,4 +5,4 @@ from .signals import page_request
 
 @receiver(page_request, sender=Request)
 def generate_request(sender, page, commit, **kwargs):
-    Request(page=page, commit=commit).save()
+    Request(page=page, commit=commit, approved_by=None).save()
