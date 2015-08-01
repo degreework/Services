@@ -14,13 +14,13 @@ class CreateUserSerializer(serializers.ModelSerializer):
             self.validated_data['first_name'],
             self.validated_data['last_name'],
             self.validated_data['password'],
-            self.validated_data['plan']
+            #self.validated_data.get('plan', None)
             )
         return user
 
     class Meta():
         model = User
-        fields = ('first_name', 'last_name', 'email', 'codigo', 'plan', 'password')
+        fields = ('first_name', 'last_name', 'email', 'codigo', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
 
