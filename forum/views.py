@@ -23,7 +23,8 @@ class AskUpdateView(viewsets.ModelViewSet):
     """
     queryset = Ask.objects.all()
     serializer_class = UpdateAskSelializer
-    permission_classes = (TokenHasReadWriteScope, IsAuthor,)
+    permission_classes = (AllowAny, )
+    #permission_classes = (TokenHasReadWriteScope, IsAuthor,)
 
 
 from rest_framework.views import APIView
