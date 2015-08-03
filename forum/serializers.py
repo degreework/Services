@@ -27,7 +27,7 @@ class UpdateAskSelializer(serializers.ModelSerializer):
     """
     Serializer class to update Asks
     """
-    def update(self, validated_data):
+    def create(self, validated_data):
         try:
             user = self.context['request'].user
             return Ask.objects.create(author=user, **validated_data)
@@ -36,8 +36,8 @@ class UpdateAskSelializer(serializers.ModelSerializer):
 
     class Meta():
         model = Ask
-        fields = ('id', 'title', 'text')
-        read_only_fields = ('id')
+        fields = ( 'title', 'text')
+        #read_only_fields = ('id')
 
 
 class ShortAskSerializer(serializers.ModelSerializer):
@@ -146,7 +146,6 @@ class AnswerShortSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
 
     def get_author(self, obj):
-        print (obj.author.get_full_name())
         return obj.author.get_full_name()
 
     class Meta():
