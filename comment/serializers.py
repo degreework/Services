@@ -11,21 +11,24 @@ class CreateCommentSerializer(serializers.ModelSerializer):
     Serializer Class to create Comment
     """
     author = serializers.SerializerMethodField()
-
+    
     def get_author(self, obj):
         return obj.author.get_full_name()
 
     def create(self, validated_data):
         try:
             user = self.context['request'].user
-            return Comment.objects.create(author=user, **validated_data)
+            thread = validated_data['parent']
+            #from post_framework.models import Thread
+            #thread = Thread.objects.get(pk=thread)
+            return Comment.objects.create(author=user, parent=thread, text=validated_data['text'])
 
         except IntegrityError, e:
             raise PermissionDenied
 
     class Meta():
         model = Comment
-        fields = ('id', 'added_at', 'text', 'author' )
+        fields = ('id', 'added_at', 'author', 'text', 'parent', )
         read_only_fields = ('id', 'added_at', 'author', )
 
 

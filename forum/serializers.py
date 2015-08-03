@@ -5,7 +5,7 @@ from django.core.exceptions import PermissionDenied
 from rest_framework import serializers
 
 from .models import Ask, Answer
-
+from django.contrib.auth.models import AnonymousUser
 
 class CreateAskSerializer(serializers.ModelSerializer):
     """
@@ -20,8 +20,7 @@ class CreateAskSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Ask
-        fields = ('id', 'title', 'text')
-        read_only_fields = ('id')
+        fields = ('title', 'text')
 
 
 class UpdateAskSelializer(serializers.ModelSerializer):
@@ -70,7 +69,7 @@ class AskDetailSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Ask
-        fields = ('id', 'title', 'text', 'added_at', 'author', )
+        fields = ( 'title', 'text', 'added_at', 'author', )
 
 
 """Classes for Answers"""
@@ -103,8 +102,8 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Answer
-        fields = ('id', 'ask', 'text', 'author', 'added_at')
-        read_only_fields = ('id', 'added_at', 'author', )
+        fields = ( 'ask', 'text', 'author', 'added_at')
+        read_only_fields = ( 'added_at', 'author', )
 
 
 class AnswerUpdateSelializer(serializers.ModelSerializer):

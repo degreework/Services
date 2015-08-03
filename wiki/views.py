@@ -5,7 +5,7 @@ from waliki.rest.views import (
         PageCreateView as CreateView,
         PageListView as ListView,
         PageRetrieveView as RetrieveView,
-        PageVersionView as VersionView
+        PageVersionView
     )
 
 from rest_framework.response import Response
@@ -27,13 +27,19 @@ class PageRetrieveView(RetrieveView):
     serializer_class = RetrieveSer
 
 
-class RequestListView(generics.ListAPIView):
+class RequestListView(ListView):
     """
     A simple View to list all Request
     """
-    queryset = Request.objects.all()
     serializer_class = RequestSerializer
-    permission_classes = (permissions.AllowAny, )
+    #permission_classes = (permissions.AllowAny, )
+
+    def get_queryset(self):
+        return Request.objects.filter(approved=False)
+
+    def get(self, request, *args, **kwargs):
+        pages = self.get_queryset()
+        return Response(self.get_serializer(pages, many=True).data)
 
 
 class PageListView(ListView):

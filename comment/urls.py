@@ -22,6 +22,6 @@ routerComment = format_suffix_patterns([
     url(r'^(?P<pk>[0-9]+)$', routerCommentDetail, name='acomment-update'),
 
     #get all asks 
-    url(r'^all$', CommentList.as_view() , name='comment-list'),
+    url(r'^all/(?P<thread>[0-9]+)$', CommentList.as_view() , name='comment-list'),
 
     ])

@@ -1,10 +1,10 @@
 from django.db import models
-from post_framework.models import Post
+from post_framework.models import Post, Thread
 
 
 class Comment(Post, models.Model):
 	
-    #parent = models.ForeignKey(Ask, blank=True, null=True, related_name='comments') # Answer or Question for Comment
+    parent = models.ForeignKey(Thread, blank=False, null=False)
     text = models.CharField(null=False, max_length=300)
     
     class Meta:

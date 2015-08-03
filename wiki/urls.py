@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, url, include
 from waliki.settings import WALIKI_SLUG_PATTERN
+from waliki.git.views import WhatchangedFeed
 
-from .views import PageCreateView, RequestListView, PageListView, PageRetrieveView, RequestApproveView, VersionView as PageVersionView
+from .views import PageCreateView, RequestListView, PageListView, PageRetrieveView, RequestApproveView, PageVersionView
 
 from .receivers import *
 
@@ -17,6 +18,9 @@ urlpatterns = patterns('waliki.rest.views',
 
 	#urls for approve request
 	url(r'^request/approve/(?P<slug>' + WALIKI_SLUG_PATTERN + ')\.\.(?P<version>[0-9a-f\^]{4,40})$', RequestApproveView.as_view() , name='request_approve'),
+
+	#urls for whatchanged in wiki
+	url(r'^_whatchanged/rss$', WhatchangedFeed(), name='whatchanged_rss'),
 
 	#get page version
 	url(r'^(?P<slug>' + WALIKI_SLUG_PATTERN + ')/version/(?P<version>[0-9a-f\^]{4,40})/$', PageVersionView.as_view(), name='page_version'),

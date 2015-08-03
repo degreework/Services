@@ -36,9 +36,10 @@ class CommentList(generics.ListAPIView):
     """
     View to list all Comment
     """
-
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (AllowAny,)
-    queryset = Comment.objects.all()
+    #authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (AllowAny, )
     serializer_class = ShortCommentSerializer
     paginate_by = 3
+
+    def get_queryset(self):
+        return Comment.objects.filter(parent=self.kwargs['thread'])
