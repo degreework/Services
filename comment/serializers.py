@@ -48,7 +48,7 @@ class ShortCommentSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
 
     def get_author(self, obj):
-        return obj.author.get_full_name()
+        return {'id': obj.author.id, 'name': obj.author.get_full_name()}
 
     class Meta():
         model = Comment
