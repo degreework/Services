@@ -7,3 +7,4 @@ django-slumber==0.8.1
 Markdown==2.6.2
 -e git+https://github.com/rizotas/waliki.git@rest#egg=waliki
 -e git+https://github.com/rizotas/post_framework.git@master#egg=post_framework
+-e git+https://github.com/donberna/django_quiz.git@master#egg=django_quiz

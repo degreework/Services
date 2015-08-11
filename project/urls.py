@@ -22,6 +22,11 @@ from users.urls import routerUser
 from forum.urls import routerAsk, routerAnswer
 from wiki.urls import urlpatterns as wiki_url
 from comment.urls import routerComment
+from comment.urls import routerComment
+from servicio.urls import routerQuiz
+from servicio.urls import routerQuestions
+from servicio.urls import routerCategory
+
 import slumber
 
 urlpatterns = [
@@ -38,7 +43,11 @@ urlpatterns = [
 
     url(r'^API/comment/', include(routerComment, namespace='comment')),
     
-    
+    url(r'^API/quiz/', include(routerQuiz, namespace='quiz')),
+    url(r'^API/quiz/questions/', include(routerQuestions, namespace='questions')),
+    url(r'^API/quiz/category/', include(routerCategory, namespace='category')),
+
+
     url(r'^admin/', include(admin.site.urls)),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^slumber/', include('slumber.urls')),
