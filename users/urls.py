@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from .views import api_root, UserCreateView, UserDetail, UserUpdate, UserList, UserCurrent, UserPassword, RecoveryPassword, RecoveryPassword_confirm, RecoveryPasswordDone
+from .views import api_root, UserCreateView, UserDetail, UserUpdate, UserList, UserCurrent, UserPassword, RecoveryPassword, RecoveryPassword_confirm, RecoveryPasswordDone, PermissionsCurrentUser
 
 
 routerUser = format_suffix_patterns([
@@ -51,6 +51,12 @@ routerUser = format_suffix_patterns([
         r'^all$',
         UserList.as_view(),
         name='user-list'
+    ),
+
+    url(
+        r'^permissions/(?P<token>[0-9A-Za-z_\-]+)$',
+        PermissionsCurrentUser.as_view(),
+        name='permissions-list'
     ),
 
 

@@ -199,3 +199,16 @@ def api_root(request, format=None):
         
         'current': reverse('user-current', request=request, format=format),
     })
+
+
+from oauth2_provider.models import AccessToken
+class PermissionsCurrentUser(APIView):
+    """
+    Retrieve permissions list
+    """
+    #permission_classes = (IsAuthenticated, )
+    permission_classes = (AllowAny, )
+
+    def get(self, request, token):
+        current_token = AccessToken.objects.get(token=token)
+        return Response(current_token.scope)
