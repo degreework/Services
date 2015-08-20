@@ -73,6 +73,13 @@ INSTALLED_APPS = (
 
     'wiki',
 
+    #Evaluations
+    'quiz',
+    'multichoice',
+    'true_false',
+    'essay',
+    'servicio',
+
     
 )
 
