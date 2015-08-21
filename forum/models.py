@@ -13,6 +13,7 @@ class Ask(Thread, Post, models.Model):
     class Meta:
         verbose_name = "Ask"
         verbose_name_plural = "Asks"
+        permissions = (("can_view", "Can view Asks"),)
 
 
 class Answer(Thread, Post, models.Model):

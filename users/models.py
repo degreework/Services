@@ -8,6 +8,8 @@ from degree.models import Degree
 
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.conf import settings
+from project.settings import REGISTRATION_DEFAULT_GROUP_NAME
+from django.contrib.auth.models import Group
 
 
 class UserManager(BaseUserManager):
@@ -36,8 +38,12 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, codigo, first_name, last_name, password=None, plan=None, **extra_fields):
-        return self._create_user(email, codigo, first_name, last_name, password, False, plan,
+        user = self._create_user(email, codigo, first_name, last_name, password, False, plan,
                                  **extra_fields)
+
+        for GROUP in REGISTRATION_DEFAULT_GROUP_NAME:
+            user.groups.add(Group.objects.get(name=GROUP))
+        return user
 
     def create_superuser(self, email, codigo, first_name, last_name, password, **extra_fields):
         return self._create_user( email, codigo, first_name, last_name, password, True,
@@ -100,3 +106,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         #app_label = 'users'
         swappable = 'AUTH_USER_MODEL'
+        permissions = (("can_view", "Can view Users"),)

@@ -6,15 +6,17 @@ Services
   * Gropus
   * Authentication
 
-#To do
 ###Sprint 2
 * Wiki
 * Forum
 * Comments
 
 ### Sprint 3
-* Activities
 * Evaluations
+
+#To do
+### Sprint 3
+* Activities
 
 ### Sprint 4
  * Badges
@@ -34,7 +36,16 @@ ______________________
 
 ###Installation
 
+Step 1
+Create Date base
+    python manage.py syncdb
 
-Create default app for Oauth2
+Step 2
+Create default app for (Oauth2) Authentication
 
-	./manager.py Oauth
+	python manage.py Oauth
+
+Step 3
+Create default Groups
+	
+	python manage.py Group

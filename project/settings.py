@@ -154,10 +154,27 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'users.User'
 
 
+DEFAULT_GROUP_NAME = {
+    "Registered": (
+        "users | user | Can view Users",
+        "users | user | Can change user",
+
+        "waliki | Page | Can add Page",
+        "waliki | Page | Can view page",
+
+        "forum | Ask | Can view Asks",
+        "forum | Ask | Can add Ask",
+        "forum | Ask | Can change Ask",
+
+        ),
+    }
+
+REGISTRATION_DEFAULT_GROUP_NAME = ("Registered", )
+
 
 OAUTH2_PROVIDER = {
     # this is the list of available scopes
-    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+    'SCOPES': {'EDIT_PROFILE': 'Editar perfil', 'write': 'Write scope', 'groups': 'Access to your groups'}
 }
 
 REST_FRAMEWORK = {

@@ -202,6 +202,7 @@ def api_root(request, format=None):
 
 
 from oauth2_provider.models import AccessToken
+from django.contrib.auth.models import Permission
 class PermissionsCurrentUser(APIView):
     """
     Retrieve permissions list
@@ -211,4 +212,17 @@ class PermissionsCurrentUser(APIView):
 
     def get(self, request, token):
         current_token = AccessToken.objects.get(token=token)
-        return Response(current_token.scope)
+        print(current_token.scope)
+
+        permissions = current_token.user.get_all_permissions()
+        print("user", current_token.user)
+        print("permissions", permissions)
+
+        scope = " "
+
+        for p in permissions:
+            scope += p + " "
+
+        print(scope)
+
+        return Response(scope)
