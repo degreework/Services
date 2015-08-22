@@ -20,7 +20,8 @@ class CreateAskSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Ask
-        fields = ('title', 'text')
+        fields = ('title', 'text', 'id')
+        read_only_fields = ('id', )
 
 
 class UpdateAskSelializer(serializers.ModelSerializer):

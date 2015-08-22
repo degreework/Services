@@ -11,6 +11,7 @@ class CreateCommentSerializer(serializers.ModelSerializer):
     Serializer Class to create Comment
     """
     author = serializers.SerializerMethodField()
+    parent = serializers.CharField()
     
     def get_author(self, obj):
         return obj.author.get_full_name()
@@ -19,8 +20,8 @@ class CreateCommentSerializer(serializers.ModelSerializer):
         try:
             user = self.context['request'].user
             thread = validated_data['parent']
-            #from post_framework.models import Thread
-            #thread = Thread.objects.get(pk=thread)
+            from post_framework.models import Thread
+            thread = Thread.objects.get(pk=thread)
             return Comment.objects.create(author=user, parent=thread, text=validated_data['text'])
 
         except IntegrityError, e:
