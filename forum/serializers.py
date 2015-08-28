@@ -66,11 +66,11 @@ class AskDetailSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
 
     def get_author(self, obj):
-        return obj.author.get_full_name()
+        return {'id': obj.author.id, 'name': obj.author.get_full_name()}
 
     class Meta():
         model = Ask
-        fields = ( 'title', 'text', 'added_at', 'author', )
+        fields = ( 'title', 'text', 'added_at', 'author', 'id')
 
 
 """Classes for Answers"""
@@ -83,7 +83,7 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
 
     def get_author(self, obj):
-        return obj.author.get_full_name()
+        return {'id':obj.author.id, 'name':obj.author.get_full_name()}
 
     def validate_ask(self, value):
         try:
@@ -147,7 +147,7 @@ class AnswerShortSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
 
     def get_author(self, obj):
-        return obj.author.get_full_name()
+        return {'id': obj.author.id, 'name': obj.author.get_full_name()}
 
     class Meta():
         model = Answer

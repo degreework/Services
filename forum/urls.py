@@ -22,7 +22,7 @@ routerAsk = format_suffix_patterns([
     url(r'^(?P<pk>[0-9]+)$', routerAskDetail, name='ask-update'),
 
     #detail
-    url(r'^detail/(?P<pk>[0-9]+)/$', AskDetail.as_view({'get': 'retrieve'}), name='ask-detail'),
+    url(r'^detail/(?P<pk>[0-9]+)$', AskDetail.as_view({'get': 'retrieve'}), name='ask-detail'),
 
     #get all asks 
     url(r'^all$', AskList.as_view() , name='ask-list'),
@@ -49,7 +49,7 @@ routerAnswer = format_suffix_patterns([
     url(r'^(?P<pk>[0-9]+)$', routerAnswerDetail, name='answer-update'),
 
     #get all answers
-    url(r'^all/(?P<pk>[0-9]+)/$', AnswerList.as_view() , name='answer-list'),
+    url(r'^all/(?P<pk>[0-9]+)$', AnswerList.as_view() , name='answer-list'),
 
 
     ])

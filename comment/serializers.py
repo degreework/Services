@@ -14,7 +14,7 @@ class CreateCommentSerializer(serializers.ModelSerializer):
     parent = serializers.CharField()
     
     def get_author(self, obj):
-        return obj.author.get_full_name()
+        return {'id': obj.author.id, 'name': obj.author.get_full_name()}
 
     def create(self, validated_data):
         try:
