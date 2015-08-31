@@ -59,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return '/'.join(['photos', u'%s' % (instance.id), out_file])
 
 
-    photo = ThumbnailerImageField(upload_to=_content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True)
+    photo = ThumbnailerImageField(upload_to=_content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True, null=True)
     first_name = models.CharField(max_length=20, blank=False)
     last_name = models.CharField(max_length=20, blank=False)
 
