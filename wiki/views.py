@@ -75,3 +75,19 @@ class RequestApproveView(generics.GenericAPIView):
             return Response(data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist, e:
             raise Http404
+
+
+
+class HistoryListView(ListView):
+    """
+    A simple View to list all Request
+    """
+    serializer_class = RequestSerializer
+    #permission_classes = (permissions.AllowAny, )
+
+    def get_queryset(self):
+        return Request.objects.filter(approved=True)
+
+    def get(self, request, *args, **kwargs):
+        pages = self.get_queryset()
+        return Response(self.get_serializer(pages, many=True).data)

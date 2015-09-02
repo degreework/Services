@@ -57,7 +57,7 @@ class PageCreateSerializer(serializers.ModelSerializer):
         
         #Create new reques
         commit = json.loads(self.get_extra_data(self.instance))['parent']
-        page_request.send(sender=Request, page=page, commit=commit)
+        page_request.send(sender=Request, page=page, commit=commit, author=self.context['request'].user)
 
 
     class Meta():
@@ -88,16 +88,34 @@ class PageRetrieveSerializer(serializers.ModelSerializer):
 class RequestSerializer(serializers.ModelSerializer):
 
     page = serializers.SerializerMethodField()
+    review = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
 
     def get_page(self, obj, *args, **kwargs):
         data = {
             'title': obj.page.title,
             'slug': obj.page.slug
         }
+        return data
+
+    def get_review(self, obj, *args, **kwargs):
+        if obj.approved is True:
+            data = {
+                'approved': {'is': obj.approved, 'approved_at': obj.approved_at},
+                'reviewer' :{
+                    'id': obj.approved_by.id,
+                    'fullname': obj.approved_by.get_full_name() 
+                    }
+                }
+        else:
+            data = {'approved': {'is': obj.approved}}
 
         return data
 
+    def get_author(self, obj, *args, **kwargs):
+        return {'id': obj.created_by.id, 'fullname': obj.created_by.get_full_name(), 'created_at': obj.created_at}
+
     class Meta():
         model = Request
-        fields = ('id', 'page', 'commit', 'created', 'approved', 'approved_by' )
+        fields = ('id', 'page', 'commit', 'review', 'author' )
         read_only_fields = fields

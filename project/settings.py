@@ -35,7 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sessions.backends.signed_cookies',
+    #'django.contrib.sessions.backends.signed_cookies',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
