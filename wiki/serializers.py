@@ -1,3 +1,4 @@
+from waliki.settings import WALIKI_DEFAULT_MARKUP
 from waliki import views
 from waliki.models import Page
 from waliki.signals import page_preedit
@@ -33,7 +34,11 @@ class PageCreateSerializer(serializers.ModelSerializer):
     def save(self, *args, **kwargs):
         """call to waliki new function""" 
         #call waliki new function
-        response = views.new(self.context['request']._request, *args, **kwargs)
+        mutable = self.context['request'].POST._mutable
+        self.context['request'].POST._mutable = True
+        self.context['request'].POST['markup'] = WALIKI_DEFAULT_MARKUP
+        self.context['request'].POST._mutable = mutable
+        response = views.new(self.context['request']._request,*args, **kwargs)
 
 
         #if 'extra_data' no comming in payload
@@ -41,6 +46,7 @@ class PageCreateSerializer(serializers.ModelSerializer):
             mutable = self.context['request'].POST._mutable
             self.context['request'].POST._mutable = True
             self.context['request'].POST['extra_data'] = self.get_extra_data(self.instance)
+            ##self.context['request'].POST['markup'] = "markdown"
             self.context['request'].POST._mutable = mutable
 
         kwargs['slug'] = self.context['request'].POST['slug']
@@ -57,7 +63,7 @@ class PageCreateSerializer(serializers.ModelSerializer):
     class Meta():
         model = Page
         fields = ('id', 'title', 'slug', 'raw', 'markup' ,'message', 'extra_data', )
-        read_only_fields = ('id', )
+        read_only_fields = ('id', 'markup',)
 
 
 class PageRetrieveSerializer(serializers.ModelSerializer):
