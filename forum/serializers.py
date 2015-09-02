@@ -103,8 +103,8 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Answer
-        fields = ( 'ask', 'text', 'author', 'added_at')
-        read_only_fields = ( 'added_at', 'author', )
+        fields = ( 'id', 'ask', 'text', 'author', 'added_at')
+        read_only_fields = ( 'id', 'added_at', 'author', )
 
 
 class AnswerUpdateSelializer(serializers.ModelSerializer):
