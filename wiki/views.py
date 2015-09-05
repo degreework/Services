@@ -5,6 +5,7 @@ from waliki.rest.views import (
         PageCreateView as CreateView,
         PageListView as ListView,
         PageRetrieveView as RetrieveView,
+        PageEditView as PageEdit,
         PageVersionView
     )
 
@@ -15,7 +16,8 @@ from .models import Request
 from .serializers import RequestSerializer
 from .serializers import (
         PageCreateSerializer as CreateSer,
-        PageRetrieveSerializer as RetrieveSer
+        PageRetrieveSerializer as RetrieveSer,
+        PageEditSerializer as PageEditSer
     )
 
 
@@ -25,6 +27,10 @@ class PageCreateView(CreateView):
 
 class PageRetrieveView(RetrieveView):
     serializer_class = RetrieveSer
+
+class PageEditView(PageEdit):
+    serializer_class = PageEditSer
+        
 
 
 class RequestListView(ListView):
