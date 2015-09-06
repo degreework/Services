@@ -41,7 +41,7 @@ class ShortUserSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = User
-        fields = ('id', 'thumb', 'first_name', 'last_name')
+        fields = ('id', 'thumb', 'first_name', 'last_name', 'email', 'codigo', 'plan')
 
     def get_thumb(self, object):
         try:
