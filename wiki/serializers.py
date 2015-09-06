@@ -66,6 +66,50 @@ class PageCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'markup',)
 
 
+class PageEditSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer Class to edit a Page.
+    """
+    raw = serializers.CharField()
+    message = serializers.CharField(write_only=True)
+    extra_data = serializers.SerializerMethodField()
+
+    def get_extra_data(self, page):
+        form_extra_data = {}
+        receivers_responses = page_preedit.send(sender=views.edit, page=page)
+        for r in receivers_responses:
+            if isinstance(r[1], dict) and 'form_extra_data' in r[1]:
+                form_extra_data.update(r[1]['form_extra_data'])
+        return json.dumps(form_extra_data)
+
+
+    def save(self, *args, **kwargs):
+        """call to waliki edit function"""
+        #call waliki new function        
+        #if 'extra_data' no comming in payload
+        if not self.context['request'].POST.get('extra_data', False):
+            mutable = self.context['request'].POST._mutable
+            self.context['request'].POST._mutable = True
+            self.context['request'].POST['extra_data'] = self.get_extra_data(self.instance)
+            self.context['request'].POST._mutable = mutable
+
+        kwargs['slug'] = self.instance.slug
+
+        response = views.edit(self.context['request'],*args, **kwargs)
+
+        page = Page.objects.filter(slug=kwargs['slug'])[0]
+
+        #Create new reques
+        commit = json.loads(self.get_extra_data(self.instance))['parent']
+        page_request.send(sender=Request, page=page, commit=commit, author=self.context['request'].user)
+
+
+    class Meta():
+        model = Page
+        fields = ('id', 'title', 'slug', 'raw', 'markup' ,'message', 'extra_data', )
+        read_only_fields = ('id', 'slug', )
+
+
 class PageRetrieveSerializer(serializers.ModelSerializer):
     """
     Serializer Class to retrieve a Page.
@@ -75,9 +119,7 @@ class PageRetrieveSerializer(serializers.ModelSerializer):
     def get_date(self, obj, *args, **kwargs):
         print obj.slug
         print Request.objects.filter(page=obj)
-
         return ''
-
 
     class Meta():
         model = Page

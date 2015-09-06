@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url, include
 from waliki.settings import WALIKI_SLUG_PATTERN
 from waliki.git.views import WhatchangedFeed
 
-from .views import PageCreateView, RequestListView, PageListView, PageRetrieveView, RequestApproveView, PageVersionView, HistoryListView
+from .views import PageCreateView, RequestListView, PageListView, PageRetrieveView, RequestApproveView, PageVersionView, HistoryListView, PageEditView
 
 from .receivers import *
 
@@ -12,6 +12,9 @@ urlpatterns = patterns('waliki.rest.views',
 
 	#urls for wiki create
 	url(r'^new$', PageCreateView.as_view() , name='page_new'),
+
+	#urls for wiki create
+	url(r'^(?P<slug>' + WALIKI_SLUG_PATTERN + ')/edit$', PageEditView.as_view() , name='page_edit'),
 
 	#urls for request
 	url(r'^request/all$', RequestListView.as_view() , name='request_list'),
