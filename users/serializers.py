@@ -6,17 +6,37 @@ class CreateUserSerializer(serializers.ModelSerializer):
     """
     Serializer Class to create users
     """
-
+    
     def save(self):
-        user = User.objects.create_user(
-            self.validated_data['email'],
-            self.validated_data['codigo'],
-            self.validated_data['first_name'],
-            self.validated_data['last_name'],
-            self.validated_data['password'],
-            self.validated_data.get('plan', None)
-            )
-        return user
+        if self.validated_data['plan'] == None:
+            user = User.objects.create_user(
+                self.validated_data['email'],
+                self.validated_data['codigo'],
+                self.validated_data['first_name'],
+                self.validated_data['last_name'],
+                self.validated_data['password'],
+                #self.validated_data['plan']
+                #self.validated_data.get('plan', None)
+                )
+            return user
+        else:
+            user = User.objects.create_user(
+                self.validated_data['email'],
+                self.validated_data['codigo'],
+                self.validated_data['first_name'],
+                self.validated_data['last_name'],
+                self.validated_data['password'],
+                self.validated_data['plan']
+                )
+            return user
+
+    
+    """
+    def create(self, validated_data):
+        return User.objects.create(**validated_data)
+    """
+
+
 
     class Meta():
         model = User
