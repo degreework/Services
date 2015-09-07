@@ -2,6 +2,7 @@ from django.db import models
 
 from users.models import User
 from waliki.models import Page
+from post_framework.models import Thread
 
 import datetime
 
@@ -35,3 +36,8 @@ class Request(models.Model):
         #db_table = 'wiki_request'
         verbose_name = "Request"
         verbose_name_plural = "Requests"
+
+
+class pageComments(Thread, models.Model):
+    page = models.ForeignKey(Page)
+
