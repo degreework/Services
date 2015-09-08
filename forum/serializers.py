@@ -49,7 +49,7 @@ class ShortAskSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
 
     def get_author(self, obj):
-        return obj.author.get_full_name()
+        return {'id': obj.author.id, 'name': obj.author.get_full_name()}
 
     def get_count(self,obj):
         return Answer.objects.filter(ask=obj).count()
