@@ -69,16 +69,24 @@ class RequestApproveView(generics.GenericAPIView):
     #Add permissions
     #permission_classes = (permissions.AllowAny, )
 
-    def get(self, request, slug, version, *args, **kwargs):
+    def post(self, request, slug, version, *args, **kwargs):
+        print("rejected")
+        print(request.POST)
         try:
-            Request.objects.get(commit=version).approve_request(request.user)
-            data = {
-                'slug': slug,
-                'version': version,
-                'msg':'Approved',
-                'approved_by': request.user.get_full_name()
-            }
-            return Response(data, status=status.HTTP_200_OK)
+            if request.POST['action'] == "approved":
+                Request.objects.get(commit=version).approve_request(request.user)
+                msg = {'msg': 'Contenido aprobado'}
+                data = {
+                    'slug': slug,
+                    'version': version,
+                    'msg':'Approved',
+                    'approved_by': request.user.get_full_name()
+                }
+                return Response((msg,data), status=status.HTTP_200_OK)
+            else:
+                Request.objects.get(commit=version).delete()
+                msg = {'msg': 'Contenido rechazado'}
+                return Response(msg, status.HTTP_200_OK)
         except ObjectDoesNotExist, e:
             raise Http404
 
