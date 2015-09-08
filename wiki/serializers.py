@@ -89,7 +89,13 @@ class PageEditSerializer(serializers.HyperlinkedModelSerializer):
 
     def save(self, *args, **kwargs):
         """call to waliki edit function"""
-        #call waliki new function        
+
+        mutable = self.context['request'].POST._mutable
+        self.context['request'].POST._mutable = True
+        self.context['request'].POST['markup'] = WALIKI_DEFAULT_MARKUP
+        self.context['request'].POST._mutable = mutable
+
+
         #if 'extra_data' no comming in payload
         if not self.context['request'].POST.get('extra_data', False):
             mutable = self.context['request'].POST._mutable
@@ -128,8 +134,8 @@ class PageRetrieveSerializer(serializers.ModelSerializer):
 
 
     def get_date(self, obj, *args, **kwargs):
-        print obj.slug
-        print Request.objects.get(page=obj)
+        #print obj.slug
+        #print Request.objects.filter(page=obj)
         return ''
 
     class Meta():

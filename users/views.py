@@ -2,6 +2,7 @@
 from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
 from django.http import Http404
+from django import middleware
 
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -12,7 +13,13 @@ from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasS
 
 from .models import User
 from .permissions import IsSelf
-from .serializers import CreateUserSerializer, UpdateUserSelializer, ShortUserSerializer, UpdatePasswordUserSelializer, RecoveryPasswordSelializer
+from .serializers import (
+        CreateUserSerializer,
+        UpdateUserSelializer,
+        ShortUserSerializer,
+        UpdatePasswordUserSelializer,
+        RecoveryPasswordSelializer,
+        RecoveryPasswordConfirmSelializer)
 
 
 class UserCreateView(viewsets.ModelViewSet):
@@ -101,90 +108,7 @@ class UserPassword(APIView):
         return Response(response_data, status=response_status)
 
 
-
-## NO WORKS
-from django.core.mail import send_mail
-
-# Import the built-in password reset view and password reset confirmation view.
-from django.contrib.auth.views import password_reset, password_reset_confirm
-from django.template.context_processors import csrf
-
-class RecoveryPassword(APIView):
-    """
-    API endpoint for crecovery a User password
-    """
-    serializer_class = RecoveryPasswordSelializer
-    permission_classes = (AllowAny, )
-
-    def get(self, request, *args, **kwargs):
-        return Response(csrf(request))
-    
-
-    def post(self, request, *args, **kwargs):
-        print request.POST
-        """
-        send_mail(
-            'Important Advice',
-            'You has been hacked by an anonymous user at facebook.com, please go into facebook.com and changes right now your current password',
-            'app@gmail.com',
-            ['miguel.angel.bernal@correounivalle.edu.co'],
-            fail_silently=False
-            )
-        """
-        response = password_reset(
-            request,
-            template_name='reset.html',
-            extra_context = request.POST,
-            email_template_name='reset_email.html',
-            subject_template_name='reset_subject.txt',
-            post_reset_redirect=reverse('recovery-password'))
-        print response
-        print response.status_code
-
-        if 302 == response.status_code:
-            email = request.POST.get('email', False)
-            print response
-            return Response({'email':email}, status=status.HTTP_200_OK)
-
-        return Response({}, status=status.HTTP_400_BAD_REQUEST)
-
-
-from django.views.decorators.debug import sensitive_post_parameters
-
-
-class RecoveryPassword_confirm(APIView):
-    """
-    API endpoint for recovery a User password
-    """
-    serializer_class = UpdatePasswordUserSelializer
-    permission_classes = (AllowAny, )
-    
-    def post(self, request, uidb64=None, token=None):
-        print request.POST
-        print uidb64
-        print token
-        response = password_reset_confirm(
-            request,
-            template_name='reset.html',
-            uidb64=uidb64,
-            token=token,
-            post_reset_redirect=reverse('password_reset_done'))
-
-        print response
-        
-        return Response({}, status=status.HTTP_200_OK)
-
-
-class RecoveryPasswordDone(APIView):
-    """
-    API endpoint for recovery a User password
-    """
-    permission_classes = (AllowAny, )
-    
-    def get(request, *args, **kwargs):
-        return Response({'msg': 'Password changed'}, status=status.HTTP_200_OK)
-
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
@@ -212,17 +136,130 @@ class PermissionsCurrentUser(APIView):
 
     def get(self, request, token):
         current_token = AccessToken.objects.get(token=token)
-        print(current_token.scope)
+        #print(current_token.scope)
 
         permissions = current_token.user.get_all_permissions()
-        print("user", current_token.user)
-        print("permissions", permissions)
-
+        #print("user", current_token.user)
+        #print("permissions", permissions)
         scope = " "
-
         for p in permissions:
             scope += p + " "
 
-        print(scope)
-
+        #print(scope)
         return Response(scope)
+
+
+# Import the built-in password reset view and password reset confirmation view.
+from django.contrib.auth.views import password_reset, password_reset_confirm
+from django.template.context_processors import csrf
+
+class RecoveryPassword(APIView):
+    """
+    API endpoint for crecovery a User password
+    """
+    serializer_class = RecoveryPasswordSelializer
+    permission_classes = (AllowAny, )
+
+    def get(self, request, *args, **kwargs):
+        print("GET")
+        c = middleware.csrf.get_token(request)
+        print(c)
+        return Response({'csrf_token':c})
+    
+
+    def post(self, request, *args, **kwargs):
+        print request.POST
+        """
+        send_mail(
+            'Important Advice',
+            'You has been hacked by an anonymous user at facebook.com, please go into facebook.com and changes right now your current password',
+            'app@gmail.com',
+            ['miguel.angel.bernal@correounivalle.edu.co'],
+            fail_silently=False
+            )
+        """
+        response = password_reset(request)
+        return response
+        
+
+@api_view(('GET',))
+@permission_classes((AllowAny, ))
+def password_reset_done(request):
+    return Response(
+        {
+        'msg':
+        """Le hemos enviado por email las instrucciones para restablecer la contraseña, si es que existe una cuenta con la dirección electrónica que indicó. Debería recibirlas en breve.
+Si no recibe un correo, por favor asegúrese que ha introducido la dirección de correo con la que se registró y verifique su carpeta de spam."""
+        }
+    )
+
+@api_view(('GET',))
+@permission_classes((AllowAny, ))
+def password_reset_complete(request):
+    return Response(
+        {
+        'msg': "Su contraseña ha sido establecida. Ahora puede seguir adelante e iniciar sesión."
+        }
+    )
+
+from django.views.decorators.debug import sensitive_post_parameters
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
+
+from rest_framework.serializers import ValidationError
+from django.contrib.auth import get_user_model
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+
+
+class RecoveryPassword_confirm(APIView):
+    """
+    API endpoint for recovery a User password
+    """
+    serializer_class = RecoveryPasswordConfirmSelializer
+    permission_classes = (AllowAny, )
+
+    def get(self, request, *args, **kwargs):
+        print("GET")
+        c = middleware.csrf.get_token(request)
+        print(c)
+        return Response(c)
+    
+    #@method_decorator(sensitive_post_parameters())
+    #@csrf_protect
+    #@method_decorator(csrf_protect)
+    #@sensitive_post_parameters()
+    def post(self, request, uidb64=None, token=None):
+        print request.POST
+        print uidb64
+        print token
+        if request.POST.get('new_password1') != request.POST.get('new_password2'):
+            raise ValidationError("Passwords don't match")
+
+
+        """
+        View that checks the hash in a password reset link and presents a
+        form for entering a new password.
+        """
+        UserModel = get_user_model()
+        assert uidb64 is not None and token is not None  # checked by URLconf
+        try:
+            # urlsafe_base64_decode() decodes to bytestring on Python 3
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = UserModel._default_manager.get(pk=uid)
+        except (UserModel.DoesNotExist):
+            user = None
+
+
+        # si el link aún es válido
+        if user is not None and default_token_generator.check_token(user, token):
+            response = password_reset_confirm(
+                request,
+                uidb64=uidb64,
+                token=token)
+            return response
+        else:
+            return Response({'msg': "El enlace de restablecimiento de contraseña era invalido, seguramente por haberse utilizado previamente. Por favor, solicite un nuevo restablecimiento de contraseña."})
+        

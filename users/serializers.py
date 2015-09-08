@@ -88,3 +88,11 @@ class RecoveryPasswordSelializer(serializers.Serializer):
     Serializer class to recovery password User
     """
     email = serializers.EmailField()
+
+
+class RecoveryPasswordConfirmSelializer(serializers.Serializer):
+    """
+    Serializer class to recovery password User
+    """
+    new_password1 = serializers.CharField(style={'input_type': 'password'})
+    new_password2 = serializers.CharField(style={'input_type': 'password'})
