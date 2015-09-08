@@ -7,7 +7,7 @@ from rest_framework import serializers, request
 
 import json
 
-from .models import Request
+from .models import Request, pageComments
 from .signals import page_request
 
 class PageCreateSerializer(serializers.ModelSerializer):
@@ -54,6 +54,9 @@ class PageCreateSerializer(serializers.ModelSerializer):
         response = views.edit(self.context['request'],*args, **kwargs)
         ##
         page = Page.objects.filter(slug=kwargs['slug'])[0]
+
+        # para los comentarios
+        pageComments.objects.create(page = page)
         
         #Create new reques
         commit = json.loads(self.get_extra_data(self.instance))['parent']
@@ -121,6 +124,13 @@ class PageRetrieveSerializer(serializers.ModelSerializer):
     Serializer Class to retrieve a Page.
     """
     date = serializers.SerializerMethodField()
+    id_thread = serializers.SerializerMethodField()
+
+    def get_id_thread(self, obj, *args, **kwargs):
+        print 'get_id_thread'
+        print pageComments.objects.get(page=obj).id
+        return pageComments.objects.get(page=obj).id
+
 
     def get_date(self, obj, *args, **kwargs):
         #print obj.slug
@@ -129,7 +139,7 @@ class PageRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Page
-        fields = ('id', 'title', 'slug', 'raw', 'markup', 'date' )
+        fields = ('id', 'title', 'slug', 'raw', 'markup', 'date', 'id_thread' )
         read_only_fields = fields    
 
 

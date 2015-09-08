@@ -2,7 +2,20 @@ from django.conf.urls import patterns, url
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from .views import api_root, UserCreateView, UserDetail, UserUpdate, UserList, UserCurrent, UserPassword, RecoveryPassword, RecoveryPassword_confirm, RecoveryPasswordDone, PermissionsCurrentUser
+from .views import (
+    api_root,
+    UserCreateView,
+    UserDetail,
+    UserUpdate,
+    UserList,
+    UserCurrent,
+    UserPassword,
+    RecoveryPassword,
+    password_reset_done,
+    password_reset_complete,
+    RecoveryPassword_confirm,
+    #RecoveryPasswordDone,
+    PermissionsCurrentUser )
 
 
 routerUser = format_suffix_patterns([
@@ -59,16 +72,28 @@ routerUser = format_suffix_patterns([
         name='permissions-list'
     ),
 
-
-    #NO WORKS
-
-    #confirm password
-    url(r'^recovery/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$', RecoveryPassword_confirm.as_view() , name='password_reset_confirm'),
-
-    #recovery password
-    url(r'^recovery$', RecoveryPassword.as_view() , name='recovery-password'),
+    #step 1
+    url(r'^password/reset/$', 
+        #'django.contrib.auth.views.password_reset', 
+        RecoveryPassword.as_view(),
+        #{'post_reset_redirect' : '/API/users/password/reset/done/'},
+        name="password_reset"),
     
-    #recovery done
-    url(r'^recovery/done$', RecoveryPasswordDone.as_view() , name='password_reset_done'),
+    #step 2
+    url(r'^password/reset/done/$',
+        password_reset_done,
+        name="password_reset_done"),
 
+    #step 3
+    url(r'^password/reset/(?P<uidb64>[0-9A-Za-z]+)/(?P<token>.+)$', 
+        #'django.contrib.auth.views.password_reset_confirm', 
+         RecoveryPassword_confirm.as_view(),
+        #{'post_reset_redirect' : '/API/users/password/done/'},
+        name='password_reset_confirm'),
+    
+    #step 4
+    url(r'^password/done/$',
+        #'django.contrib.auth.views.password_reset_complete',
+        password_reset_complete,
+        name='password_reset_complete'),
     ])
