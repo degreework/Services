@@ -15,6 +15,15 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+####################
+#site settings
+SITE_URL='http://127.0.0.1:8080/'
+SITE_NAME='Back-end'
+
+#client site settings
+SITE_CLIENT_URL = "http://127.0.0.1:8000"
+SITE_CLIENT_NAME = "Front-end"
+SITE_CLIENT_URL_CONFIRM_PASSWORD_RECOVERY = SITE_CLIENT_URL + "/password/reset/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -104,7 +113,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates', os.path.join(BASE_DIR, 'users', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -256,3 +265,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'knowahora@gmail.com'
 EMAIL_HOST_PASSWORD = 'Gp4ssm41L'
+
