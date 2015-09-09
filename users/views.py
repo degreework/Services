@@ -153,6 +153,7 @@ class PermissionsCurrentUser(APIView):
 from django.contrib.auth.views import password_reset, password_reset_confirm
 from django.template.context_processors import csrf
 
+
 class RecoveryPassword(APIView):
     """
     API endpoint for crecovery a User password
@@ -166,19 +167,12 @@ class RecoveryPassword(APIView):
         print(c)
         return Response({'csrf_token':c})
     
-
     def post(self, request, *args, **kwargs):
-        print request.POST
-        """
-        send_mail(
-            'Important Advice',
-            'You has been hacked by an anonymous user at facebook.com, please go into facebook.com and changes right now your current password',
-            'app@gmail.com',
-            ['miguel.angel.bernal@correounivalle.edu.co'],
-            fail_silently=False
-            )
-        """
-        response = password_reset(request)
+        print ("POST")
+        print(request.get_host())
+        response = password_reset(
+            request,
+            email_template_name='password_reset_email.html')
         return response
         
 
@@ -225,7 +219,7 @@ class RecoveryPassword_confirm(APIView):
         print("GET")
         c = middleware.csrf.get_token(request)
         print(c)
-        return Response(c)
+        return Response({'csrf_token':c})
     
     #@method_decorator(sensitive_post_parameters())
     #@csrf_protect
