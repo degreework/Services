@@ -5,8 +5,10 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 from degree.models import Degree
 
-
+import os
 from easy_thumbnails.fields import ThumbnailerImageField
+
+from project.settings import MEDIA_ROOT
 from django.conf import settings
 from project.settings import REGISTRATION_DEFAULT_GROUP_NAME
 from django.contrib.auth.models import Group
@@ -55,8 +57,25 @@ class User(AbstractBaseUser, PermissionsMixin):
     Class User, define a user
     """ 
     def _content_file_name(instance, filename):
+        #generate new path
         out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )
-        return '/'.join(['photos', u'%s' % (instance.id), out_file])
+        path = '/'.join(['photos', u'%s' % (instance.id), out_file])
+
+        #remove current files (photos)
+        ### WARNING ####
+        #this way is not secure, but easy-thumbnails 2.2 not have a functional delete method
+        try:
+            old_path = MEDIA_ROOT + path
+            dir = os.path.dirname(old_path) + '/'     
+
+            for f in os.listdir(dir):
+                file = dir + f
+                os.remove(file)
+        except Exception(e):
+            print(e)
+        # end remove
+        
+        return path
 
 
     photo = ThumbnailerImageField(upload_to=_content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True, null=True)

@@ -63,6 +63,11 @@ class PageCreateSerializer(serializers.ModelSerializer):
         commit = json.loads(self.get_extra_data(self.instance))['parent']
         page_request.send(sender=Request, page=page, commit=commit, author=self.context['request'].user)
 
+        #if user have permissions, then automatic aprove the request
+        if self.context['request'].user.has_perm( 'wiki.can_approve_request' ):
+            request = Request.objects.filter(commit=commit)[0]
+            request.approve_request(self.context['request'].user)
+
 
     class Meta():
         model = Page
@@ -128,8 +133,6 @@ class PageRetrieveSerializer(serializers.ModelSerializer):
     id_thread = serializers.SerializerMethodField()
 
     def get_id_thread(self, obj, *args, **kwargs):
-        print 'get_id_thread'
-        print pageComments.objects.get(page=obj).id
         return pageComments.objects.get(page=obj).id
 
 
@@ -178,3 +181,33 @@ class RequestSerializer(serializers.ModelSerializer):
         model = Request
         fields = ('id', 'page', 'commit', 'review', 'author' )
         read_only_fields = fields
+
+
+
+class PublicPageSerializer(RequestSerializer):
+
+    def get_page(self, obj, *args, **kwargs):
+        data = {
+            'title': obj.request.page.title,
+            'slug': obj.request.page.slug
+        }
+        return data
+
+    def get_review(self, obj, *args, **kwargs):
+        if obj.request.approved is True:
+            data = {
+                'approved': {'is': obj.request.approved, 'approved_at': obj.request.approved_at},
+                'reviewer' :{
+                    'id': obj.request.approved_by.id,
+                    'fullname': obj.request.approved_by.get_full_name() 
+                    }
+                }
+        else:
+            data = {'approved': {'is': obj.request.approved}}
+
+        return data
+
+    def get_author(self, obj, *args, **kwargs):
+        return {'id': obj.request.created_by.id, 'fullname': obj.request.created_by.get_full_name(), 'created_at': obj.request.created_at}
+
+

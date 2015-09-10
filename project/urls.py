@@ -27,7 +27,6 @@ from servicio.urls import routerQuiz
 from servicio.urls import routerQuestions
 from servicio.urls import routerCategory
 
-import slumber
 
 urlpatterns = [
     url(r'^API/degree/', include(routerDegree, namespace='dregree')),
