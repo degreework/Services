@@ -104,7 +104,6 @@ class UserPassword(APIView):
                 response_status = status.HTTP_200_OK
             else:
                 response_data = "Contraseña incorrecta"
-        print response_data
         return Response(response_data, status=response_status)
 
 
@@ -226,9 +225,6 @@ class RecoveryPassword_confirm(APIView):
     #@method_decorator(csrf_protect)
     #@sensitive_post_parameters()
     def post(self, request, uidb64=None, token=None):
-        print request.POST
-        print uidb64
-        print token
         if request.POST.get('new_password1') != request.POST.get('new_password2'):
             raise ValidationError("Passwords don't match")
 

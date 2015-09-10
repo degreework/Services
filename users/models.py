@@ -71,7 +71,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             for f in os.listdir(dir):
                 file = dir + f
                 os.remove(file)
-        except Exception, e:
+        except Exception(e):
             print(e)
         # end remove
         
