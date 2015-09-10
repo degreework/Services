@@ -12,12 +12,13 @@ from waliki.rest.views import (
 from rest_framework.response import Response
 from rest_framework import generics, permissions, status
 
-from .models import Request
+from .models import Request, PublicPage
 from .serializers import RequestSerializer
 from .serializers import (
         PageCreateSerializer as CreateSer,
         PageRetrieveSerializer as RetrieveSer,
-        PageEditSerializer as PageEditSer
+        PageEditSerializer as PageEditSer,
+        PublicPageSerializer
     )
 
 
@@ -50,12 +51,12 @@ class RequestListView(ListView):
 
 class PageListView(ListView):
     """
-    A simple View to list all Pages
+    A simple View to list all (Public) Pages
     """
-    serializer_class = RequestSerializer
+    serializer_class = PublicPageSerializer
 
     def get_queryset(self):
-        return Request.objects.filter(approved=True)
+        return PublicPage.objects.all()
 
     def get(self, request, *args, **kwargs):
         pages = self.get_queryset()

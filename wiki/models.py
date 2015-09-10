@@ -29,6 +29,8 @@ class Request(models.Model):
         self.approved_by = user
         self.approved_at = datetime.datetime.now()
         self.save()
+        PublicPage.objects.filter(request__page=self.page).delete()
+        PublicPage(request=self).save()
         return True
     
     class Meta:
@@ -36,8 +38,16 @@ class Request(models.Model):
         #db_table = 'wiki_request'
         verbose_name = "Request"
         verbose_name_plural = "Requests"
+        permissions = (("can_approve_request", "Can approve requests"),)
 
 
 class pageComments(Thread, models.Model):
     page = models.ForeignKey(Page)
+
+
+class PublicPage(models.Model):
+    """
+    Contains all Published wiki Pages
+    """
+    request = models.ForeignKey(Request)
 
