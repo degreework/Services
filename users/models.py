@@ -65,12 +65,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         ### WARNING ####
         #this way is not secure, but easy-thumbnails 2.2 not have a functional delete method
         try:
+            
             old_path = MEDIA_ROOT + path
+            print old_path
+            
             dir = os.path.dirname(old_path) + '/'     
-
-            for f in os.listdir(dir):
-                file = dir + f
-                os.remove(file)
+            if os.path.exists(dir):
+                for f in os.listdir(dir):
+                    file = dir + f
+                    os.remove(file)
         except Exception(e):
             print(e)
         # end remove
