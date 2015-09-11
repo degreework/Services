@@ -3,6 +3,9 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from django.core.management import call_command
+
+
 from users.models import User
 
 class CreateTests(APITestCase):
@@ -13,6 +16,9 @@ class CreateTests(APITestCase):
     plan = ''
     password = 'PassWord0'
 
+    def setUp(self):
+        call_command('Group')
+        
     def test_create_user_only_email(self):
         """
         Check User can't be registered only with email field
@@ -48,6 +54,7 @@ class RetrieveTests(APITestCase):
     plan = None
 
     def setUp(self):
+        call_command('Group')
         User.objects.create_user(
             email=self.email,
             first_name=self.first_name,
@@ -80,7 +87,9 @@ class UpdateTests(APITestCase):
     password = 'PassWord0'
     plan = None
 
+
     def setUp(self):
+        call_command('Group')
         User.objects.create_user(
             email=self.email,
             first_name=self.first_name,
@@ -126,6 +135,7 @@ class UpdateTests(APITestCase):
         
 
 class ListTests(APITestCase):
+
 
     def test_list_no_auth(self):
         """
