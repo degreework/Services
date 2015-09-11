@@ -22,6 +22,7 @@ class PageCreateSerializer(serializers.ModelSerializer):
 
     def get_extra_data(self, obj, *args, **kwargs):
         form_extra_data = {}
+        print self.context['request'].POST.get('slug')
         page = Page.objects.get(slug=self.context['request'].POST.get('slug'))
 
         receivers_responses = page_preedit.send(sender=views.edit, page=page)
