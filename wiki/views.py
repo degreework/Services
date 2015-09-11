@@ -88,7 +88,7 @@ class RequestApproveView(generics.GenericAPIView):
                 Request.objects.get(commit=version).delete()
                 msg = {'msg': 'Contenido rechazado'}
                 return Response(msg, status.HTTP_200_OK)
-        except ObjectDoesNotExist, e:
+        except ObjectDoesNotExist(e):
             raise Http404
 
 

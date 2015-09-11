@@ -24,7 +24,7 @@ class CreateCommentSerializer(serializers.ModelSerializer):
             thread = Thread.objects.get(pk=thread)
             return Comment.objects.create(author=user, parent=thread, text=validated_data['text'])
 
-        except IntegrityError, e:
+        except IntegrityError (e):
             raise PermissionDenied
 
     class Meta():
