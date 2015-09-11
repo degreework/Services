@@ -59,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def _content_file_name(instance, filename):
         #generate new path
         out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )
-        path = '/'.join(['photos', u'%s' % (instance.id), out_file])
+        path = '/'.join([u'u_%s' % (instance.id), 'photos',  out_file])
 
         #remove current files (photos)
         ### WARNING ####
@@ -121,6 +121,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         return self.__str__()
+
+    def generate_folder_path(self):
+        return (u'u_%s' % (self.id))
 
     class Meta:
         #app_label = 'users'
