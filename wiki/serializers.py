@@ -170,10 +170,10 @@ class RequestSerializer(serializers.ModelSerializer):
     def get_review(self, obj, *args, **kwargs):
         if obj.approved is True:
             data = {
-                'approved': {'is': obj.approved, 'approved_at': obj.approved_at},
+                'approved': {'is': obj.approved, 'approved_at': obj.checked_at},
                 'reviewer' :{
-                    'id': obj.approved_by.id,
-                    'fullname': obj.approved_by.get_full_name() 
+                    'id': obj.checked_by.id,
+                    'fullname': obj.checked_by.get_full_name() 
                     }
                 }
         else:
@@ -203,10 +203,10 @@ class PublicPageSerializer(RequestSerializer):
     def get_review(self, obj, *args, **kwargs):
         if obj.request.approved is True:
             data = {
-                'approved': {'is': obj.request.approved, 'approved_at': obj.request.approved_at},
+                'approved': {'is': obj.request.approved, 'approved_at': obj.request.checked_at},
                 'reviewer' :{
-                    'id': obj.request.approved_by.id,
-                    'fullname': obj.request.approved_by.get_full_name() 
+                    'id': obj.request.checked_by.id,
+                    'fullname': obj.request.checked_by.get_full_name() 
                     }
                 }
         else:

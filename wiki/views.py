@@ -83,7 +83,7 @@ class RequestListView(ListView):
     #permission_classes = (permissions.AllowAny, )
 
     def get_queryset(self):
-        return Request.objects.filter(approved=False)
+        return Request.objects.filter(checked=False)
 
     def get(self, request, *args, **kwargs):
         pages = self.get_queryset()
@@ -112,24 +112,25 @@ class RequestApproveView(generics.GenericAPIView):
     #permission_classes = (permissions.AllowAny, )
 
     def post(self, request, slug, version, *args, **kwargs):
-        print("rejected")
-        print(request.POST)
         try:
             if request.POST['action'] == "approved":
-                Request.objects.get(commit=version).approve_request(request.user)
-                msg = {'msg': 'Contenido aprobado'}
+                request_obj = Request.objects.get(commit=version)
+                request_obj.approve_request(request.user)
+                
                 data = {
                     'slug': slug,
                     'version': version,
                     'msg':'Approved',
                     'approved_by': request.user.get_full_name()
                 }
-                return Response((msg,data), status=status.HTTP_200_OK)
+
+                return Response(data, status=status.HTTP_200_OK)
             else:
-                Request.objects.get(commit=version).delete()
+
+                Request.objects.get(commit=version).reject_request(request.user)
                 msg = {'msg': 'Contenido rechazado'}
-                return Response(msg, status.HTTP_200_OK)
-        except ObjectDoesNotExist(e):
+                return Response(msg, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist, e:
             raise Http404
 
 

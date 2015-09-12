@@ -14,9 +14,11 @@ class Request(models.Model):
     page = models.ForeignKey(Page)
     commit = models.CharField(max_length=7)
 
+    checked = models.BooleanField(default=False)
+
     approved = models.BooleanField(default=False, db_index=True)
-    approved_by = models.ForeignKey(User, null=True, blank=True, related_name="reviewer")
-    approved_at = models.DateTimeField(null=True)
+    checked_by = models.ForeignKey(User, null=True, blank=True, related_name="reviewer")
+    checked_at = models.DateTimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, null=False, blank=False, related_name="author")
@@ -25,13 +27,22 @@ class Request(models.Model):
         return u'%s' % (self.commit, )
 
     def approve_request(self, user):
+        self.checked = True
         self.approved = True
-        self.approved_by = user
-        self.approved_at = datetime.datetime.now()
+        self.checked_by = user
+        self.checked_at = datetime.datetime.now()
         self.save()
         PublicPage.objects.filter(request__page=self.page).delete()
         PublicPage(request=self).save()
         return True
+
+    def reject_request(self, user):
+        self.checked = True
+        self.checked_by = user
+        self.checked_at = datetime.datetime.now()
+        self.save()
+        return True
+    
     
     class Meta:
         #app_label = 'waliki'
