@@ -27,9 +27,11 @@ from servicio.urls import routerQuiz
 from servicio.urls import routerQuestions
 from servicio.urls import routerCategory
 
+from activitie.urls import routerActivitieParent, routerActivitieChild
+
 
 urlpatterns = [
-    url(r'^API/degree/', include(routerDegree, namespace='dregree')),
+    url(r'^API/degree/', include(routerDegree)),
     url(r'^API/users/', include(routerUser)),
     
     url(r'^API/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
@@ -45,6 +47,9 @@ urlpatterns = [
     url(r'^API/quiz/', include(routerQuiz, namespace='quiz')),
     url(r'^API/quiz/questions/', include(routerQuestions, namespace='questions')),
     url(r'^API/quiz/category/', include(routerCategory, namespace='category')),
+
+    url(r'^API/activitie/parent/', include(routerActivitieParent, namespace='activitie_parent')),
+    url(r'^API/activitie/', include(routerActivitieChild, namespace='activitie_child')),
 
 
     url(r'^admin/', include(admin.site.urls)),
