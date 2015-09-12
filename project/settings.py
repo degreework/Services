@@ -29,11 +29,14 @@ SITE_CLIENT_URL_CONFIRM_PASSWORD_RECOVERY = SITE_CLIENT_URL + "/password/reset/"
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+#SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(32))
 SECRET_KEY = '-8_@1g4*^8efmhj^rc!j(&o@=zd5_^4^5y_(^zwa@9l4uxx+i6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+#DEBUG = os.environ.get('DEBUG', True)
 DEBUG = True
 
+#ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
 ALLOWED_HOSTS = []
 
 
@@ -55,10 +58,6 @@ INSTALLED_APPS = (
 
     #3 parties
     'rest_framework',
-
-    #App REST for Users
-    'users',
-    'degree',
 
 
     #Oauth
@@ -90,6 +89,13 @@ INSTALLED_APPS = (
     'essay',
     'servicio',
 
+    #Activities
+    'activitie',
+
+
+   #App REST for Users
+    'users',
+    'degree',
     
 )
 

@@ -59,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def _content_file_name(instance, filename):
         #generate new path
         out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )
-        path = '/'.join([u'u_%s' % (instance.id), 'photos',  out_file])
+        path = '/'.join([instance.generate_folder_path(), 'photos',  out_file])
 
         #remove current files (photos)
         ### WARNING ####
