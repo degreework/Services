@@ -16,8 +16,8 @@ class RetrieveDegreeTests(APITestCase):
     
     def test_retrieve_degree(self):
         """
-        #Ensure degree can't be retrieved by a Anonymous user
+        #Ensure degree can be retrieved by a Anonymous user
         """
         url = reverse('degree-list')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
