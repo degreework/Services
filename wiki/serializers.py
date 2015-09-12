@@ -119,6 +119,13 @@ class PageEditSerializer(serializers.HyperlinkedModelSerializer):
         page_request.send(sender=Request, page=page, commit=commit, author=self.context['request'].user)
 
 
+        print("pregunto si tiene permiso de aprobar")
+        #if user have permissions, then automatic aprove the request
+        if self.context['request'].user.has_perm( 'wiki.can_approve_request' ):
+            request = Request.objects.filter(commit=commit)[0]
+            request.approve_request(self.context['request'].user)
+
+
     class Meta():
         model = Page
         fields = ('id', 'title', 'slug', 'raw', 'markup' ,'message', 'extra_data', )

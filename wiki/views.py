@@ -1,3 +1,4 @@
+import json
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 
@@ -9,10 +10,15 @@ from waliki.rest.views import (
         PageVersionView
     )
 
-from rest_framework.response import Response
-from rest_framework import generics, permissions, status
+from waliki import views
+from waliki.git.views import version as git_version
 
-from .models import Request, PublicPage
+from waliki.rest.permissions import WalikiPermission_ViewPage
+
+from rest_framework.response import Response
+from rest_framework import generics, permissions, status, mixins
+
+from .models import Request, PublicPage, pageComments
 from .serializers import RequestSerializer
 from .serializers import (
         PageCreateSerializer as CreateSer,
@@ -26,8 +32,43 @@ class PageCreateView(CreateView):
     serializer_class = CreateSer
 
 
-class PageRetrieveView(RetrieveView):
-    serializer_class = RetrieveSer
+class PageRetrieveView(
+    mixins.RetrieveModelMixin,
+    generics.GenericAPIView):
+    """
+    A simple View to retrieve a Page.
+    """
+    lookup_field = 'slug'
+    permission_classes = (WalikiPermission_ViewPage, )
+
+    def get(self, request, *args, **kwargs):
+        slug = kwargs['slug']
+        response = views.detail(request._request, raw=True, *args, **kwargs)
+        
+        if 302 ==response.status_code:
+            return HttpResponseRedirect(request.path.rstrip('/'+slug)+response.url)
+        
+
+        query = PublicPage.objects.filter(request__page__slug=self.kwargs['slug'])[0]
+        commit = query.request.commit
+
+        version = git_version(request._request, slug=slug, version=commit, raw=True)
+        
+        page = query.request.page
+        thread = pageComments.objects.get(page=page)
+
+        version = json.loads(version.content)
+
+        response = {
+            'id': page.id,
+            'thread': thread.id,
+            'title': page.title,
+            'slug': page.slug,
+            'raw': version['raw']
+        }
+
+        return Response(response)
+
 
 class PageEditView(PageEdit):
     serializer_class = PageEditSer
