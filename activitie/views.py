@@ -15,7 +15,7 @@ class ActivitieParentCreateView(viewsets.ModelViewSet):
     API endpoint for creating an Activitie
     """
     serializer_class = ActivitieParentSerializer
-    permission_classes = (IsAuthenticated, IsAuthor, )
+    permission_classes = (IsAuthenticated, )
 
 
 class ActivitieParentUpdateView(viewsets.ModelViewSet):
@@ -47,6 +47,14 @@ class ActivitieParentListView(generics.ListAPIView):
     serializer_class = ActivitieParentSerializer
     paginate_by = 5
 
+
+class ActivitieParentReadView(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint for creating an Activitie
+    """
+    queryset = ActivitieParent.objects.all()
+    serializer_class = ActivitieParentSerializer
+    permission_classes = (IsAuthenticated, )
     
 
 

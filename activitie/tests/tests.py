@@ -333,11 +333,14 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
 
         url = reverse('activitie_child:activitie_child_update', kwargs={'pk': self.activitie_response.id})
 
+        self._create_file()
+
         with open(self.file_name) as file:
             data = {
                 'parent': self.activitie.id,
                 'file': file
                 }
+            print (data)
 
             response = self.client.put(url, data)
             self.assertEqual(response.status_code, status.HTTP_200_OK)

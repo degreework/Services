@@ -5,6 +5,7 @@ from .views import (
     ActivitieParentCreateView,
     ActivitieParentUpdateView,
     ActivitieParentListView,
+    ActivitieParentReadView,
 
     ActivitieChildCreateView,
     ActivitieChildUpdateCreateView,)
@@ -23,13 +24,16 @@ routerActivitieParent = format_suffix_patterns([
     #url(r'^$', api_root),
     
     #create
-    url(r'^$', ActivitieParentCreateView.as_view({'post': 'create'}), name='activitie_parent_create'),
+    url(r'^new$', ActivitieParentCreateView.as_view({'post': 'create'}), name='activitie_parent_create'),
 
     #retrieve, update, destroy
-    url(r'^(?P<pk>[0-9]+)$', routerActivitieParentDetail, name='activitie_parent_update'),
+    url(r'^new/(?P<pk>[0-9]+)$', routerActivitieParentDetail, name='activitie_parent_update'),
 
     #listt all activities
     url(r'^all$', ActivitieParentListView.as_view() , name='activitie_parent_list'),
+
+    #listt all activities
+    url(r'^(?P<pk>[0-9]+)$', ActivitieParentReadView.as_view({'get': 'retrieve'}) , name='activitie_parent_retreive'),
     
 	])
 
