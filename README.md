@@ -1,5 +1,6 @@
 Services
 ===================
+
 #Done
 ###Sprint 1
   * Users
@@ -13,11 +14,9 @@ Services
 
 ### Sprint 3
 * Evaluations
-
-#To do
-### Sprint 3
 * Activities
 
+#To do
 ### Sprint 4
  * Badges
 

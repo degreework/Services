@@ -10,6 +10,7 @@ Application = get_application_model()
 
 from PIL import Image
 import tempfile
+import os
 
 
 from users.models import User
@@ -20,7 +21,7 @@ class ActivitieCommon(object):
     name = 'hacking activities'
     description = 'description about this activitie'
     die_at = '2015-09-10T01:00'
-    file_name = 'image.jpg'
+    file_name = 'activitie/tests/image.jpg'
 
     u_first_name = 'tester'
     u_last_name = 'last_tester'
@@ -53,6 +54,12 @@ class ActivitieCommon(object):
         image = Image.new('RGB', (200, 200), "white")
         image.save(self.file_name)
 
+    def _delete_file(self):
+        try:
+            os.remove(self.file_name)
+        except Exception, e:
+            print "file can't be removed"
+
 
     def _create_token(self):
         import datetime
@@ -71,6 +78,7 @@ class ActivitieCommon(object):
         return "Bearer {0}".format(token or self._create_token())
 
     def _create_activitie(self):
+        print "activitie parent created"
         from django.utils import timezone
         self.activitie = ActivitieParent(
             die_at=timezone.now(),
@@ -251,6 +259,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
             }
 
         response = self.client.post(url, data, format='multipart')
+        self._delete_file()
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
@@ -268,6 +277,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
             }
 
         response = self.client.put(url, data)
+        self._delete_file()
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
@@ -318,6 +328,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
                 }
 
             response = self.client.post(url, data, format='multipart')
+            self._delete_file()
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
@@ -340,9 +351,9 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
                 'parent': self.activitie.id,
                 'file': file
                 }
-            print (data)
 
             response = self.client.put(url, data)
+            self._delete_file()
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
