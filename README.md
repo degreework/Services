@@ -1,5 +1,6 @@
 Services
 ===================
+[![Build Status](https://travis-ci.org/degreeworkunivalle/Services.svg?branch=master)](https://travis-ci.org/degreeworkunivalle/Services)
 
 #Done
 ###Sprint 1
