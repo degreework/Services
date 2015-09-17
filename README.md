@@ -49,3 +49,8 @@ Step 3
 Create default Groups
 	
 	python manage.py Group
+	
+Step 4
+Create default Badge
+	
+	python manage.py Badge
