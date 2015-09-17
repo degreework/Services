@@ -26,9 +26,11 @@ from comment.urls import routerComment
 from servicio.urls import routerQuiz
 from servicio.urls import routerQuestions
 from servicio.urls import routerCategory
-
 from activitie.urls import routerActivitieParent, routerActivitieChild
+from notification.urls import *
 
+
+import notifications
 
 urlpatterns = [
     url(r'^API/degree/', include(routerDegree)),
@@ -51,6 +53,7 @@ urlpatterns = [
     url(r'^API/activitie/parent/', include(routerActivitieParent, namespace='activitie_parent')),
     url(r'^API/activitie/', include(routerActivitieChild, namespace='activitie_child')),
 
+    url(r'^API/inbox/notifications/', include(routerNotification)),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),

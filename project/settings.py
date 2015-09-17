@@ -74,7 +74,7 @@ INSTALLED_APPS = (
     
     #'pybb',
 
-    #'post_framework',
+    'post_framework',
     'forum',
     'comment',
     
@@ -91,6 +91,12 @@ INSTALLED_APPS = (
 
     #Activities
     'activitie',
+
+
+
+    #
+    'notifications',
+    'notification',
 
 
    #App REST for Users
@@ -272,3 +278,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'knowahora@gmail.com'
 EMAIL_HOST_PASSWORD = 'Gp4ssm41L'
 
+
+
+#########################
+# notifications
+
+NOTIFICATIONS = True

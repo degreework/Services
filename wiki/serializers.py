@@ -22,7 +22,6 @@ class PageCreateSerializer(serializers.ModelSerializer):
 
     def get_extra_data(self, obj, *args, **kwargs):
         form_extra_data = {}
-        print self.context['request'].POST.get('slug')
         page = Page.objects.get(slug=self.context['request'].POST.get('slug'))
 
         receivers_responses = page_preedit.send(sender=views.edit, page=page)
@@ -61,7 +60,12 @@ class PageCreateSerializer(serializers.ModelSerializer):
         
         #Create new reques
         commit = json.loads(self.get_extra_data(self.instance))['parent']
-        page_request.send(sender=Request, page=page, commit=commit, author=self.context['request'].user)
+        page_request.send(
+            sender=Request,
+            page=page,
+            commit=commit,
+            author=self.context['request'].user,
+            message="")
 
         #if user have permissions, then automatic aprove the request
         if self.context['request'].user.has_perm( 'wiki.can_approve_request' ):
@@ -116,10 +120,14 @@ class PageEditSerializer(serializers.HyperlinkedModelSerializer):
 
         #Create new reques
         commit = json.loads(self.get_extra_data(self.instance))['parent']
-        page_request.send(sender=Request, page=page, commit=commit, author=self.context['request'].user)
+        page_request.send(
+            sender=Request,
+            page=page,
+            commit=commit,
+            author=self.context['request'].user,
+            message=self.context['request'].POST['message'])
 
 
-        print("pregunto si tiene permiso de aprobar")
         #if user have permissions, then automatic aprove the request
         if self.context['request'].user.has_perm( 'wiki.can_approve_request' ):
             request = Request.objects.filter(commit=commit)[0]
