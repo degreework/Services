@@ -1,6 +1,9 @@
 from rest_framework import serializers
 
 from .models import User
+from badger.models import Badge, Progress
+from badger.utils import get_badge
+from gamification.serializers import ProgressCreateSerializer
 
 class CreateUserSerializer(serializers.ModelSerializer):
     """
@@ -18,6 +21,11 @@ class CreateUserSerializer(serializers.ModelSerializer):
                 #self.validated_data['plan']
                 #self.validated_data.get('plan', None)
                 )
+            # crea el progreso de la insignia con la cual inicia el usuario
+            badge = get_badge('slug')
+            progress = badge.progress_for(user)
+            progress.save()
+            
             return user
         else:
             user = User.objects.create_user(
@@ -28,6 +36,11 @@ class CreateUserSerializer(serializers.ModelSerializer):
                 self.validated_data['password'],
                 self.validated_data['plan']
                 )
+            
+            # crea el progreso de la insignia con la cual inicia el usuario
+            badge = get_badge('slug')
+            progress = badge.progress_for(user)
+            progress.save()
             return user
 
     
@@ -35,13 +48,11 @@ class CreateUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create(**validated_data)
     """
-
-
-
     class Meta():
         model = User
-        fields = ('first_name', 'last_name', 'email', 'codigo', 'plan', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('first_name', 'last_name', 'email', 'codigo', 'plan', 'password', 'id')
+        read_only = ('id')
+        extra_kwargs = {'password': {'write_only': True}, 'id':{'read_only':True}}
 
 
 class UpdateUserSelializer(serializers.ModelSerializer):

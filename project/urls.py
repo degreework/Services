@@ -28,6 +28,7 @@ from servicio.urls import routerQuestions
 from servicio.urls import routerCategory
 
 from activitie.urls import routerActivitieParent, routerActivitieChild
+from gamification.urls import routerBadges, routerAward, routerScores
 
 
 urlpatterns = [
@@ -50,6 +51,11 @@ urlpatterns = [
 
     url(r'^API/activitie/parent/', include(routerActivitieParent, namespace='activitie_parent')),
     url(r'^API/activitie/', include(routerActivitieChild, namespace='activitie_child')),
+
+    url(r'^API/gamification/', include(routerBadges, namespace='badges')),
+    url(r'^API/gamification/', include(routerAward, namespace='award')),
+    url(r'^API/gamification/', include(routerScores, namespace='award')),
+    #url(r'^API/badges/', include('badger.urls', namespace='badger')),
 
 
     url(r'^admin/', include(admin.site.urls)),

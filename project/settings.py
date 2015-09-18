@@ -92,6 +92,11 @@ INSTALLED_APPS = (
     #Activities
     'activitie',
 
+    #gamification
+    'gamification',
+    'badger',
+
+
 
    #App REST for Users
     'users',
@@ -272,3 +277,5 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'knowahora@gmail.com'
 EMAIL_HOST_PASSWORD = 'Gp4ssm41L'
 
+########################
+DEFAULT_BADGE_SETTING = {'title':'titulo' , 'slug':'slug', 'description':'description', 'image':'', 'unique':True ,'nominations_accepted':False, 'nominations_autoapproved':False, 'points_end': 50}
