@@ -1,21 +1,23 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 
 from .models import ActivitieParent, ActivitieChild
 from .serializers import ActivitieParentSerializer, ActivitieChildSerializer
 
-from .permissions import IsAuthor
+from .permissions import IsAuthor, CanCreate, CanCheck
 
 class ActivitieParentCreateView(viewsets.ModelViewSet):
     """
     API endpoint for creating an Activitie
     """
     serializer_class = ActivitieParentSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (CanCreate, )
 
 
 class ActivitieParentUpdateView(viewsets.ModelViewSet):
@@ -50,7 +52,7 @@ class ActivitieParentListView(generics.ListAPIView):
 
 class ActivitieParentReadView(viewsets.ReadOnlyModelViewSet):
     """
-    API endpoint for creating an Activitie
+    API endpoint for retreive an Activitie
     """
     queryset = ActivitieParent.objects.all()
     serializer_class = ActivitieParentSerializer
@@ -74,3 +76,55 @@ class ActivitieChildUpdateCreateView(viewsets.ModelViewSet):
     queryset = ActivitieChild.objects.all()
     serializer_class = ActivitieChildSerializer
     permission_classes = (IsAuthenticated, IsAuthor, )
+
+
+class ActivitieChildListView(generics.ListAPIView):
+    """
+    View to list all Activities
+    """
+    queryset = ActivitieParent.objects.all()
+    #add permission
+    permission_classes = (IsAuthenticated, )
+    serializer_class = ActivitieChildSerializer
+    paginate_by = 5
+
+    def get_queryset(self):
+        parent = get_object_or_404(ActivitieParent, pk=self.kwargs.get('id', None))
+        return ActivitieChild.objects.filter(parent=parent)
+
+
+class ActivitieChildCheckView(generics.GenericAPIView):
+    """
+    A simple View to check a Activitie
+    """
+    #Add permissions
+    permission_classes = (CanCheck, )
+    serializer_class = ActivitieChildSerializer
+
+    def post(self, request, id, *args, **kwargs):
+        try:
+            activitie = get_object_or_404(ActivitieChild, id=id)
+            msg = {}
+            msg['id'] = activitie.id
+            r_status = status.HTTP_400_BAD_REQUEST
+            
+            if request.POST['action'] == "approved":
+                activitie.do_approved(request.user)
+
+                #if getattr(settings, 'NOTIFICATIONS', False):
+                    #wiki_request_checked.send(sender=RequestApproveView, request=request_obj)
+                msg['msg'] = 'approved'
+                r_status = status.HTTP_200_OK
+            
+            elif request.POST['action'] == "rejected":
+                activitie.do_rejected(request.user)
+
+                #if getattr(settings, 'NOTIFICATIONS', False):
+                    #wiki_request_checked.send(sender=RequestApproveView, request=request_obj)
+                msg['msg'] = 'rejected'
+                r_status = status.HTTP_200_OK
+            
+            return Response(msg, status=r_status)
+        except ObjectDoesNotExist, e:
+            raise Http404
+

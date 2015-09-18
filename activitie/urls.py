@@ -8,7 +8,10 @@ from .views import (
     ActivitieParentReadView,
 
     ActivitieChildCreateView,
-    ActivitieChildUpdateCreateView,)
+    ActivitieChildUpdateCreateView,
+
+    ActivitieChildListView,
+    ActivitieChildCheckView,)
 
 
 """
@@ -29,10 +32,10 @@ routerActivitieParent = format_suffix_patterns([
     #retrieve, update, destroy
     url(r'^new/(?P<pk>[0-9]+)$', routerActivitieParentDetail, name='activitie_parent_update'),
 
-    #listt all activities
+    #list all activities
     url(r'^all$', ActivitieParentListView.as_view() , name='activitie_parent_list'),
 
-    #listt all activities
+    #retreive
     url(r'^(?P<pk>[0-9]+)$', ActivitieParentReadView.as_view({'get': 'retrieve'}) , name='activitie_parent_retreive'),
     
 	])
@@ -56,5 +59,12 @@ routerActivitieChild = format_suffix_patterns([
 
     #retrieve, update, destroy
     url(r'^(?P<pk>[0-9]+)$', routerActivitieChildDetail, name='activitie_child_update'),
+
+
+    #list all activities
+    url(r'^all/(?P<id>[0-9]+)$', ActivitieChildListView.as_view() , name='activitie_child_list'),
+
+    #check
+    url(r'^check/(?P<id>[0-9]+)$', ActivitieChildCheckView.as_view(), name='activitie_child_check'),
     
 	])

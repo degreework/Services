@@ -189,6 +189,13 @@ DEFAULT_GROUP_NAME = {
         "forum | Ask | Can change Ask",
 
         ),
+    "Teacher":(
+        "activitie | ActivitieParent | Can add ActivitieParent",
+        "activitie | ActivitieParent | Can change ActivitieParent",
+        "activitie | ActivitieParent | Can delete ActivitieParent",
+
+        "activitie | ActivitieChild | Can check activities",
+        )
     }
 
 REGISTRATION_DEFAULT_GROUP_NAME = ("Registered", )
