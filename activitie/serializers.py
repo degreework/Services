@@ -19,7 +19,7 @@ class ActivitieParentSerializer(serializers.ModelSerializer):
                 description=validated_data['description'])
 
         except IntegrityError, e:
-            raise PermissionDenied  
+            raise PermissionDenied
 
 
     class Meta():
@@ -34,11 +34,10 @@ class ActivitieChildSerializer(serializers.ModelSerializer):
 
 
     def get_status(self, instance):
-        return instance.STATUS[instance.status][1]
+        return instance.STATUS[int(instance.status)]
 
     def create(self, validated_data):
         try:
-
             user = self.context['request'].user
             parent_activitie = validated_data['parent']
             parent_activitie = ActivitieParent.objects.get(pk=parent_activitie)
@@ -46,6 +45,14 @@ class ActivitieChildSerializer(serializers.ModelSerializer):
             return ActivitieChild.objects.create(author=user, parent=parent_activitie, file=validated_data['file'])
 
         except IntegrityError, e:
+            raise PermissionDenied
+
+    def update(self, instance, validated_data):
+        try:
+            instance.file = validated_data.get('file', instance.file)
+            instance.save()
+            return instance
+        except IntegrityError(e):
             raise PermissionDenied
 
     class Meta():

@@ -74,7 +74,7 @@ INSTALLED_APPS = (
     
     #'pybb',
 
-    #'post_framework',
+    'post_framework',
     'forum',
     'comment',
     
@@ -96,6 +96,12 @@ INSTALLED_APPS = (
     'gamification',
     'badger',
 
+
+
+
+    #
+    'notifications',
+    'notification',
 
 
    #App REST for Users
@@ -188,6 +194,13 @@ DEFAULT_GROUP_NAME = {
         "forum | Ask | Can change Ask",
 
         ),
+    "Teacher":(
+        "activitie | ActivitieParent | Can add ActivitieParent",
+        "activitie | ActivitieParent | Can change ActivitieParent",
+        "activitie | ActivitieParent | Can delete ActivitieParent",
+
+        "activitie | ActivitieChild | Can check activities",
+        )
     }
 
 REGISTRATION_DEFAULT_GROUP_NAME = ("Registered", )
@@ -277,5 +290,15 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'knowahora@gmail.com'
 EMAIL_HOST_PASSWORD = 'Gp4ssm41L'
 
+
 ########################
+# Badge default 
 DEFAULT_BADGE_SETTING = {'title':'titulo' , 'slug':'slug', 'description':'description', 'image':'', 'unique':True ,'nominations_accepted':False, 'nominations_autoapproved':False, 'points_end': 50}
+
+
+
+#########################
+# notifications
+
+NOTIFICATIONS = True
+

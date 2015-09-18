@@ -1,9 +1,13 @@
+from django.db import IntegrityError
+from django.core.exceptions import PermissionDenied
+from django.conf import settings
+
 from rest_framework import serializers
+
+from notification.signals import post_comment
 
 from .models import Comment
 
-from django.db import IntegrityError
-from django.core.exceptions import PermissionDenied
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):
@@ -22,7 +26,13 @@ class CreateCommentSerializer(serializers.ModelSerializer):
             thread = validated_data['parent']
             from post_framework.models import Thread
             thread = Thread.objects.get(pk=thread)
-            return Comment.objects.create(author=user, parent=thread, text=validated_data['text'])
+
+            comment = Comment.objects.create(author=user, parent=thread, text=validated_data['text'])
+            
+            if getattr(settings, 'NOTIFICATIONS', False):
+                post_comment.send(sender=CreateCommentSerializer, post=thread, comment=comment, author=user)
+            
+            return comment
 
         except IntegrityError, e:
             raise PermissionDenied

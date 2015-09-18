@@ -26,10 +26,15 @@ from comment.urls import routerComment
 from servicio.urls import routerQuiz
 from servicio.urls import routerQuestions
 from servicio.urls import routerCategory
-
 from activitie.urls import routerActivitieParent, routerActivitieChild
+<<<<<<< HEAD
 from gamification.urls import routerBadges, routerAward, routerScores
+=======
+from notification.urls import *
 
+>>>>>>> 745c6005994ed88ea348ac7847fb76a3c6e362e3
+
+import notifications
 
 urlpatterns = [
     url(r'^API/degree/', include(routerDegree)),
@@ -56,6 +61,9 @@ urlpatterns = [
     url(r'^API/gamification/', include(routerAward, namespace='award')),
     url(r'^API/gamification/', include(routerScores, namespace='award')),
     #url(r'^API/badges/', include('badger.urls', namespace='badger')),
+
+
+    url(r'^API/inbox/notifications/', include(routerNotification)),
 
 
     url(r'^admin/', include(admin.site.urls)),

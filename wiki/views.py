@@ -53,6 +53,8 @@ class PageRetrieveView(
         commit = query.request.commit
 
         version = git_version(request._request, slug=slug, version=commit, raw=True)
+        print version
+        print "version"
         
         page = query.request.page
         thread = pageComments.objects.get(page=page)
@@ -104,6 +106,11 @@ class PageListView(ListView):
         return Response(self.get_serializer(pages, many=True).data)
 
 
+
+
+from django.conf import settings
+from notification.signals import wiki_request_checked
+
 class RequestApproveView(generics.GenericAPIView):
     """
     A simple View to approve a Requet
@@ -113,9 +120,13 @@ class RequestApproveView(generics.GenericAPIView):
 
     def post(self, request, slug, version, *args, **kwargs):
         try:
+            request_obj = Request.objects.get(commit=version)
+            
             if request.POST['action'] == "approved":
-                request_obj = Request.objects.get(commit=version)
                 request_obj.approve_request(request.user)
+
+                if getattr(settings, 'NOTIFICATIONS', False):
+                    wiki_request_checked.send(sender=RequestApproveView, request=request_obj)
                 
                 data = {
                     'slug': slug,
@@ -127,8 +138,12 @@ class RequestApproveView(generics.GenericAPIView):
                 return Response(data, status=status.HTTP_200_OK)
             else:
 
-                Request.objects.get(commit=version).reject_request(request.user)
+                request_obj.reject_request(request.user)
                 msg = {'msg': 'Contenido rechazado'}
+
+                if getattr(settings, 'NOTIFICATIONS', False):
+                    wiki_request_checked.send(sender=RequestApproveView, request=request_obj)
+                
                 return Response(msg, status=status.HTTP_200_OK)
         except ObjectDoesNotExist, e:
             raise Http404

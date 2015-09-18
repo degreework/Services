@@ -1,11 +1,15 @@
 from django.http import Http404
 from django.db import IntegrityError
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
+from django.conf import settings
 
 from rest_framework import serializers
 
+from notification.signals import forum_answered, forum_ask_updated
+
 from .models import Ask, Answer
-from django.contrib.auth.models import AnonymousUser
+
 
 class CreateAskSerializer(serializers.ModelSerializer):
     """
@@ -28,10 +32,17 @@ class UpdateAskSelializer(serializers.ModelSerializer):
     """
     Serializer class to update Asks
     """
-    def create(self, validated_data):
+    def update(self, instance, validated_data):
+        print "update"
         try:
-            user = self.context['request'].user
-            return Ask.objects.create(author=user, **validated_data)
+            instance.title = validated_data.get('title', instance.title)
+            instance.text = validated_data.get('text', instance.text)
+            instance.save()
+
+            if getattr(settings, 'NOTIFICATIONS', False):
+                forum_ask_updated.send(sender=UpdateAskSelializer, ask=instance)
+
+            return instance
         except IntegrityError(e):
             raise PermissionDenied
 
@@ -95,9 +106,14 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         try:
             user = self.context['request'].user
-            return Answer.objects.create(author=user, **validated_data)
+            answer = Answer.objects.create(author=user, **validated_data)
+            
+            if getattr(settings, 'NOTIFICATIONS', False):
+                forum_answered.send(sender=AnswerCreateSerializer, ask=answer.ask, answer=answer, author=user)
+            
+            return answer
 
-        except IntegrityError(e):
+        except IntegrityError,e:
             raise PermissionDenied
 
     class Meta():

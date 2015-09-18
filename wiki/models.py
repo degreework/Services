@@ -22,6 +22,7 @@ class Request(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, null=False, blank=False, related_name="author")
+    message = models.CharField(max_length=128)
 
     def __str__(self):
         return u'%s' % (self.commit, )

@@ -40,7 +40,8 @@ class ActivitieChild(models.Model):
         (0, 'No enviado'),
         (1, 'Enviado'),
         (2, 'En revisión'),
-        (3, 'Revisado'),
+        (3, 'Aprovado'),
+        (4, 'Rechazado'),
     )
 
     parent = models.ForeignKey(ActivitieParent)
@@ -54,9 +55,20 @@ class ActivitieChild(models.Model):
     class Meta:
         verbose_name = "ActivitieChild"
         verbose_name_plural = "ActivitieChilds"
+        permissions = (("can_check_activitie", "Can check activities"),)
 
     def __str__(self):
         return ("%s - %s" % (self.parent.name, self.author))
+
+    def do_approved(self, checked_by):
+        self.status = 3
+        self.save()
+        return True
+
+    def do_rejected(self, checked_by):
+        self.status = 4
+        self.save()
+        return True
 """
     def save(self, *args, **kwargs):
         print("save")

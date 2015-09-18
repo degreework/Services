@@ -10,8 +10,11 @@ Application = get_application_model()
 
 from PIL import Image
 import tempfile
+import json
+import os
 
 
+from django.contrib.auth.models import Group
 from users.models import User
 from activitie.models import ActivitieParent, ActivitieChild
 
@@ -20,13 +23,19 @@ class ActivitieCommon(object):
     name = 'hacking activities'
     description = 'description about this activitie'
     die_at = '2015-09-10T01:00'
-    file_name = 'image.jpg'
+    file_name = 'activitie/tests/image.jpg'
 
     u_first_name = 'tester'
     u_last_name = 'last_tester'
     u_email = 'testuser@test.com'
     u_codigo = '112233'
     u_password = 'nonsecur3'
+
+
+    u_t_first_name = 'teacher'
+    u_t_last_name = 'last_teacher'
+    u_t_email = 'teacher@test.com'
+    u_t_codigo = '000000'
 
 
     def _create_user(self):
@@ -37,6 +46,17 @@ class ActivitieCommon(object):
             last_name=self.u_last_name,
             codigo=self.u_codigo,
             password=self.u_password)
+
+    def _create_user_teacher(self):
+        call_command('Group')
+        self.user_teacher = User.objects.create_user(
+            email=self.u_t_email,
+            first_name=self.u_t_first_name,
+            last_name=self.u_t_last_name,
+            codigo=self.u_t_codigo,
+            password=self.u_password)
+        g = Group.objects.get(name='Teacher') 
+        g.user_set.add(self.user_teacher)
 
     def _create_application(self):
         self.application = Application(
@@ -53,22 +73,28 @@ class ActivitieCommon(object):
         image = Image.new('RGB', (200, 200), "white")
         image.save(self.file_name)
 
+    def _delete_file(self):
+        try:
+            os.remove(self.file_name)
+        except Exception, e:
+            print "file can't be removed"
 
-    def _create_token(self):
+
+    def _create_token(self, user):
         import datetime
         from django.utils import timezone
 
         self.token = AccessToken.objects.create(
-            user=self.user,
-            token='1234567890',
+            user=user,
+            token= u"%s1234567890" % user.id,
             application=self.application,
             scope='read write',
             expires=timezone.now() + datetime.timedelta(days=1)
             )
         return self.token
 
-    def _create_authorization_header(self, token=None):
-        return "Bearer {0}".format(token or self._create_token())
+    def _create_authorization_header(self, user, token=None):
+        return "Bearer {0}".format(token or self._create_token(user))
 
     def _create_activitie(self):
         from django.utils import timezone
@@ -154,20 +180,20 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can't be created only with name field and by user authenticated
         """
-        token = self._create_authorization_header()
+        token = self._create_authorization_header(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         url = reverse('activitie_parent:activitie_parent_create')
         data = {'name': self.name}
 
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_activitie_all_required_fields_user_authenticated(self):
         """
         Check Activitie can be created by a authenticated user
         """
-        token = self._create_authorization_header()
+        token = self._create_authorization_header(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         url = reverse('activitie_parent:activitie_parent_create')
@@ -178,14 +204,14 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
             }
 
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
     def test_update_activitie_user_authenticated(self):
         """
         Check Activitie can be updated by a authenticated user
         """
-        token = self._create_authorization_header()
+        token = self._create_authorization_header(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         self._create_activitie()
@@ -206,7 +232,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         Check Activitie can be deleted by a authenticated user
         """
 
-        token = self._create_authorization_header()
+        token = self._create_authorization_header(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         self._create_activitie()
@@ -214,8 +240,6 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.activitie.id})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-
 
 
 
@@ -251,6 +275,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
             }
 
         response = self.client.post(url, data, format='multipart')
+        self._delete_file()
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
@@ -268,6 +293,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
             }
 
         response = self.client.put(url, data)
+        self._delete_file()
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
@@ -287,7 +313,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can't be created only with name field and by authenticated user
         """
-        token = self._create_authorization_header()
+        token = self._create_authorization_header(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         self._create_activitie()
@@ -302,7 +328,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can be created by a authenticated user
         """
-        token = self._create_authorization_header()
+        token = self._create_authorization_header(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         self._create_activitie()
@@ -318,6 +344,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
                 }
 
             response = self.client.post(url, data, format='multipart')
+            self._delete_file()
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
@@ -325,7 +352,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can be updated by a authenticated user
         """
-        token = self._create_authorization_header()
+        token = self._create_authorization_header(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         self._create_activitie()
@@ -340,9 +367,9 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
                 'parent': self.activitie.id,
                 'file': file
                 }
-            print (data)
 
             response = self.client.put(url, data)
+            self._delete_file()
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -350,7 +377,7 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can be deleted by a authenticated  user
         """
-        token = self._create_authorization_header()
+        token = self._create_authorization_header(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         self._create_activitie()
@@ -359,3 +386,152 @@ class ActivitieChildTests(ActivitieCommon, APITestCase):
         url = reverse('activitie_child:activitie_child_update', kwargs={'pk': self.activitie_response.id})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+
+
+class ActivitieChildCheckTests(ActivitieCommon, APITestCase):
+    """
+    Test class for Activitie Child Ckecks
+    """
+
+    def setUp(self):
+        self._create_user()
+        self._create_user_teacher()
+        self._create_application()
+
+
+    def test_approve_activitie_user_authenticated(self):
+            """
+            Check Activitie can't be approved by a authenticated user
+            """
+            token = self._create_authorization_header(self.user)
+            self.client.credentials(HTTP_AUTHORIZATION=token)
+
+            self._create_activitie()
+            self._create_activitie_response(self.activitie)
+
+            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            data = {
+                'action': "approved",
+                }
+
+            response = self.client.post(url, data)
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_approve_activitie_user_teacher(self):
+            """
+            Check Activitie can be approved by a teacher user
+            """
+            token = self._create_authorization_header(self.user_teacher)
+            self.client.credentials(HTTP_AUTHORIZATION=token)
+
+            self._create_activitie()
+            self._create_activitie_response(self.activitie)
+
+            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            data = {
+                'action': "approved",
+                }
+
+            response = self.client.post(url, data)
+            self.assertEqual(json.loads(response.content), {'id': self.activitie_response.id, 'msg': 'approved'})
+            
+    def test_reject_activitie_user_authenticated(self):
+            """
+            Check Activitie can't be approved by a authenticated user
+            """
+            token = self._create_authorization_header(self.user)
+            self.client.credentials(HTTP_AUTHORIZATION=token)
+
+            self._create_activitie()
+            self._create_activitie_response(self.activitie)
+
+            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            data = {
+                'action': "rejected",
+                }
+
+            response = self.client.post(url, data)
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_reject_activitie_user_teacher(self):
+            """
+            Check Activitie can be approved by a teacher user
+            """
+            token = self._create_authorization_header(self.user_teacher)
+            self.client.credentials(HTTP_AUTHORIZATION=token)
+
+            self._create_activitie()
+            self._create_activitie_response(self.activitie)
+
+            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            data = {
+                'action': "rejected",
+                }
+
+            response = self.client.post(url, data)
+            self.assertEqual(json.loads(response.content), {'id': self.activitie_response.id, 'msg': 'rejected'})
+
+    def test_reject_non_existent_inactivitie_user_teacher(self):
+            """
+            Check non existent Activitie can't be approved by a teacher user
+            """
+            token = self._create_authorization_header(self.user_teacher)
+            self.client.credentials(HTTP_AUTHORIZATION=token)
+
+            url = reverse('activitie_child:activitie_child_check', kwargs={'id': 300})
+            data = {
+                'action': "rejected",
+                }
+
+            response = self.client.post(url, data)
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_approve_non_existent_inactivitie_user_authenticated(self):
+            """
+            Check Activitie can be approved by a authenticated user
+            """
+            token = self._create_authorization_header(self.user_teacher)
+            self.client.credentials(HTTP_AUTHORIZATION=token)
+
+            url = reverse('activitie_child:activitie_child_check', kwargs={'id': 300})
+            data = {
+                'action': "approved",
+                }
+
+            response = self.client.post(url, data)
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_malformed_activitie_user_authenticated(self):
+            """
+            Check Activitie can be approved by a authenticated user
+            """
+            token = self._create_authorization_header(self.user_teacher)
+            self.client.credentials(HTTP_AUTHORIZATION=token)
+
+            self._create_activitie()
+            self._create_activitie_response(self.activitie)
+
+            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            data = {
+                'action': "approve",
+                }
+
+            response = self.client.post(url, data)
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_approve_activitie_user_anonymous(self):
+            """
+            Check Activitie can't be approved by a anonymous user
+            """
+            self._create_activitie()
+            self._create_activitie_response(self.activitie)
+
+            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            data = {
+                'action': "approved",
+                }
+
+            response = self.client.post(url, data)
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

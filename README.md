@@ -1,5 +1,7 @@
 Services
 ===================
+[![Build Status](https://travis-ci.org/degreeworkunivalle/Services.svg?branch=master)](https://travis-ci.org/degreeworkunivalle/Services)
+
 #Done
 ###Sprint 1
   * Users
@@ -13,11 +15,9 @@ Services
 
 ### Sprint 3
 * Evaluations
-
-#To do
-### Sprint 3
 * Activities
 
+#To do
 ### Sprint 4
  * Badges
 
@@ -49,3 +49,8 @@ Step 3
 Create default Groups
 	
 	python manage.py Group
+	
+Step 4
+Create default Badge
+	
+	python manage.py Badge
