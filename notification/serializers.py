@@ -45,8 +45,10 @@ class NotificationSerializer(serializers.ModelSerializer):
 			'detail': { 
 				'approved':request.approved,
 				'page': {
-					'id': request.page.id,
-					'title': request.page.title
+					#'id': request.page.id,
+					'slug': request.page.slug,
+					'title': request.page.title,
+					'commit': request.commit
 					}
 				}
 			}
