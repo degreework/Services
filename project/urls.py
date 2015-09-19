@@ -27,12 +27,10 @@ from servicio.urls import routerQuiz
 from servicio.urls import routerQuestions
 from servicio.urls import routerCategory
 from activitie.urls import routerActivitieParent, routerActivitieChild
-<<<<<<< HEAD
 from gamification.urls import routerBadges, routerAward, routerScores
-=======
-from notification.urls import *
 
->>>>>>> 745c6005994ed88ea348ac7847fb76a3c6e362e3
+from reminder.urls import *
+
 
 import notifications
 

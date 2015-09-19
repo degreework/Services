@@ -109,7 +109,7 @@ class PageListView(ListView):
 
 
 from django.conf import settings
-from notification.signals import wiki_request_checked
+from reminder.signals import wiki_request_checked
 
 class RequestApproveView(generics.GenericAPIView):
     """
