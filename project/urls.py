@@ -27,7 +27,9 @@ from servicio.urls import routerQuiz
 from servicio.urls import routerQuestions
 from servicio.urls import routerCategory
 from activitie.urls import routerActivitieParent, routerActivitieChild
-from notification.urls import *
+from gamification.urls import routerBadges, routerAward, routerScores
+
+from reminder.urls import *
 
 
 import notifications
@@ -53,7 +55,14 @@ urlpatterns = [
     url(r'^API/activitie/parent/', include(routerActivitieParent, namespace='activitie_parent')),
     url(r'^API/activitie/', include(routerActivitieChild, namespace='activitie_child')),
 
+    url(r'^API/gamification/', include(routerBadges, namespace='badges')),
+    url(r'^API/gamification/', include(routerAward, namespace='award')),
+    url(r'^API/gamification/', include(routerScores, namespace='award')),
+    #url(r'^API/badges/', include('badger.urls', namespace='badger')),
+
+
     url(r'^API/inbox/notifications/', include(routerNotification)),
+
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),

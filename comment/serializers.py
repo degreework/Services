@@ -4,7 +4,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from notification.signals import post_comment
+from reminder.signals import post_comment
 
 from .models import Comment
 

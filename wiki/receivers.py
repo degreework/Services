@@ -4,7 +4,7 @@ from .models import Request
 from .signals import page_request
 
 from django.conf import settings
-from notification.signals import wiki_request_created
+from reminder.signals import wiki_request_created
 
 @receiver(page_request, sender=Request)
 def generate_request(sender, page, commit, author, message, **kwargs):

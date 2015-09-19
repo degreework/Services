@@ -6,7 +6,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from notification.signals import forum_answered, forum_ask_updated
+from reminder.signals import forum_answered, forum_ask_updated
 
 from .models import Ask, Answer
 
