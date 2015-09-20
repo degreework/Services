@@ -1,6 +1,11 @@
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
+
+import receivers
+
 from .views import BadgeCreate, BadgeDetail, BadgeList, BadgesUpdateView, AwardUpdateView, AwardDetail, AwardList, ProgressDetail, ScoresView
+
+
 
 routerBadgesDetail = BadgesUpdateView.as_view({
     'get': 'retrieve',
