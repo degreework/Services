@@ -22,9 +22,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
                 #self.validated_data.get('plan', None)
                 )
             # crea el progreso de la insignia con la cual inicia el usuario
-            badge = get_badge('slug')
-            progress = badge.progress_for(user)
-            progress.save()
+            #badge = get_badge('slug')
+            #progress = badge.progress_for(user)
+            #progress.save()
             
             return user
         else:

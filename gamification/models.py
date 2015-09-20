@@ -14,7 +14,7 @@ class Scores(models.Model):
 	
 
 	event = models.CharField(
-        default = 'wiki',
+        default = ' ',
         max_length=30, 
         choices = EVENT_ORDER_OPTIONS,
         help_text=_(""),
