@@ -23,7 +23,7 @@ def my_callback2(sender, **kwargs):
 
 #------------------------------------------
 # puntos del quiz 
-@receiver(post_points_quiz, sender = Sitting_Serializer)
+@receiver(post_points_quiz)
 def set_points_quiz(sender, sitting, **kwargs):
 	print 'kwargs'
 	print kwargs
