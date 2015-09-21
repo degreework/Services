@@ -7,7 +7,7 @@ Markdown==2.6.2
 -e git+https://github.com/rizotas/waliki.git@rest#egg=waliki
 -e git+https://github.com/rizotas/post_framework.git@master#egg=post_framework
 -e git+https://github.com/donberna/django_quiz.git@master#egg=django_quiz
-
+-e git+https://github.com/donberna/django-badger.git@master#egg=django-badger
 
 django-notifications-hq==0.7.0
 

@@ -29,7 +29,7 @@ def set_points_quiz(sender, sitting, **kwargs):
 	print kwargs
 	print 'kwargs'
 	print sitting
-	#check_if_passed
+	print sitting.check_if_passed
 	if sitting.complete == True:
 		print 'entro'
 		p = Progress.objects.get( user = sitting.user)

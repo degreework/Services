@@ -93,8 +93,8 @@ INSTALLED_APPS = (
     'activitie',
 
     #gamification
-    #'gamification',
-    #'badger',
+    'gamification',
+    'badger',
 
 
 
