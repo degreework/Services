@@ -19,7 +19,7 @@ class CreateAskSerializer(serializers.ModelSerializer):
         try:
             user = self.context['request'].user
             return Ask.objects.create(author=user, **validated_data)
-        except IntegrityError(e):
+        except IntegrityError, e:
             raise PermissionDenied
 
     class Meta():
@@ -43,7 +43,7 @@ class UpdateAskSelializer(serializers.ModelSerializer):
                 forum_ask_updated.send(sender=UpdateAskSelializer, ask=instance)
 
             return instance
-        except IntegrityError(e):
+        except IntegrityError, e:
             raise PermissionDenied
 
     class Meta():
@@ -144,7 +144,7 @@ class AnswerUpdateSelializer(serializers.ModelSerializer):
             user = self.context['request'].user
             return Answer.objects.create(author=user, **validated_data)
 
-        except IntegrityError(e):
+        except IntegrityError, e:
             raise PermissionDenied
 
 
