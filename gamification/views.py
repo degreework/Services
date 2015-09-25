@@ -8,70 +8,92 @@ from .serializers import *
 # Create your views here.
 
 #---------------------------------
-#	BADGE
+#   BADGE
 #---------------------------------
 
 class BadgeCreate(viewsets.ModelViewSet):
-	serializer_class = BadgeCreateSerializer
-	permission_classes = (AllowAny, )
+    serializer_class = BadgeCreateSerializer
+    permission_classes = (AllowAny, )
 
 
 class BadgeDetail(viewsets.ReadOnlyModelViewSet):
-	queryset = Badge.objects.all()
-	serializer_class = BadgeCreateSerializer
-	permission_classes = (AllowAny, )
+    queryset = Badge.objects.all()
+    serializer_class = BadgeCreateSerializer
+    permission_classes = (AllowAny, )
 
 
 class BadgeList(generics.ListAPIView):
-	queryset = Badge.objects.all()
-	serializer_class = BadgeCreateSerializer
-	permission_classes = (AllowAny, )
+    queryset = Badge.objects.all()
+    serializer_class = BadgeCreateSerializer
+    permission_classes = (AllowAny, )
 
 
 class BadgesUpdateView(viewsets.ModelViewSet):
-	queryset = Badge.objects.all()
-	serializer_class = BadgeCreateSerializer
-	permission_classes = (AllowAny, )
+    queryset = Badge.objects.all()
+    serializer_class = BadgeCreateSerializer
+    permission_classes = (AllowAny, )
 
 
 #---------------------------------
-#	AWARD
+#   AWARD
 #---------------------------------
 
 class AwardDetail(viewsets.ReadOnlyModelViewSet):
-	queryset = Award.objects.all()
-	serializer_class = AwardCreateSerializer
-	permission_classes = (AllowAny, )
+    queryset = Award.objects.all()
+    serializer_class = AwardCreateSerializer
+    permission_classes = (AllowAny, )
 
 
 class AwardList(generics.ListAPIView):
-	queryset = Award.objects.all()
-	serializer_class = AwardCreateSerializer
-	permission_classes = (AllowAny, )
+    queryset = Award.objects.all()
+    serializer_class = AwardCreateSerializer
+    permission_classes = (AllowAny, )
 
 
 class AwardUpdateView(viewsets.ModelViewSet):
-	queryset = Award.objects.all()
-	serializer_class = AwardCreateSerializer
-	permission_classes = (AllowAny, )
+    queryset = Award.objects.all()
+    serializer_class = AwardCreateSerializer
+    permission_classes = (AllowAny, )
 
 
 #---------------------------------
-#	PROGRESS
+#   PROGRESS
 #---------------------------------
 
 class ProgressDetail(viewsets.ReadOnlyModelViewSet):
-	queryset = Progress.objects.all()
-	serializer_class = ProgressCreateSerializer
-	permission_classes = (AllowAny, )
+    queryset = Progress.objects.all()
+    serializer_class = ProgressCreateSerializer
+    permission_classes = (AllowAny, )
 
 
 
 #---------------------------------
-#	Scores
+#   Scores
 #---------------------------------
 
 class ScoresView(viewsets.ModelViewSet):
-	queryset = Scores.objects.all()
-	serializer_class = ScoresUpdateSerializer
-	permission_classes = (AllowAny, )
+    queryset = Scores.objects.all()
+    serializer_class = ScoresUpdateSerializer
+    permission_classes = (AllowAny, )
+
+
+
+#-------------
+#  Votes
+#
+from post_framework.models import Thread
+from .models import Votes
+class VoteCreateView(viewsets.ModelViewSet):
+    """To create a vote"""
+    serializer_class = VotesSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class VoteListView(generics.ListAPIView):
+    """To view Thread's votes detail"""
+    serializer_class = ListVotesSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        return Thread.objects.filter(pk=self.kwargs['pk'])
+

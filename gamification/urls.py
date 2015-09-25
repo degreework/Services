@@ -3,7 +3,20 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 import receivers
 
-from .views import BadgeCreate, BadgeDetail, BadgeList, BadgesUpdateView, AwardUpdateView, AwardDetail, AwardList, ProgressDetail, ScoresView
+from .views import (
+    BadgeCreate,
+    BadgeDetail,
+    BadgeList,
+    BadgesUpdateView,
+    AwardUpdateView,
+    AwardDetail,
+    AwardList,
+    ProgressDetail,
+    ScoresView,
+
+    VoteCreateView,
+    VoteListView, )
+
 
 
 
@@ -67,5 +80,18 @@ routerAward = format_suffix_patterns([
 routerScores = format_suffix_patterns([
 
     url(r'^scores/(?P<pk>[0-9]+)$', ScoresView.as_view({'get': 'retrieve', 'put':'update'}), name='scores'),
+
+    ])
+
+
+#### Votes
+
+routerVotes = format_suffix_patterns([
+    #url(r'^$', api_root),
+    
+    #create
+    url(r'^vote$', VoteCreateView.as_view({'post': 'create'}), name='vote-give'),
+
+    url(r'^vote/detail/(?P<pk>[0-9]+)$', VoteListView.as_view() , name='vote-detail'),
 
     ])

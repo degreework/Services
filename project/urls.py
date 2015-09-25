@@ -27,7 +27,7 @@ from servicio.urls import routerQuiz
 from servicio.urls import routerQuestions
 from servicio.urls import routerCategory
 from activitie.urls import routerActivitieParent, routerActivitieChild
-from gamification.urls import routerBadges, routerAward, routerScores
+from gamification.urls import routerBadges, routerAward, routerScores, routerVotes
 
 from reminder.urls import *
 
@@ -58,6 +58,7 @@ urlpatterns = [
     url(r'^API/gamification/', include(routerBadges, namespace='badges')),
     url(r'^API/gamification/', include(routerAward, namespace='award')),
     url(r'^API/gamification/', include(routerScores, namespace='award')),
+    url(r'^API/gamification/', include(routerVotes, namespace='votes')),
     #url(r'^API/badges/', include('badger.urls', namespace='badger')),
 
 
