@@ -50,18 +50,27 @@ class ScoresUpdateSerializer(serializers.ModelSerializer):
 #
 
 from django.db import IntegrityError
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+
 
 class VotesSerializer(serializers.ModelSerializer):
     """
     Serializer Class to Votes
     """
+    previous = serializers.SerializerMethodField()
+
+    def get_previous(self, obj_thread):
+        return self.previous
 
     def create(self, validated_data):
         try:
             user = self.context['request'].user
             thread = validated_data['thread']
             vote = validated_data['vote']
+            try:
+                self.previous = int(Votes.objects.get(thread=thread, author=user).vote)
+            except ObjectDoesNotExist, e:
+                self.previous = ""
 
             voted = Votes.create(author=user, thread=thread, vote=vote)
             return voted
@@ -71,14 +80,14 @@ class VotesSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Votes
-        fields = ('thread', 'vote')
+        fields = ('thread', 'vote', 'previous',  )
+        read_only_fields = ('previous', )
 
 
 class ListVotesSerializer(serializers.ModelSerializer):
     thread = serializers.SerializerMethodField()
     up_votes = serializers.SerializerMethodField()
     down_votes = serializers.SerializerMethodField()
-
     
     def get_thread(self, obj_thread):
         return obj_thread.pk
