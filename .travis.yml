@@ -16,5 +16,7 @@ install:
 # command to run before tests
 before_script:
 - python manage.py syncdb --noinput
+- python manage.py makemigrations
+- python manage.py migrate
 # command to run tests
 script: python manage.py test
