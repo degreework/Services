@@ -12,6 +12,7 @@ Application = get_application_model()
 from django.contrib.auth.models import Group
 from users.models import User
 
+
 class NotificationCommon(object):
     u_first_name = 'tester'
     u_last_name = 'last_tester'
@@ -75,7 +76,7 @@ class NotificationCommon(object):
 
 
 
-class NotificationTests(NotificationCommon, APITestCase):
+class NotificationTests(APITestCase, NotificationCommon):
     """
     Test class for Notification API
     """

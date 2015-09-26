@@ -221,7 +221,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         #end
         'oauth2_provider.ext.rest_framework.OAuth2Authentication',
-        )
+        ),
     }
 
 # Cross-origin
