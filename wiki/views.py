@@ -119,6 +119,7 @@ class RequestApproveView(generics.GenericAPIView):
     #permission_classes = (permissions.AllowAny, )
 
     def post(self, request, slug, version, *args, **kwargs):
+
         try:
             request_obj = Request.objects.get(commit=version)
             
@@ -127,6 +128,9 @@ class RequestApproveView(generics.GenericAPIView):
 
                 if getattr(settings, 'NOTIFICATIONS', False):
                     wiki_request_checked.send(sender=RequestApproveView, request=request_obj)
+
+                    from gamification.signals import post_points_wiki
+                    post_points_wiki.send(sender=RequestApproveView, user=request.user)
                 
                 data = {
                     'slug': slug,
