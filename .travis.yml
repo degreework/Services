@@ -15,7 +15,6 @@ install:
 
 # command to run before tests
 before_script:
-- python manage.py Group
-- python manage.py Badge
+- python manage.py syncdb –migrate –noinput
 # command to run tests
 script: python manage.py test
