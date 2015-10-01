@@ -32,6 +32,8 @@ class ProgressCreateSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Progress
+        fields = ('percent', 'badge', 'get_points_end',  )
+
 
 
 #----------------

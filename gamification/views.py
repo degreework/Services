@@ -59,11 +59,18 @@ class AwardUpdateView(viewsets.ModelViewSet):
 #---------------------------------
 #   PROGRESS
 #---------------------------------
+from badger.models import Progress
+from rest_framework.response import Response
 
-class ProgressDetail(viewsets.ReadOnlyModelViewSet):
-    queryset = Progress.objects.all()
-    serializer_class = ProgressCreateSerializer
-    permission_classes = (AllowAny, )
+class ProgressDetail(APIView):
+    
+    def get(self,*args, **kwargs):
+
+        permission_classes = (AllowAny, )
+        user = self.kwargs['pk']
+        progress = Progress.objects.get(user= user)
+        serializer = ProgressCreateSerializer(progress)
+        return Response(serializer.data)
 
 
 

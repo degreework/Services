@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
 from .models import User
-from badger.models import Badge, Progress
-from badger.utils import get_badge
+
 from gamification.serializers import ProgressCreateSerializer
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -22,9 +21,8 @@ class CreateUserSerializer(serializers.ModelSerializer):
                 #self.validated_data.get('plan', None)
                 )
             # crea el progreso de la insignia con la cual inicia el usuario
-            #badge = get_badge('slug')
-            #progress = badge.progress_for(user)
-            #progress.save()
+            from gamification.signals import set_progress_user
+            set_progress_user.send(sender=CreateUserSerializer, user= user)
             
             return user
         else:
@@ -38,9 +36,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
                 )
             
             # crea el progreso de la insignia con la cual inicia el usuario
-            badge = get_badge('slug')
-            progress = badge.progress_for(user)
-            progress.save()
+            from gamification.signals import set_progress_user
+            set_progress_user.send(sender=CreateUserSerializer, user= user)
+
             return user
 
     
