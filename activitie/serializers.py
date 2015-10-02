@@ -1,22 +1,22 @@
 from django.db import IntegrityError
 
-
 from rest_framework import serializers
 
-
 from .models import ActivitieParent, ActivitieChild
-
 
 class ActivitieParentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
             user = self.context['request'].user
-            return ActivitieParent.objects.create(
+    
+            activitie = ActivitieParent.objects.create(
                 author=user,
                 die_at=validated_data['die_at'],
                 name=validated_data['name'],
                 description=validated_data['description'])
+
+            return activitie
 
         except IntegrityError, e:
             raise PermissionDenied
