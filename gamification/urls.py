@@ -78,7 +78,7 @@ routerAward = format_suffix_patterns([
 
 
 routerScores = format_suffix_patterns([
-
+    #url(r'^scores/
     url(r'^scores/(?P<pk>[0-9]+)$', ScoresView.as_view({'get': 'retrieve', 'put':'update'}), name='scores'),
 
     ])
