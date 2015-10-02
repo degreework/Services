@@ -113,6 +113,11 @@ class ActivitieChildCheckView(generics.GenericAPIView):
 
                 #if getattr(settings, 'NOTIFICATIONS', False):
                     #wiki_request_checked.send(sender=RequestApproveView, request=request_obj)
+
+                # puntos actividad
+                from gamification.signals import post_points_activity
+                post_points_activity.send(sender=ActivitieChildCheckView, user=activitie.author)
+                
                 msg['msg'] = 'approved'
                 r_status = status.HTTP_200_OK
             

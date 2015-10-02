@@ -11,17 +11,7 @@ from quiz.models import Sitting, Quiz
 from badger.signals import badge_was_awarded, badge_will_be_awarded
 from  .signals import post_points_quiz, post_points_wiki, post_points_activity, set_progress_user
 
-"""
-@receiver(badge_will_be_awarded)
-def my_callback(sender, **kwargs):
-	award = kwargs['award']
 
-
-@receiver(badge_was_awarded)
-def my_callback2(sender, **kwargs):
-	award = kwargs['award']
-
-"""
 #------------------------------------------
 # crea el progreso de la insignia con la cual inicia el usuario
 from badger.utils import get_badge
@@ -80,7 +70,11 @@ def set_points_wiki(sender, user, **kwargs):
 	set_points(p)
 	
 
+from activitie.views import ActivitieChildCheckView
+
 # puntos de las actvidades  
-@receiver(post_points_activity)
-def set_points_quiz(sender, **kwargs):
-	print 'hola'
+@receiver(post_points_activity, sender = ActivitieChildCheckView)
+def set_points_activitie(sender, user, **kwargs):
+	print 'set_points_activitie'
+	p = Progress.objects.get( user = user)
+	set_points(p)

@@ -29,6 +29,13 @@ class ProgressCreateSerializer(serializers.ModelSerializer):
     """
     Serializer Class Progress
     """
+    badge = serializers.SerializerMethodField()
+
+    def get_badge(self, obj):
+        if obj.badge.image != "":
+            return {'title': obj.badge.title, 'img': obj.badge.image.url}
+        else:
+            return {'title': obj.badge.title, 'img': 'none'}
 
     class Meta():
         model = Progress
