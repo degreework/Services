@@ -46,7 +46,7 @@ routerBadges = format_suffix_patterns([
     #progress badge
     #url(r'^badge/progress$', ProgressCreate.as_view({'post': 'create'}) , name='Progress-badge-create'),
 
-    url(r'^badge/progress/detail/(?P<pk>[0-9]+)$', ProgressDetail.as_view({'get': 'retrieve'}) , name='Progress-badge-detail'),
+    url(r'^badge/progress/detail/(?P<pk>[0-9]+)$', ProgressDetail.as_view() , name='Progress-badge-detail'),
 
     ])
 
