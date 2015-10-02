@@ -71,7 +71,7 @@ routerAward = format_suffix_patterns([
     url(r'^award/detail/(?P<pk>[0-9]+)$', AwardDetail.as_view({'get': 'retrieve'}), name='badge-detail'),
 
     #get all asks 
-    url(r'^award/all$', AwardList.as_view() , name='badge-list'),
+    url(r'^award/all/(?P<pk>[0-9]+)$', AwardList.as_view() , name='badge-list'),
 
     ])
 

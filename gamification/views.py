@@ -44,10 +44,14 @@ class AwardDetail(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AllowAny, )
 
 
-class AwardList(generics.ListAPIView):
-    queryset = Award.objects.all()
-    serializer_class = AwardCreateSerializer
-    permission_classes = (AllowAny, )
+class AwardList(APIView):
+    def get(self,*args, **kwargs):
+        permission_classes = (AllowAny, )
+        user = self.kwargs['pk']
+        awards = Award.objects.filter(user = kwargs['pk'])
+        serializer = AwardCreateSerializer(awards, many=True)
+        return Response(serializer.data)
+        
 
 
 class AwardUpdateView(viewsets.ModelViewSet):
