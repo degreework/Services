@@ -47,18 +47,22 @@ def forum_updated(sender, ask, **kwargs):
 	        target=ask)
 
 """COMENT"""
+from wiki.models import pageComments
 @receiver(post_comment, sender=CreateCommentSerializer)
 def post_generate_comment(sender, post, comment, author, **kwargs):
 	post = Thread.objects.get_subclass(id=post.id)
-
-	if post.author != author:
-		notify.send(
-			author,
-			recipient=post.author,
-			verb=u'has been commented',
-	        action_object=comment,
-	        #description=u'Description',
-	        target=post)
+	
+	if ContentType.objects.get_for_model(post) is ContentType.objects.get_for_model(pageComments):
+		return None
+	else:
+		if post.author != author:
+			notify.send(
+				author,
+				recipient=post.author,
+				verb=u'has been commented',
+		        action_object=comment,
+		        #description=u'Description',
+		        target=post)
 
 
 """WIKI"""
