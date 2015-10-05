@@ -35,7 +35,10 @@ class ActivitieChildSerializer(serializers.ModelSerializer):
 
     parent = serializers.CharField(required=True)
     status = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
 
+    def get_author(self, instance):
+        return {'id': instance.author.id, 'name': instance.author.get_full_name()}
 
     def get_status(self, instance):
         return instance.STATUS[int(instance.status)]
@@ -61,5 +64,5 @@ class ActivitieChildSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = ActivitieChild
-        fields = ('id', 'parent', 'file', 'status')
-        read_only_fields = ('id', 'status')
+        fields = ('id', 'parent', 'file', 'status', 'author')
+        read_only_fields = ('id', 'status', 'author')
