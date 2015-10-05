@@ -2,6 +2,7 @@ from django.dispatch import receiver
 from django.contrib.contenttypes.models import ContentType
 
 from notifications import notify
+from notifications.models import Notification
 
 from post_framework.models import Thread
 from forum.serializers import AnswerCreateSerializer, UpdateAskSelializer
@@ -70,6 +71,7 @@ def post_generate_comment(sender, post, comment, author, **kwargs):
 def wiki_request_checked(sender, request, **kwargs):
 	
 	if request.checked_by != request.created_by:
+		
 		notify.send(
 			request.checked_by,
 			recipient=request.created_by,
@@ -77,6 +79,28 @@ def wiki_request_checked(sender, request, **kwargs):
 	        action_object=request,
 	        #description=u'Description',
 	        target=request)
+		
+	#elimina la notificacion (wiki_request_created) del created request
+	"""
+
+		#user who to perform action
+		for noti in Notification.objects.filter(
+			actor_object_id=request.created_by,
+			target_object_id=request.id,
+			recipient=request.checked_by):
+			print noti
+			noti.mark_as_read()
+
+		#all teachers who received request notification
+		#for now is to superusers but must be to teachers
+		for user in User.objects.filter(is_superuser=True):
+			for noti in Notification.objects.filter(
+				actor_object_id=request.created_by,
+				target_object_id=request.id,
+				recipient=user):
+				print noti
+				noti.mark_as_read()
+	"""
 
 
 #from waliki.git.views import version as git_version
