@@ -49,7 +49,19 @@ class ActivitieChildSerializer(serializers.ModelSerializer):
             parent_activitie = validated_data['parent']
             parent_activitie = ActivitieParent.objects.get(pk=parent_activitie)
 
-            return ActivitieChild.objects.create(author=user, parent=parent_activitie, file=validated_data['file'])
+            try:
+                previous = ActivitieChild.objects.get(author=user, parent=parent_activitie)
+            except Exception, e:
+                previous = []
+
+            if previous:
+                
+                previous.file = validated_data['file']
+                previous.save()
+                return previous
+            else:
+
+                return ActivitieChild.objects.create(author=user, parent=parent_activitie, file=validated_data['file'])
 
         except IntegrityError, e:
             raise PermissionDenied
@@ -64,5 +76,5 @@ class ActivitieChildSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = ActivitieChild
-        fields = ('id', 'parent', 'file', 'status', 'author')
-        read_only_fields = ('id', 'status', 'author')
+        fields = ('id', 'parent', 'file', 'status', 'author', 'sent_at')
+        read_only_fields = ('id', 'status', 'author', 'sent_at')
