@@ -9,6 +9,7 @@ from .views import (
 
     ActivitieChildCreateView,
     ActivitieChildUpdateCreateView,
+    ActivitieChildRetreiveView,
 
     ActivitieChildListView,
     ActivitieChildCheckView,)
@@ -59,6 +60,9 @@ routerActivitieChild = format_suffix_patterns([
 
     #retrieve, update, destroy
     url(r'^(?P<pk>[0-9]+)$', routerActivitieChildDetail, name='activitie_child_update'),
+
+    #previous
+    url(r'^previous/(?P<id>[0-9]+)$', ActivitieChildRetreiveView.as_view(), name='activitie_child_previous'),
 
 
     #list all activities

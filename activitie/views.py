@@ -78,6 +78,23 @@ class ActivitieChildUpdateCreateView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsAuthor, )
 
 
+class ActivitieChildRetreiveView(generics.RetrieveAPIView):
+    """
+    API endpoint for retreive a previous Activitie
+    """
+    queryset = ActivitieChild.objects.all()
+    serializer_class = ActivitieChildSerializer
+    permission_classes = (IsAuthenticated, IsAuthor, )
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        print "quwey"
+        print self.kwargs.get('id', None)
+        previous = get_object_or_404(ActivitieChild, parent=self.kwargs.get('id', None), author=self.request.user)
+        print previous
+        return previous
+
+
 class ActivitieChildListView(generics.ListAPIView):
     """
     View to list all Activities
