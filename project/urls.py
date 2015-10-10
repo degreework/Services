@@ -30,7 +30,7 @@ from activitie.urls import routerActivitieParent, routerActivitieChild
 from gamification.urls import routerBadges, routerAward, routerScores, routerVotes
 
 from reminder.urls import *
-
+from module.urls import routerModule
 
 import notifications
 
@@ -63,6 +63,8 @@ urlpatterns = [
 
 
     url(r'^API/inbox/notifications/', include(routerNotification)),
+
+    url(r'^API/module/', include(routerModule)),
 
 
     url(r'^admin/', include(admin.site.urls)),

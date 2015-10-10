@@ -1,0 +1,1 @@
+MODULE_SLUG_PATTERN = '[a-zA-Z0-9-_\/]+'

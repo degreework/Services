@@ -1,0 +1,31 @@
+from django.db import models
+
+from forum.models import Ask
+
+
+class Module(models.Model):
+    slug = models.SlugField()
+    
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+
+    class Meta:
+        verbose_name = "Module"
+        verbose_name_plural = "Modules"
+
+    def __str__(self):
+        return u"%s" % self.name
+
+
+class Forum_wrap(models.Model):
+    module = models.ForeignKey(Module)
+    ask = models.ForeignKey(Ask)
+
+    class Meta:
+        verbose_name = "Forum_wrap"
+        verbose_name_plural = "Forum_wraps"
+
+    def __str__(self):
+        return u"%s - %s" % (self.module.name, self.ask.title)
+    
+    

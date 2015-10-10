@@ -103,6 +103,8 @@ INSTALLED_APPS = (
     'notifications',
     'reminder',
 
+    'module',
+
 
    #App REST for Users
     'users',
