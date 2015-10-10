@@ -33,6 +33,22 @@ def set_points(progress):
 		progress.increment_by(10)
 		progress.update_percent2()
 		progress.save()
+
+		if progress.percent >= 100:
+			#lista todas las medallas 
+			badges = list(Badge.objects.order_by('prerequisites').all())
+			#medalla del usuario recien asignada
+			badge_user =  progress.badge 
+			# indice de la medalla en la lista 
+			i = badges.index(badge_user)
+			# se pasa a la siguiente medalla si existe 
+			if i <= len(badges)-1:
+				progress.percent = 0
+				progress.counter = 0
+				progress.badge = badges[i+1]
+				progress.save()
+
+			
 	else:
 		#lista todas las medallas 
 		badges = list(Badge.objects.order_by('prerequisites').all())

@@ -18,6 +18,7 @@ class CreateTests(APITestCase):
 
     def setUp(self):
         call_command('Group')
+        call_command('Badge')
         
     def test_create_user_only_email(self):
         """
