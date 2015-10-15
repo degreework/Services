@@ -10,4 +10,4 @@ class ModuleSerializer(serializers.ModelSerializer):
     class Meta():
         model = Module
         fields = ('name', 'description', 'slug', 'id')
-        read_only = ('id', )
+        read_only = ('id', 'slug',)

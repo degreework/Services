@@ -9,8 +9,13 @@ from .views import (
     ModuleReadView,
 
     module_forum_create_wrap,
-    module_forum_all_wrap,
-    ForumList)
+    ForumList,
+    
+    module_wiki_create_wrap,
+
+    module_activitie_create_wrap,
+    ActivitieList,
+    )
 
 from .settings import MODULE_SLUG_PATTERN
 
@@ -34,7 +39,7 @@ routerModule = format_suffix_patterns([
 
     #retrieve, update, destroy, Module
     url(
-    	r'^new/(?P<pk>[0-9]+)$',
+    	r'^new/(?P<slug>'+MODULE_SLUG_PATTERN+')$',
     	routerModuleDetail,
     	name='module-update'
     ),
@@ -57,11 +62,34 @@ routerModule = format_suffix_patterns([
         name='module-forum-create'
     ),
 
-    #create
+    #list
     url(
         r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/forum/all$',
         ForumList.as_view(),
         name='module-forum-all'
+    ),
+
+    #ACTIVITIE
+    #create
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/activitie/new$',
+        module_activitie_create_wrap,
+        name='module-activitie-create'
+    ),
+
+    #list
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/activitie/all$',
+        ActivitieList.as_view(),
+        name='module-activitie-all'
+    ),
+
+    #WIKI
+    #create
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/wiki/new$',
+        module_wiki_create_wrap,
+        name='module-wiki-create'
     ),
 
     ])

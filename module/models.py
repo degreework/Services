@@ -4,7 +4,7 @@ from forum.models import Ask
 
 
 class Module(models.Model):
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     
     name = models.CharField(max_length=50)
     description = models.TextField()
@@ -28,4 +28,16 @@ class Forum_wrap(models.Model):
     def __str__(self):
         return u"%s - %s" % (self.module.name, self.ask.title)
     
-    
+
+from activitie.models import ActivitieParent
+
+class Activitie_wrap(models.Model):
+    module = models.ForeignKey(Module)
+    activitie = models.ForeignKey(ActivitieParent)
+
+    class Meta:
+        verbose_name = "Activitie_wrap"
+        verbose_name_plural = "Activitie_wraps"
+
+    def __str__(self):
+        return u"%s - %s" % (self.module.name, self.activitie) 
