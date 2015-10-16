@@ -25,7 +25,7 @@ from comment.urls import routerComment
 from comment.urls import routerComment
 from servicio.urls import routerQuiz
 from servicio.urls import routerQuestions
-from servicio.urls import routerCategory
+#from servicio.urls import routerCategory
 from activitie.urls import routerActivitieParent, routerActivitieChild
 from gamification.urls import routerBadges, routerAward, routerScores, routerVotes
 
@@ -50,7 +50,7 @@ urlpatterns = [
     
     url(r'^API/quiz/', include(routerQuiz, namespace='quiz')),
     url(r'^API/quiz/questions/', include(routerQuestions, namespace='questions')),
-    url(r'^API/quiz/category/', include(routerCategory, namespace='category')),
+    #url(r'^API/quiz/category/', include(routerCategory, namespace='category')),
 
     url(r'^API/activitie/parent/', include(routerActivitieParent, namespace='activitie_parent')),
     url(r'^API/activitie/', include(routerActivitieChild, namespace='activitie_child')),
