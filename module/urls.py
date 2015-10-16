@@ -12,6 +12,9 @@ from .views import (
     ForumList,
     
     module_wiki_create_wrap,
+    RequestList,
+    HistoryList,
+    PublishedList,
 
     module_activitie_create_wrap,
     ActivitieList,
@@ -53,6 +56,7 @@ routerModule = format_suffix_patterns([
         ModuleListView.as_view(),
         name='module-list'
     ),
+
     
     #FORUM
     #create
@@ -90,6 +94,27 @@ routerModule = format_suffix_patterns([
         r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/wiki/new$',
         module_wiki_create_wrap,
         name='module-wiki-create'
+    ),
+
+    #requests
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/wiki/requests$',
+        RequestList.as_view(),
+        name='module-request-all'
+    ),
+
+    #history
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/wiki/history$',
+        HistoryList.as_view(),
+        name='module-history-all'
+    ),
+
+    #Published
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/wiki/published$',
+        PublishedList.as_view(),
+        name='module-published-all'
     ),
 
     ])
