@@ -5,23 +5,35 @@ from django.db.models.signals import post_save
 from servicio.serializers import Sitting_Serializer
 from users.serializers import CreateUserSerializer
 
+from module.serializers import ModuleSerializer
+
 from badger.models import Badge, Award, Progress
 from quiz.models import Sitting, Quiz
 
 from badger.signals import badge_was_awarded, badge_will_be_awarded
-from  .signals import post_points_quiz, post_points_wiki, post_points_activity, set_progress_user
+from  .signals import createBadgeModule, post_points_quiz, post_points_wiki, post_points_activity #,set_progress_user
 
+from badger.utils import get_badge
 
 #------------------------------------------
 # crea el progreso de la insignia con la cual inicia el usuario
-from badger.utils import get_badge
+"""
+
 @receiver(set_progress_user, sender = CreateUserSerializer)
 def progress_user_registered(sender, user, **kwargs):
 	print 'progress init'
 	badge = get_badge('slug')
 	progress = badge.progress_for(user)
 	progress.save()
+"""
 	
+# crea una medalla por cada modulo que se crea 
+@receiver(createBadgeModule, sender = ModuleSerializer)
+def badgeModule(sender, module, **kwargs):
+	print 'entro badgeModule'
+	badge = Badge(title= module.name, slug = module.slug, description = module.description, unique = True)
+	badge.save()
+
 #-------------------------------------------
 # funcion para asignar los puntos
 def set_points(progress):
@@ -34,6 +46,7 @@ def set_points(progress):
 		progress.update_percent2()
 		progress.save()
 
+# de aqui para abajo acomodar notificaciones 
 		if progress.percent >= 100:
 			#lista todas las medallas 
 			badges = list(Badge.objects.order_by('prerequisites').all())
@@ -66,12 +79,14 @@ def set_points(progress):
 
 # puntos del quiz 
 @receiver(post_points_quiz, sender=Sitting_Serializer)
-def set_points_quiz(sender, sitting, **kwargs):
+def set_points_quiz(sender, sitting, badge, **kwargs):
 	
 	if sitting.check_if_passed == True:
 		print 'puntos quices'
 		
-		p = Progress.objects.get( user = sitting.user)
+		b = get_badge(badge)
+		p = b.progress_for(sitting.user)
+		#p = Progress.objects.get( user = sitting.user)
 		set_points(p)
 			
 
@@ -79,10 +94,12 @@ from wiki.views import RequestApproveView
 
 # puntos de la wiki  
 @receiver(post_points_wiki, sender=RequestApproveView)
-def set_points_wiki(sender, user, **kwargs):
+def set_points_wiki(sender, user, badge, **kwargs):
 	print 'hola puntos de la wiki'
 	print user
-	p = Progress.objects.get( user = user)
+	b = get_badge(badge)
+	p = b.progress_for(user)
+	#p = Progress.objects.get( user = user)
 	set_points(p)
 	
 
@@ -90,7 +107,9 @@ from activitie.views import ActivitieChildCheckView
 
 # puntos de las actvidades  
 @receiver(post_points_activity, sender = ActivitieChildCheckView)
-def set_points_activitie(sender, user, **kwargs):
+def set_points_activitie(sender, user, badge, **kwargs):
 	print 'set_points_activitie'
-	p = Progress.objects.get( user = user)
+	b = get_badge(badge)
+	p = b.progress_for(user)
+	#p = Progress.objects.get( user = user)
 	set_points(p)

@@ -19,6 +19,8 @@ class ActivitieParentSerializer(serializers.ModelSerializer):
                 description=validated_data['description'])
 
             Scores(id_event=activitie.id, score=10, event="Activity").save()
+            badge = self.context['view'].kwargs['mod_slug']
+            print badge
 
             return activitie
 

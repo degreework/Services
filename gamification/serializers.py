@@ -5,6 +5,7 @@ from badger.models import *
 from badger.signals import *
 
 from .models import Scores, Votes
+from module.models import Module
 
 
 class BadgeCreateSerializer(serializers.ModelSerializer):
@@ -23,10 +24,10 @@ class AwardCreateSerializer(serializers.ModelSerializer):
     badge = serializers.SerializerMethodField()
 
     def get_badge(self, obj):
-        if obj.badge.image != "":
-            return {'title': obj.badge.title, 'img': obj.badge.image.url}
-        else:
-            return {'title': obj.badge.title, 'img': 'none'}
+        module = Module.objects.get(name = obj.badge.title)
+        print module
+        return {'title': obj.badge.title, 'img': module.photo.url}
+        
 
     class Meta():
         model = Award

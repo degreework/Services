@@ -28,7 +28,7 @@ routerActivitieParent = format_suffix_patterns([
     #url(r'^$', api_root),
     
     #create
-    url(r'^new$', ActivitieParentCreateView.as_view({'post': 'create'}), name='activitie_parent_create'),
+    url(r'^(?P<mod_slug>.+)/new$', ActivitieParentCreateView.as_view({'post': 'create'}), name='activitie_parent_create'),
 
     #retrieve, update, destroy
     url(r'^new/(?P<pk>[0-9]+)$', routerActivitieParentDetail, name='activitie_parent_update'),
@@ -69,6 +69,6 @@ routerActivitieChild = format_suffix_patterns([
     url(r'^all/(?P<id>[0-9]+)$', ActivitieChildListView.as_view() , name='activitie_child_list'),
 
     #check
-    url(r'^check/(?P<id>[0-9]+)$', ActivitieChildCheckView.as_view(), name='activitie_child_check'),
+    url(r'^(?P<mod_slug>.+)/check/(?P<id>[0-9]+)$', ActivitieChildCheckView.as_view(), name='activitie_child_check'),
     
 	])
