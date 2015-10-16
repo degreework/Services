@@ -134,9 +134,10 @@ class ActivitieList(generics.ListAPIView):
 
 
 """Views for Wiki wrap"""
-#from .models import Wiki_wrap
+from .models import Wiki_wrap
 #from waliki.rest.views import PageCreateView
 from wiki.views import PageCreateView
+from waliki.models import Page
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -144,17 +145,66 @@ def module_wiki_create_wrap(request, module):
     """
     wrap create Wiki
     """
-    print "create Wiki"
     try:
         module = Module.objects.get(slug=module)
-        print module
-
         response = PageCreateView.as_view()(request)
-        print response.data
-        #ask = Ask.objects.get(pk=response.data['id'])
-        #Forum_wrap(module=module, ask=ask).save()
-        
+        page = Page.objects.get(slug=response.data['slug'])
+        Wiki_wrap(module=module, page=page).save() 
         return response
 
     except Module.DoesNotExist:
         raise Http404
+
+    except Page.DoesNotExist:
+        return response
+
+from wiki.models import Request
+from wiki.serializers import RequestSerializer
+
+class RequestList(generics.ListAPIView):
+    """
+    View to list all Wiki's request.
+    """
+    permission_classes = (IsAuthenticated, )
+    serializer_class = RequestSerializer
+    paginate_by = 10
+
+    def get_queryset(self):
+        module = Module.objects.get(slug=self.kwargs['module'])
+        list_wiki = Wiki_wrap.objects.filter(module=module).values_list('page', flat=True)
+        request = Request.objects.filter(page__in=list_wiki, checked=False)
+        return request
+
+
+class HistoryList(generics.ListAPIView):
+    """
+    View to list History Wiki's request.
+    """
+    permission_classes = (IsAuthenticated, )
+    serializer_class = RequestSerializer
+    paginate_by = 10
+
+    def get_queryset(self):
+        module = Module.objects.get(slug=self.kwargs['module'])
+        list_wiki = Wiki_wrap.objects.filter(module=module).values_list('page', flat=True)
+        request = Request.objects.filter(page__in=list_wiki, approved=True)
+        return request
+
+from wiki.models import PublicPage
+from wiki.serializers import PublicPageSerializer
+
+class PublishedList(generics.ListAPIView):
+    """
+    View to list Published Wiki's request.
+    """
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PublicPageSerializer
+    paginate_by = 10
+
+    def get_queryset(self):
+        module = Module.objects.get(slug=self.kwargs['module'])
+        list_wiki = Wiki_wrap.objects.filter(module=module).values_list('page', flat=True)
+        #request = Request.objects.filter(page__in=list_wiki, approved=True)
+        public = PublicPage.objects.filter(request__page=list_wiki)
+        print public
+        return public

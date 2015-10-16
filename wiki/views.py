@@ -77,34 +77,38 @@ class PageEditView(PageEdit):
         
 
 
-class RequestListView(ListView):
+class RequestListView(generics.ListAPIView):
     """
     A simple View to list all Request
     """
     serializer_class = RequestSerializer
-    #permission_classes = (permissions.AllowAny, )
+    #permission_classes = (, )
+    paginate_by = 10
+
 
     def get_queryset(self):
         return Request.objects.filter(checked=False)
 
+"""
     def get(self, request, *args, **kwargs):
         pages = self.get_queryset()
         return Response(self.get_serializer(pages, many=True).data)
+"""
 
-
-class PageListView(ListView):
+class PageListView(generics.ListAPIView):
     """
     A simple View to list all (Public) Pages
     """
     serializer_class = PublicPageSerializer
+    paginate_by = 10
 
     def get_queryset(self):
         return PublicPage.objects.all()
-
+"""
     def get(self, request, *args, **kwargs):
         pages = self.get_queryset()
         return Response(self.get_serializer(pages, many=True).data)
-
+"""
 
 
 

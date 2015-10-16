@@ -45,3 +45,17 @@ class Activitie_wrap(models.Model):
 
     def __str__(self):
         return u"%s - %s" % (self.module.name, self.activitie) 
+
+
+from waliki.models import Page
+
+class Wiki_wrap(models.Model):
+    module = models.ForeignKey(Module)
+    page = models.ForeignKey(Page)
+
+    class Meta:
+        verbose_name = "Wiki_wrap"
+        verbose_name_plural = "wiki_wraps"
+
+    def __str__(self):
+        return u"%s - %s" % (self.module.name, self.page) 
