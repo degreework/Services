@@ -15,10 +15,16 @@ class CreateAskSerializer(serializers.ModelSerializer):
     """
     Serializer Class to create Asks
     """
-    def create(self, validated_data):
+    def create(self, validated_data, *args, **kwargs):
         try:
             user = self.context['request'].user
-            return Ask.objects.create(author=user, **validated_data)
+            ask = Ask.objects.create(author=user, **validated_data)
+            
+            #create Stream at User's wall
+            from actstream import action
+            action.send(user, verb='asked', action_object=ask)
+
+            return ask
         except IntegrityError, e:
             raise PermissionDenied
 
@@ -110,6 +116,11 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
             
             if getattr(settings, 'NOTIFICATIONS', False):
                 forum_answered.send(sender=AnswerCreateSerializer, ask=answer.ask, answer=answer, author=user)
+
+
+            #create Stream at User's wall
+            from actstream import action
+            action.send(user, verb='answered', action_object=answer, target=answer.ask)
             
             return answer
 

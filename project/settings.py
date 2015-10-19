@@ -96,7 +96,8 @@ INSTALLED_APPS = (
     'gamification',
     'badger',
 
-
+    #user' wall
+    'actstream',
 
 
     #
@@ -304,3 +305,13 @@ DEFAULT_BADGE_SETTING = {'title':'titulo' , 'slug':'slug', 'description':'descri
 
 NOTIFICATIONS = True
 
+#########################
+# Stream (User's wall)
+
+ACTSTREAM_SETTINGS = {
+    #'MANAGER': 'myapp.managers.MyActionManager',
+    'FETCH_RELATIONS': True,
+    'USE_PREFETCH': True,
+    'USE_JSONFIELD': False,
+    'GFK_FETCH_DEPTH': 1,
+}

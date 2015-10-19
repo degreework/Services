@@ -143,6 +143,11 @@ class RequestApproveView(generics.GenericAPIView):
                     'approved_by': request.user.get_full_name()
                 }
 
+                #create Stream at User's wall
+                from actstream import action
+                action.send(request_obj.created_by, verb='wiked', target=request_obj.page)
+                #end
+
                 return Response(data, status=status.HTTP_200_OK)
             else:
 
