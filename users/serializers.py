@@ -135,6 +135,7 @@ class StreamSerializer(serializers.Serializer):
 
         except AttributeError, e:
             print e
+            action_object = {}
         return action_object 
 
     def get_target(self, object):

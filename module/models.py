@@ -55,3 +55,19 @@ class Wiki_wrap(models.Model):
 
     def __str__(self):
         return u"%s - %s" % (self.module.name, self.page) 
+
+
+from quiz.models import Quiz
+
+class Quiz_wrap(models.Model):
+    """docstring for Quiz_wrap"""
+    module = models.ForeignKey(Module)
+    quiz = models.ForeignKey(Quiz)
+
+    class Meta:
+        verbose_name = "Quiz_wrap"
+        verbose_name_plural = "Quiz_wraps"
+
+    def __str__(self):
+        return u"%s -" % (self.module.name) 
+    
