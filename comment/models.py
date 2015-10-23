@@ -6,6 +6,12 @@ class Comment(Post, models.Model):
 	
     parent = models.ForeignKey(Thread, blank=False, null=False)
     text = models.CharField(null=False, max_length=300)
+
+    def detail(self):
+        return u'%s' % self.text
+
+    def css_class(self):
+        return "comment-type"
     
     class Meta:
         verbose_name = "Comment"

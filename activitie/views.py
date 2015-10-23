@@ -135,7 +135,7 @@ class ActivitieChildCheckView(generics.GenericAPIView):
                 from gamification.signals import post_points_activity
                 print kwargs['mod_slug']
                 badge = kwargs['mod_slug']
-                post_points_activity.send(sender=ActivitieChildCheckView, user=activitie.author, badge = badge)
+                post_points_activity.send(sender=ActivitieChildCheckView, user=activitie.author, badge = badge, activitie= msg['id'])
                 
                 msg['msg'] = 'approved'
                 r_status = status.HTTP_200_OK

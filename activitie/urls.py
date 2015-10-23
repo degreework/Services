@@ -28,7 +28,7 @@ routerActivitieParent = format_suffix_patterns([
     #url(r'^$', api_root),
     
     #create
-    url(r'^(?P<mod_slug>.+)/new$', ActivitieParentCreateView.as_view({'post': 'create'}), name='activitie_parent_create'),
+    url(r'^new$', ActivitieParentCreateView.as_view({'post': 'create'}), name='activitie_parent_create'),
 
     #retrieve, update, destroy
     url(r'^new/(?P<pk>[0-9]+)$', routerActivitieParentDetail, name='activitie_parent_update'),

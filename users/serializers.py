@@ -105,3 +105,99 @@ class RecoveryPasswordConfirmSelializer(serializers.Serializer):
     """
     new_password1 = serializers.CharField(style={'input_type': 'password'})
     new_password2 = serializers.CharField(style={'input_type': 'password'})
+
+
+from actstream.models import Action
+
+class StreamSerializer(serializers.Serializer):
+    """
+    Serializer class to render User's Wall
+    """
+    timestamp = serializers.SerializerMethodField()
+    verb = serializers.SerializerMethodField()
+    object = serializers.SerializerMethodField()
+    target = serializers.SerializerMethodField()
+    module = serializers.SerializerMethodField()
+
+    def get_timestamp(self, object):
+        return object.timestamp
+
+    def get_verb(self, object):
+        return object.verb
+
+    def get_object(self, object):
+        try:
+            action_object = {
+                'id': object.action_object.pk,
+                'type': object.action_object.css_class(),
+                'detail': object.action_object.detail()
+            }
+
+        except AttributeError, e:
+            print e
+            action_object = {}
+        return action_object 
+
+    def get_target(self, object):
+        try:
+            target = {
+            'id': object.target.pk,
+            'type': object.target.css_class(),
+            'detail': object.target.detail()
+            }
+        except AttributeError:
+            return ''
+        return target
+
+    def get_module(self, object):
+
+        from django.contrib.contenttypes.models import ContentType
+        from forum.models import Ask, Answer
+        from wiki.models import pageComments
+        from module.models import Forum_wrap, Wiki_wrap
+        from comment.models import Comment
+        module = {}
+
+        if object.action_object_content_type == ContentType.objects.get_for_model(Ask):
+            
+            wrap =  Forum_wrap.objects.get(ask=object.action_object)
+            module = {
+                'name' : wrap.module.name,
+                'slug' : wrap.module.slug 
+            }
+
+        elif object.action_object_content_type == ContentType.objects.get_for_model(Answer):
+            wrap =  Forum_wrap.objects.get(ask=object.target)
+            module = {
+                'name' : wrap.module.name,
+                'slug' : wrap.module.slug 
+            }
+
+        elif object.action_object_content_type == ContentType.objects.get_for_model(Comment):
+            
+            if object.target_content_type == ContentType.objects.get_for_model(Ask):
+                wrap =  Forum_wrap.objects.get(ask=object.target)
+                module = {
+                    'name' : wrap.module.name,
+                    'slug' : wrap.module.slug 
+                }
+            elif object.target_content_type == ContentType.objects.get_for_model(Answer):
+                wrap =  Forum_wrap.objects.get(ask=object.target.ask)
+                module = {
+                    'name' : wrap.module.name,
+                    'slug' : wrap.module.slug 
+                }
+            elif object.target_content_type == ContentType.objects.get_for_model(pageComments):
+                wrap =  Wiki_wrap.objects.get(page=object.target.page)
+                module = {
+                    'name' : wrap.module.name,
+                    'slug' : wrap.module.slug 
+                }
+                
+
+
+        return module
+
+    class Meta():
+        model = Action
+        fields = ('timestamp', 'verb', 'object', 'target', 'module')

@@ -11,4 +11,8 @@ Markdown==2.6.2
 
 django-notifications-hq==0.7.0
 
+django-activity-stream==0.6.0
+pytz==2015.6
+
+
 

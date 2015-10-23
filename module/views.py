@@ -206,5 +206,46 @@ class PublishedList(generics.ListAPIView):
         list_wiki = Wiki_wrap.objects.filter(module=module).values_list('page', flat=True)
         #request = Request.objects.filter(page__in=list_wiki, approved=True)
         public = PublicPage.objects.filter(request__page=list_wiki)
-        print public
+        return public
+
+
+"""Views for Evaluations"""
+from servicio.views import Quiz_Create_View
+from quiz.models import Quiz
+from .models import Quiz_wrap
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def module_quiz_create_wrap(request, module):
+    """
+    wrap create Quiz
+    """
+    try:
+        module = Module.objects.get(slug=module)
+        response = Quiz_Create_View.as_view()(request)
+        quiz = Quiz.objects.get(id=response.data['id'])
+        Quiz_wrap(module=module, quiz=quiz).save() 
+        return response
+
+    except Module.DoesNotExist:
+        raise Http404
+
+    except Page.DoesNotExist:
+        return response
+
+
+from servicio.serializers import Quiz_Retrieve_Serializer
+
+class QuizList(generics.ListAPIView):
+    """
+    View to list Quizes.
+    """
+    permission_classes = (IsAuthenticated, )
+    serializer_class = Quiz_Retrieve_Serializer
+    paginate_by = 10
+
+    def get_queryset(self):
+        module = Module.objects.get(slug=self.kwargs['module'])
+        list_quiz = Quiz_wrap.objects.filter(module=module).values_list('quiz', flat=True)
+        public = Quiz.objects.filter(pk__in=list_quiz)
         return public

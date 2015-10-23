@@ -17,6 +17,7 @@ from .serializers import (
         CreateUserSerializer,
         UpdateUserSelializer,
         ShortUserSerializer,
+        StreamSerializer,
         UpdatePasswordUserSelializer,
         RecoveryPasswordSelializer,
         RecoveryPasswordConfirmSelializer)
@@ -76,6 +77,10 @@ class UserCurrent(APIView):
     permission_classes = (IsAuthenticated, IsSelf, )
 
     def get(self, request):
+        from actstream.models import user_stream
+
+        user_stream(request.user, with_user_activity=True)
+
         serializer = ShortUserSerializer(request.user)
         return Response(serializer.data)
 
@@ -252,4 +257,18 @@ class RecoveryPassword_confirm(APIView):
             return response
         else:
             return Response({'msg': "El enlace de restablecimiento de contraseña era invalido, seguramente por haberse utilizado previamente. Por favor, solicite un nuevo restablecimiento de contraseña."})
-        
+
+
+class UserStream(generics.ListAPIView):
+    """
+    View to list all User actions (Wall or Stream).
+    """
+    
+    permission_classes = (IsAuthenticated, )
+    serializer_class = StreamSerializer
+    paginate_by = 10
+
+    def get_queryset(self):
+        from actstream.models import user_stream
+        query = User.objects.get(pk=self.kwargs['pk']).actor_actions.all()
+        return query

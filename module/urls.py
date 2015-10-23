@@ -18,6 +18,9 @@ from .views import (
 
     module_activitie_create_wrap,
     ActivitieList,
+
+    module_quiz_create_wrap,
+    QuizList,
     )
 
 from .settings import MODULE_SLUG_PATTERN
@@ -116,5 +119,21 @@ routerModule = format_suffix_patterns([
         PublishedList.as_view(),
         name='module-published-all'
     ),
+
+    #EVALUAIONS
+    #create
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/quiz/new$',
+        module_quiz_create_wrap,
+        name='module-quiz-create'
+    ),
+
+    #list
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/quiz/all$',
+        QuizList.as_view(),
+        name='module-list-quiz-all'
+    ),
+    
 
     ])

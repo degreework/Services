@@ -8,4 +8,4 @@ post_points_wiki = django.dispatch.Signal(providing_args=["user, badge"])
 
 post_points_activity = django.dispatch.Signal(providing_args=["user, badge"])
 
-#set_progress_user = django.dispatch.Signal(providing_args=["user"])
+calculate_points_end_badge = django.dispatch.Signal(providing_args=["badge, points"])

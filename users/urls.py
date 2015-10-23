@@ -9,6 +9,7 @@ from .views import (
     UserUpdate,
     UserList,
     UserCurrent,
+    UserStream,
     UserPassword,
     RecoveryPassword,
     password_reset_done,
@@ -51,6 +52,13 @@ routerUser = format_suffix_patterns([
         r'^me$',
         UserCurrent.as_view(),
         name='user-current'
+    ),
+
+    #get user stream (wall)
+    url(
+        r'^wall/(?P<pk>[0-9]+)$',
+        UserStream.as_view(),
+        name='user-stream'
     ),
 
     #update passwordrecovery_done
