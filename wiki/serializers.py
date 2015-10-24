@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 from waliki.settings import WALIKI_DEFAULT_MARKUP
 from waliki import views
 from waliki.models import Page
@@ -16,7 +18,7 @@ class PageCreateSerializer(serializers.ModelSerializer):
     """
 
     raw = serializers.CharField()
-    message = serializers.CharField(write_only=True)
+    message = serializers.CharField(label="Mensaje", help_text='Descripción de los cambios', write_only=True)
     extra_data = serializers.SerializerMethodField()
 
 
