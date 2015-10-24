@@ -88,10 +88,7 @@ class ActivitieChildRetreiveView(generics.RetrieveAPIView):
     lookup_field = 'id'
 
     def get_queryset(self):
-        print "quwey"
-        print self.kwargs.get('id', None)
         previous = get_object_or_404(ActivitieChild, parent=self.kwargs.get('id', None), author=self.request.user)
-        print previous
         return previous
 
 

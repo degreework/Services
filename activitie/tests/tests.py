@@ -411,7 +411,7 @@ class ActivitieChildCheckTests(ActivitieCommon, APITestCase):
             self._create_activitie()
             self._create_activitie_response(self.activitie)
 
-            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            url = reverse('activitie_child:activitie_child_check', kwargs={'mod_slug': 'b','id': self.activitie_response.id})
             data = {
                 'action': "approved",
                 }
@@ -429,7 +429,7 @@ class ActivitieChildCheckTests(ActivitieCommon, APITestCase):
             self._create_activitie()
             self._create_activitie_response(self.activitie)
 
-            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            url = reverse('activitie_child:activitie_child_check', kwargs={'mod_slug': 'b','id': self.activitie_response.id})
             data = {
                 'action': "approved",
                 }
@@ -447,7 +447,7 @@ class ActivitieChildCheckTests(ActivitieCommon, APITestCase):
             self._create_activitie()
             self._create_activitie_response(self.activitie)
 
-            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            url = reverse('activitie_child:activitie_child_check', kwargs={'mod_slug': 'b','id': self.activitie_response.id})
             data = {
                 'action': "rejected",
                 }
@@ -465,7 +465,7 @@ class ActivitieChildCheckTests(ActivitieCommon, APITestCase):
             self._create_activitie()
             self._create_activitie_response(self.activitie)
 
-            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            url = reverse('activitie_child:activitie_child_check', kwargs={'mod_slug': 'b','id': self.activitie_response.id})
             data = {
                 'action': "rejected",
                 }
@@ -480,7 +480,7 @@ class ActivitieChildCheckTests(ActivitieCommon, APITestCase):
             token = self._create_authorization_header(self.user_teacher)
             self.client.credentials(HTTP_AUTHORIZATION=token)
 
-            url = reverse('activitie_child:activitie_child_check', kwargs={'id': 300})
+            url = reverse('activitie_child:activitie_child_check', kwargs={'mod_slug': 'b','id': 300})
             data = {
                 'action': "rejected",
                 }
@@ -495,7 +495,7 @@ class ActivitieChildCheckTests(ActivitieCommon, APITestCase):
             token = self._create_authorization_header(self.user_teacher)
             self.client.credentials(HTTP_AUTHORIZATION=token)
 
-            url = reverse('activitie_child:activitie_child_check', kwargs={'id': 300})
+            url = reverse('activitie_child:activitie_child_check', kwargs={'mod_slug': 'b','id': 300})
             data = {
                 'action': "approved",
                 }
@@ -513,7 +513,7 @@ class ActivitieChildCheckTests(ActivitieCommon, APITestCase):
             self._create_activitie()
             self._create_activitie_response(self.activitie)
 
-            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            url = reverse('activitie_child:activitie_child_check', kwargs={'mod_slug': 'b','id': self.activitie_response.id})
             data = {
                 'action': "approve",
                 }
@@ -528,7 +528,7 @@ class ActivitieChildCheckTests(ActivitieCommon, APITestCase):
             self._create_activitie()
             self._create_activitie_response(self.activitie)
 
-            url = reverse('activitie_child:activitie_child_check', kwargs={'id': self.activitie_response.id})
+            url = reverse('activitie_child:activitie_child_check', kwargs={'mod_slug': 'b', 'id': self.activitie_response.id})
             data = {
                 'action': "approved",
                 }
