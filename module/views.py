@@ -97,6 +97,7 @@ from activitie.views import ActivitieParentCreateView
 from activitie.models import ActivitieParent
 from .models import Activitie_wrap
 
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def module_activitie_create_wrap(request, module):
