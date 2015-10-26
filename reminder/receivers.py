@@ -137,7 +137,7 @@ def gamification_badge_award(sender, badge, user, **kwargs):
 	notify.send(
 			user,
 			recipient=user,
-			verb=u' Felicitaciones ganaste la medalla ',#+badge.title,
+			verb=u' Felicitaciones ganaste la medalla',#+badge.title,
 	        action_object=badge,
 	        #description=request.message,
 	        target=badge)

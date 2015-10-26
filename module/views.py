@@ -100,6 +100,7 @@ from activitie.views import ActivitieParentCreateView
 from activitie.models import ActivitieParent
 from .models import Activitie_wrap
 
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def module_activitie_create_wrap(request, module):
@@ -117,7 +118,7 @@ def module_activitie_create_wrap(request, module):
         #Se crea el puntaje en la tabla de scores
         Scores(id_event=activitie.id, score=10, event="Activity").save()
         # Se envia la señal para aunmentar los puntos con los que se gana la medalla
-        calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10)
+        calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add')
         return response
 
     except Module.DoesNotExist:
@@ -239,7 +240,7 @@ def module_quiz_create_wrap(request, module):
         #Se crea el puntaje en la tabla de scores
         Scores(id_event=quiz.id, score=10, event="Quiz").save()
         # Se envia la señal para aunmentar los puntos con los que se gana la medalla
-        calculate_points_end_badge.send(sender=module_quiz_create_wrap, badge=badge, points=10)
+        calculate_points_end_badge.send(sender=module_quiz_create_wrap, badge=badge, points=10, action='add')
         
         return response
 

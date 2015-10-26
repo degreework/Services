@@ -40,12 +40,16 @@ def badgeModule(sender, module, **kwargs):
 
 
 
-# cada vez que se cree una evaluacion o actividad aumenta los puntos para ganarse la medalla 
+# cada vez que se cree o elimine una evaluacion o actividad aumenta o disminuye los puntos para ganarse la medalla 
 @receiver(calculate_points_end_badge)
-def points_end_badge(sender, badge, points, **kwargs):
+def points_end_badge(sender, badge, points, action, **kwargs):
 	print 'points_end_badge'
 	b = get_badge(badge)
-	b.points_end += points
+	if action == 'add':
+		b.points_end += points
+	elif action == 'remove':
+		b.points_end -= points
+
 	b.save()
 
 #-------------------------------------------
@@ -134,12 +138,14 @@ from activitie.views import ActivitieChildCheckView
 @receiver(post_points_activity, sender = ActivitieChildCheckView)
 def set_points_activitie(sender, user, badge, activitie, **kwargs):
 	print 'set_points_activitie'
+	print activitie
 	# se trae la medalla y el progreso del usario en esa medalla
 	b = get_badge(badge)
+	
 	p = b.progress_for(user)
-
+	
 	# se consulta cuantos puntos tiene ese quiz 
 	points = Scores.objects.get(id_event=activitie)
-	
+	print points
 	# se llama a la funcion para asigna los puntos en el progreso 
 	set_points(p, points.score, b, user)

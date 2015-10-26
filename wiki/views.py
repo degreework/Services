@@ -48,8 +48,13 @@ class PageRetrieveView(
         if 302 ==response.status_code:
             return HttpResponseRedirect(request.path.rstrip('/'+slug)+response.url)
         
+        try:
+            query = PublicPage.objects.filter(request__page__slug=self.kwargs['slug'])[0]
+        except ObjectDoesNotExist:
+            raise Http404
+        except IndexError:
+            raise Http404
 
-        query = PublicPage.objects.filter(request__page__slug=self.kwargs['slug'])[0]
         commit = query.request.commit
 
         version = git_version(request._request, slug=slug, version=commit, raw=True)

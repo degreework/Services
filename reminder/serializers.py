@@ -6,6 +6,7 @@ from notifications.models import Notification
 from comment.models import Comment
 from forum.models import Answer, Ask
 from wiki.models import Request
+from badger.models import Badge
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -51,6 +52,15 @@ class NotificationSerializer(serializers.ModelSerializer):
 					'commit': request.commit
 					}
 				}
+			}
+
+		elif content_type == ContentType.objects.get_for_model(Badge):
+			print 'entro en el badge'
+			badge = Badge.objects.get(id = obj.target.id)
+			target = {
+			'id': badge.id,
+			'type': u'Badge',
+			'detail': badge.title
 			}
 
 		return target
