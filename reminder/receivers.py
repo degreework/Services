@@ -10,10 +10,14 @@ from comment.serializers import CreateCommentSerializer
 from wiki.views import RequestApproveView
 from wiki.receivers import generate_request
 
+#----------------------------------------------
+from gamification.receivers import set_points
+#----------------------------------------------
+
 from forum.models import Answer
 from users.models import User
 
-from .signals import forum_answered, forum_ask_updated, post_comment, wiki_request_checked, wiki_request_created
+from .signals import forum_answered, forum_ask_updated, post_comment, wiki_request_checked, wiki_request_created, gamification_badge_award
 
 
 """FORUM"""
@@ -122,3 +126,19 @@ def wiki_request_created(sender, request, **kwargs):
 	        action_object=request,
 	        description=request.message,
 	        target=request)
+
+
+"""GAMIFICATION"""
+@receiver(gamification_badge_award, sender=set_points)
+def gamification_badge_award(sender, badge, user, **kwargs):
+	print 'gamification_badge_award'
+	print user
+	print badge
+	notify.send(
+			user,
+			recipient=user,
+			verb=u' Felicitaciones ganaste la medalla ',#+badge.title,
+	        action_object=badge,
+	        #description=request.message,
+	        target=badge)
+
