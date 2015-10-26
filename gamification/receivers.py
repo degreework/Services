@@ -15,6 +15,8 @@ from .models import Scores
 from badger.signals import badge_was_awarded, badge_will_be_awarded
 from  .signals import createBadgeModule, post_points_quiz, post_points_wiki, post_points_activity ,calculate_points_end_badge
 
+from reminder.signals import gamification_badge_award
+
 from badger.utils import get_badge
 
 #------------------------------------------
@@ -38,19 +40,21 @@ def badgeModule(sender, module, **kwargs):
 
 
 
+# cada vez que se cree o elimine una evaluacion o actividad aumenta o disminuye los puntos para ganarse la medalla 
 @receiver(calculate_points_end_badge)
-def points_end_badge(sender, badge, points, **kwargs):
+def points_end_badge(sender, badge, points, action, **kwargs):
 	print 'points_end_badge'
 	b = get_badge(badge)
-	b.points_end += points
+	if action == 'add':
+		b.points_end += points
+	elif action == 'remove':
+		b.points_end -= points
+
 	b.save()
-
-
-
 
 #-------------------------------------------
 # funcion para asignar los puntos
-def set_points(progress, points):
+def set_points(progress, points, badge, user):
 	
 	# si es menor que 100 aumenta los puntos 
 	# si es mayor asigna una nueva medalla de ser el caso
@@ -62,49 +66,57 @@ def set_points(progress, points):
 
 # de aqui para abajo acomodar notificaciones 
 		if progress.percent >= 100:
+			print 'me gane la medalla'
+			gamification_badge_award.send(sender=set_points, badge=badge, user= user)
+
+			#---------------------------------------------------------------
 			#lista todas las medallas 
-			badges = list(Badge.objects.order_by('prerequisites').all())
+			#badges = list(Badge.objects.order_by('prerequisites').all())
 			#medalla del usuario recien asignada
-			badge_user =  progress.badge 
+			#badge_user =  progress.badge 
 			# indice de la medalla en la lista 
-			i = badges.index(badge_user)
+			#i = badges.index(badge_user)
 			# se pasa a la siguiente medalla si existe 
-			if i <= len(badges)-1:
-				progress.percent = 0
-				progress.counter = 0
-				progress.badge = badges[i+1]
-				progress.save()
+			#if i <= len(badges)-1:
+				#progress.percent = 0
+				#progress.counter = 0
+				#progress.badge = badges[i+1]
+				#progress.save()
 
 			
 	else:
+		pass
 		#lista todas las medallas 
-		badges = list(Badge.objects.order_by('prerequisites').all())
+		#badges = list(Badge.objects.order_by('prerequisites').all())
 		#medalla del usuario recien asignada
-		badge_user =  progress.badge 
+		#badge_user =  progress.badge 
 		# indice de la medalla en la lista 
-		i = badges.index(badge_user)
+		#i = badges.index(badge_user)
 		# se pasa a la siguiente medalla si existe 
-		if i <= len(badges)-1:
-			progress.percent = 0
-			progress.counter = 0
-			progress.badge = badges[i+1]
-			progress.save()
+		#if i <= len(badges)-1:
+		#	progress.percent = 0
+		#	progress.counter = 0
+		#	progress.badge = badges[i+1]
+		#	progress.save()
 
 
 # puntos del quiz 
 @receiver(post_points_quiz, sender=Sitting_Serializer)
 def set_points_quiz(sender, sitting, badge, **kwargs):
 	
+	# si aprobo el quiz 
 	if sitting.check_if_passed == True:
 		print 'puntos quices'
 		
+		# se trae la medalla y el progreso del usario en esa medalla
 		b = get_badge(badge)
 		p = b.progress_for(sitting.user)
 
-		#
+		# se consulta cuantos puntos tiene ese quiz 
 		points = Scores.objects.get(id_event=sitting.quiz.id)
-		#p = Progress.objects.get( user = sitting.user)
-		set_points(p, points.score)
+
+		# se llama a la funcion para asigna los puntos en el progreso 
+		set_points(p, points.score, b, sitting.user)
 			
 
 from wiki.views import RequestApproveView
@@ -114,10 +126,10 @@ from wiki.views import RequestApproveView
 def set_points_wiki(sender, user, badge, **kwargs):
 	print 'hola puntos de la wiki'
 	print user
-	b = get_badge(badge)
-	p = b.progress_for(user)
+	#b = get_badge(badge)
+	#p = b.progress_for(user)
 	#p = Progress.objects.get( user = user)
-	set_points(p)
+	#set_points(p)
 	
 
 from activitie.views import ActivitieChildCheckView
@@ -126,9 +138,14 @@ from activitie.views import ActivitieChildCheckView
 @receiver(post_points_activity, sender = ActivitieChildCheckView)
 def set_points_activitie(sender, user, badge, activitie, **kwargs):
 	print 'set_points_activitie'
+	print activitie
+	# se trae la medalla y el progreso del usario en esa medalla
 	b = get_badge(badge)
+	
 	p = b.progress_for(user)
-
+	
+	# se consulta cuantos puntos tiene ese quiz 
 	points = Scores.objects.get(id_event=activitie)
-	#p = Progress.objects.get( user = user)
-	set_points(p, points.score)
+	print points
+	# se llama a la funcion para asigna los puntos en el progreso 
+	set_points(p, points.score, b, user)

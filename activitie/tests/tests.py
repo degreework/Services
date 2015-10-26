@@ -17,6 +17,7 @@ import os
 from django.contrib.auth.models import Group
 from users.models import User
 from activitie.models import ActivitieParent, ActivitieChild
+from gamification.models import Scores
 
 class ActivitieCommon(object):
     id = 1
@@ -103,6 +104,10 @@ class ActivitieCommon(object):
             name=self.name,
             description=self.description,
             author=self.user)
+
+        if self.activitie.id != None:
+            self.score = Scores(id_event=self.activitie.id, score=10, event="Activity").save()
+
         self.activitie.save()
 
     def _create_activitie_response(self, parent):

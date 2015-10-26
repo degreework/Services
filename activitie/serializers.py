@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 
 from rest_framework import serializers
-from gamification.models import Scores
+
 
 from .models import ActivitieParent, ActivitieChild
 
@@ -17,11 +17,6 @@ class ActivitieParentSerializer(serializers.ModelSerializer):
                 die_at=validated_data['die_at'],
                 name=validated_data['name'],
                 description=validated_data['description'])
-
-            Scores(id_event=activitie.id, score=10, event="Activity").save()
-            #badge = self.context['view'].kwargs['mod_slug']
-            #print badge
-
             return activitie
 
         except IntegrityError, e:

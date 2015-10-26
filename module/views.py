@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from .models import Module
 from .serializers import ModuleSerializer
 
+from gamification.models import Scores
+from  gamification.signals import calculate_points_end_badge
+
 
 class ModuleCreateView(viewsets.ModelViewSet):
     """
@@ -105,11 +108,17 @@ def module_activitie_create_wrap(request, module):
     wrap create Activitie Parent
     """
     try:
+        badge = module
         module = Module.objects.get(slug=module)
         response = ActivitieParentCreateView.as_view({'post':'create'})(request)
         if 201 == response.status_code:
             activitie = ActivitieParent.objects.get(pk=response.data['id'])
             Activitie_wrap(module=module, activitie=activitie).save()
+            #Se crea el puntaje en la tabla de scores
+            Scores(id_event=activitie.id, score=10, event="Activity").save()
+            # Se envia la señal para aunmentar los puntos con los que se gana la medalla
+            calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add')
+
         return response
 
     except Module.DoesNotExist:
@@ -223,11 +232,17 @@ def module_quiz_create_wrap(request, module):
     wrap create Quiz
     """
     try:
+        badge = module
         module = Module.objects.get(slug=module)
         response = Quiz_Create_View.as_view()(request)
         if 201 == response.status_code:
             quiz = Quiz.objects.get(id=response.data['id'])
             Quiz_wrap(module=module, quiz=quiz).save() 
+            #Se crea el puntaje en la tabla de scores
+            Scores(id_event=quiz.id, score=10, event="Quiz").save()
+            # Se envia la señal para aunmentar los puntos con los que se gana la medalla
+            calculate_points_end_badge.send(sender=module_quiz_create_wrap, badge=badge, points=10, action='add')
+        
         return response
 
     except Module.DoesNotExist:
