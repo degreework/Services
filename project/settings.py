@@ -71,15 +71,15 @@ INSTALLED_APPS = (
     'easy_thumbnails', 
     'easy_thumbnails.optimize',
 
-    
-    #'pybb',
+    #3 parties
+    'polymodels',
 
     'post_framework',
     'forum',
     'comment',
     
     
-
+    'material',
     'wiki',
 
     #Evaluations

@@ -74,3 +74,13 @@ class Quiz_wrap(models.Model):
 
     def __str__(self):
         return u"%s -" % (self.module.name) 
+
+from material.models import Material
+
+class Material_wrap(models.Model):
+    module = models.ForeignKey(Module)
+    material = models.ForeignKey(Material)
+
+    """docstring for Material_wrap"""
+    def __str__(self):
+        return u"%s - %s" % (self.module.name, self.material.title) 
