@@ -19,7 +19,8 @@ class ActivitieParentCreateView(viewsets.ModelViewSet):
     serializer_class = ActivitieParentSerializer
     permission_classes = (CanCreate, )
 
-
+from gamification.models import Scores
+from  gamification.signals import calculate_points_end_badge
 class ActivitieParentUpdateView(viewsets.ModelViewSet):
     """
     API endpoint for updating an Activitie
@@ -28,17 +29,23 @@ class ActivitieParentUpdateView(viewsets.ModelViewSet):
     serializer_class = ActivitieParentSerializer
     permission_classes = (IsAuthenticated, IsAuthor, )
 
-    """
-    def get_queryset(self):
-        print self.kwargs['pk']
-        try:
-            queryset = ActivitieParent.objects.get(id=self.kwargs['pk'])
+    def destroy(self, request, pk, format=None, **kwargs):
+        print 'deletio'
+        activitie = self.get_object()
+        print activitie
+        score = Scores.objects.get(id_event=activitie.id)
+        print score
 
-        except ObjectDoesNotExist:
-            raise Http404()
+        # Se envia la senal para disminuir los puntos con los que se gana la medalla
+        badge = kwargs['slug']
+        calculate_points_end_badge.send(sender=ActivitieParentUpdateView, badge=badge, points=score.score, action='remove', element='activitie', instance_element=activitie)
         
-        return queryset
-    """
+        # se borra el puntaje y el quiz 
+        score.delete()
+        activitie.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)    
+
+
 
 class ActivitieParentListView(generics.ListAPIView):
     """
@@ -131,7 +138,7 @@ class ActivitieChildCheckView(generics.GenericAPIView):
                 # puntos actividad
                 from gamification.signals import post_points_activity
                 badge = kwargs['mod_slug']
-                post_points_activity.send(sender=ActivitieChildCheckView, user=activitie.author, badge = badge, activitie= msg['id'])
+                post_points_activity.send(sender=ActivitieChildCheckView, user=activitie.author, badge = badge, activitie= activitie.parent.id)
                 
                 msg['msg'] = 'approved'
                 r_status = status.HTTP_200_OK

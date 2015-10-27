@@ -48,8 +48,8 @@ urlpatterns = [
 
     url(r'^API/comment/', include(routerComment, namespace='comment')),
     
-    url(r'^API/quiz/', include(routerQuiz, namespace='quiz')),
     url(r'^API/quiz/questions/', include(routerQuestions, namespace='questions')),
+    url(r'^API/quiz/', include(routerQuiz, namespace='quiz')),
     #url(r'^API/quiz/category/', include(routerCategory, namespace='category')),
 
     url(r'^API/activitie/parent/', include(routerActivitieParent, namespace='activitie_parent')),

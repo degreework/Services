@@ -118,7 +118,7 @@ def module_activitie_create_wrap(request, module):
         #Se crea el puntaje en la tabla de scores
         Scores(id_event=activitie.id, score=10, event="Activity").save()
         # Se envia la señal para aunmentar los puntos con los que se gana la medalla
-        calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add')
+        calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add', element='', instance_element='')
         return response
 
     except Module.DoesNotExist:
@@ -240,7 +240,7 @@ def module_quiz_create_wrap(request, module):
         #Se crea el puntaje en la tabla de scores
         Scores(id_event=quiz.id, score=10, event="Quiz").save()
         # Se envia la señal para aunmentar los puntos con los que se gana la medalla
-        calculate_points_end_badge.send(sender=module_quiz_create_wrap, badge=badge, points=10, action='add')
+        calculate_points_end_badge.send(sender=module_quiz_create_wrap, badge=badge, points=10, action='add', element='', instance_element='')
         
         return response
 

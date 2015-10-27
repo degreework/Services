@@ -24,6 +24,8 @@ routerActivitieParentDetail = ActivitieParentUpdateView.as_view({
     'delete': 'destroy',
 })
 
+from module.settings import MODULE_SLUG_PATTERN
+
 routerActivitieParent = format_suffix_patterns([
     #url(r'^$', api_root),
     
@@ -31,7 +33,7 @@ routerActivitieParent = format_suffix_patterns([
     url(r'^new$', ActivitieParentCreateView.as_view({'post': 'create'}), name='activitie_parent_create'),
 
     #retrieve, update, destroy
-    url(r'^new/(?P<pk>[0-9]+)$', routerActivitieParentDetail, name='activitie_parent_update'),
+    url(r'^(?P<slug>'+MODULE_SLUG_PATTERN+')/new/(?P<pk>[0-9]+)$', routerActivitieParentDetail, name='activitie_parent_update'),
 
     #list all activities
     url(r'^all$', ActivitieParentListView.as_view() , name='activitie_parent_list'),
