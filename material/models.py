@@ -11,11 +11,7 @@ class Material(models.Model):
     objects = InheritanceManager()
     
     def __str__(self):
-            return self.title
-"""
-    class Meta:
-        abstract = True
-"""
+        return self.title
 
 class MaterialFile(Material):
     file = models.FileField()

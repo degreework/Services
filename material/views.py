@@ -1,8 +1,3 @@
-#MaterialUpdateView
-#MaterialListView
-#MaterialReadView
-
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -12,13 +7,21 @@ from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .serializers import MaterialFileSerializer, MaterialSerializer
+from .serializers import MaterialFileSerializer, MaterialLinkSerializer, MaterialSerializer
 
-class MaterialCreateView(viewsets.ModelViewSet):
+class MaterialFileCreateView(viewsets.ModelViewSet):
     """
     API endpoint for creating Material
     """
     serializer_class = MaterialFileSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class MaterialLinkCreateView(viewsets.ModelViewSet):
+    """
+    API endpoint for creating Material
+    """
+    serializer_class = MaterialLinkSerializer
     permission_classes = (IsAuthenticated, )
 
 

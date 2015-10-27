@@ -272,7 +272,7 @@ class QuizList(generics.ListAPIView):
 """Views for Evaluations"""
 from .models import Material_wrap
 from material.models import Material
-from material.views import MaterialCreateView, MaterialListView
+from material.views import MaterialFileCreateView, MaterialLinkCreateView, MaterialListView
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -282,7 +282,15 @@ def module_material_create_wrap(request, module):
     """
     try:
         module = Module.objects.get(slug=module)
-        response = MaterialCreateView.as_view({'post':'create'})(request)
+        
+        if request.POST.get('file', False):
+            response = MaterialFileCreateView.as_view({'post':'create'})(request)
+        
+        elif request.POST.get('url', False):
+            response = MaterialLinkCreateView.as_view({'post':'create'})(request)
+        else:
+            raise Http404
+
         if 201 == response.status_code:
             material = Material.objects.get(pk=response.data['id'])
             Material_wrap(module=module, material=material).save()

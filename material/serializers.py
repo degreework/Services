@@ -9,6 +9,11 @@ class MaterialFileSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'description', 'file')
 
 
+class MaterialLinkSerializer(serializers.ModelSerializer):
+    class Meta():
+        model = MaterialLink
+        fields = ('id', 'title', 'description', 'url')
+
 
 class MaterialListSerializer(serializers.ModelSerializer):
     class Meta():

@@ -2,8 +2,9 @@ from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views import (
-    MaterialCreateView,
+    MaterialFileCreateView,
     #MaterialUpdateView,
+    MaterialLinkCreateView,
     MaterialListView,
     MaterialReadView
     )
@@ -22,7 +23,8 @@ routerMaterial = format_suffix_patterns([
     #url(r'^$', api_root),
     
     #create
-    url(r'^new$', MaterialCreateView.as_view({'post': 'create'}), name='material_create'),
+    url(r'^f/new$', MaterialFileCreateView.as_view({'post': 'create'}), name='material_create'),
+    url(r'^l/new$', MaterialLinkCreateView.as_view({'post': 'create'}), name='material_create'),
 
     #retrieve, update, destroy
     #url(r'^new/(?P<pk>[0-9]+)$', routerMaterialFileDetail, name='material_update'),
