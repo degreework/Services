@@ -233,6 +233,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 MEDIA_URL = "/media/"
 
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'STATICS/')
+
+
 #settings for thumbnails
 #THUMBNAIL_BASEDIR = 'thum'
 #THUMBNAIL_EXTENSION = 'jpg'
