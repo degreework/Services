@@ -71,9 +71,6 @@ INSTALLED_APPS = (
     'easy_thumbnails', 
     'easy_thumbnails.optimize',
 
-    #3 parties
-    'polymodels',
-
     'post_framework',
     'forum',
     'comment',
