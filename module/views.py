@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import Module
-from .serializers import ModuleSerializer
+from .serializers import ModuleSerializer, ModuleUpdateSerializer
 
 from gamification.models import Scores
 from  gamification.signals import calculate_points_end_badge
@@ -25,7 +25,7 @@ class ModuleUpdateView(viewsets.ModelViewSet):
     """
     lookup_field = 'slug'
     queryset = Module.objects.all()
-    serializer_class = ModuleSerializer
+    serializer_class = ModuleUpdateSerializer
     permission_classes = (IsAuthenticated, )
     
 
