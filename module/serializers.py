@@ -22,3 +22,12 @@ class ModuleSerializer(serializers.ModelSerializer):
         model = Module
         fields = ('name', 'description', 'slug', 'photo', 'id')
         read_only = ('id', 'slug',)
+
+class ModuleUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer Class to create users
+    """
+    class Meta():
+        model = Module
+        fields = ('name', 'description', 'photo')
+        read_only = ('id', 'slug',)
