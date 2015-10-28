@@ -7,6 +7,8 @@ from comment.models import Comment
 from forum.models import Answer, Ask
 from wiki.models import Request
 from badger.models import Badge
+from quiz.models import Quiz
+from activitie.models import ActivitieParent
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -61,6 +63,24 @@ class NotificationSerializer(serializers.ModelSerializer):
 			'id': badge.id,
 			'type': u'Badge',
 			'detail': badge.title
+			}
+
+		elif content_type ==ContentType.objects.get_for_model(Quiz):
+			print 'entro en el quiz'
+			quiz = Quiz.objects.get(id = obj.target.id)
+			target = {
+			'id': quiz.id,
+			'type': u'Quiz',
+			'detail': quiz.title
+			}
+
+		elif content_type ==ContentType.objects.get_for_model(ActivitieParent):
+			print 'entro en el activitie'
+			activitie = ActivitieParent.objects.get(id = obj.target.id)
+			target = {
+			'id': activitie.id,
+			'type': u'Activitie',
+			'detail': activitie.name
 			}
 
 		return target

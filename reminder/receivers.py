@@ -16,8 +16,10 @@ from gamification.receivers import set_points
 
 from forum.models import Answer
 from users.models import User
+from quiz.models import Quiz
+from activitie.models import ActivitieParent
 
-from .signals import forum_answered, forum_ask_updated, post_comment, wiki_request_checked, wiki_request_created, gamification_badge_award
+from .signals import forum_answered, forum_ask_updated, post_comment, wiki_request_checked, wiki_request_created, gamification_badge_award, create_remove_action
 
 
 """FORUM"""
@@ -28,7 +30,7 @@ def forum_generate_answer(sender, ask, answer, author, **kwargs):
 		notify.send(
 			author,
 			recipient=ask.author,
-			verb=u'has been answered',
+			verb=u'se ha dado respuesta',
 	        action_object=answer,
 	        #description=u'Description',
 	        target=ask)
@@ -46,7 +48,7 @@ def forum_updated(sender, ask, **kwargs):
 		notify.send(
 			ask.author,
 			recipient=author,
-			verb=u'has been updated',
+			verb=u'ha sido actualizado',
 	        action_object=ask,
 	        #description=u'Description',
 	        target=ask)
@@ -64,7 +66,7 @@ def post_generate_comment(sender, post, comment, author, **kwargs):
 			notify.send(
 				author,
 				recipient=post.author,
-				verb=u'has been commented',
+				verb=u'ha sido comentado',
 		        action_object=comment,
 		        #description=u'Description',
 		        target=post)
@@ -79,7 +81,7 @@ def wiki_request_checked(sender, request, **kwargs):
 		notify.send(
 			request.checked_by,
 			recipient=request.created_by,
-			verb=u'has been checked',
+			verb=u'ha sido aprovado',
 	        action_object=request,
 	        #description=u'Description',
 	        target=request)
@@ -122,7 +124,7 @@ def wiki_request_created(sender, request, **kwargs):
 		notify.send(
 			request.created_by,
 			recipient=user,
-			verb=u'has edited a wiki page',
+			verb=u'una pagina de la wiki ha sido editada',
 	        action_object=request,
 	        description=request.message,
 	        target=request)
@@ -131,9 +133,7 @@ def wiki_request_created(sender, request, **kwargs):
 """GAMIFICATION"""
 @receiver(gamification_badge_award, sender=set_points)
 def gamification_badge_award(sender, badge, user, **kwargs):
-	print 'gamification_badge_award'
-	print user
-	print badge
+	#print 'gamification_badge_award'
 	notify.send(
 			user,
 			recipient=user,
@@ -141,4 +141,29 @@ def gamification_badge_award(sender, badge, user, **kwargs):
 	        action_object=badge,
 	        #description=request.message,
 	        target=badge)
+
+@receiver(create_remove_action)
+def create_remove_action(sender, action, instance, **kwargs):
+	print 'create_remove_action'
+	
+	for user in User.objects.all():
+		if action == 'add':
+			
+			notify.send(
+				user,
+				recipient=user,
+				verb=u' se ha creado ',#+badge.title,
+		        action_object=instance,
+		        #description=request.message,
+		        target=instance)
+
+		elif action == 'remove':
+			
+			notify.send(
+					user,
+					recipient=user,
+					verb=u' se ha eliminado',#+badge.title,
+			        action_object=instance,
+			        #description=request.message,
+			        target= instance)
 

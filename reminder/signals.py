@@ -9,3 +9,5 @@ wiki_request_checked = django.dispatch.Signal(providing_args=["request"])
 wiki_request_created = django.dispatch.Signal(providing_args=["request"])
 
 gamification_badge_award = django.dispatch.Signal(providing_args=["badge, user"])
+
+create_remove_action = django.dispatch.Signal(providing_args=["action, instance"])

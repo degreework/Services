@@ -13,6 +13,9 @@ from django.utils.timezone import utc
 
 
 class ActivitieParent(Thread):
+    """
+    This model define a Activite created by a Teacher
+    """
     die_at = models.DateTimeField()
 
     name = models.CharField(max_length=50)
@@ -29,6 +32,10 @@ class ActivitieParent(Thread):
 
 
 class ActivitieChild(models.Model):
+    """
+    This model define a Activite sent by a Student in response to ActiviteParent
+    """
+
     def generate_filename(instance, filename):
         #generate new path
         out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )

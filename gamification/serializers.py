@@ -6,7 +6,8 @@ from badger.signals import *
 
 from .models import Scores, Votes
 from module.models import Module
-
+from quiz.models import Quiz
+from activitie.models import ActivitieParent
 
 class BadgeCreateSerializer(serializers.ModelSerializer):
     """
@@ -17,16 +18,21 @@ class BadgeCreateSerializer(serializers.ModelSerializer):
         model = Badge
 
 
+from users.models import User
 class AwardCreateSerializer(serializers.ModelSerializer):
     """
     Serializer Class Award
     """
     badge = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
 
     def get_badge(self, obj):
         module = Module.objects.get(name = obj.badge.title)
-        print module
         return {'title': obj.badge.title, 'img': module.photo.url}
+
+    def get_user(self, obj):
+        return {obj.user.first_name+' '+obj.user.last_name}
+        
         
 
     class Meta():
@@ -57,7 +63,23 @@ class ScoresUpdateSerializer(serializers.ModelSerializer):
     """
     Serializer Class Nomination
     """
+    id_event = serializers.SerializerMethodField()
 
+    def get_id_event(self, obj):
+        if obj.event == 'Activity':
+            print 'entro Activity'
+
+            activitie = ActivitieParent.objects.get(id = obj.id_event)
+            print activitie
+            return activitie.name
+        else:
+            print 'entro Quiz'
+            quiz = Quiz.objects.get(id = obj.id_event)
+            print quiz
+            return quiz.title
+        
+        return{}
+        
     class Meta():
         model = Scores
 

@@ -21,6 +21,9 @@ from .views import (
 
     module_quiz_create_wrap,
     QuizList,
+
+    module_material_create_wrap,
+    MaterialList,
     )
 
 from .settings import MODULE_SLUG_PATTERN
@@ -133,6 +136,21 @@ routerModule = format_suffix_patterns([
         r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/quiz/all$',
         QuizList.as_view(),
         name='module-list-quiz-all'
+    ),
+
+    #MATERIAL
+    #create
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/material/new$',
+        module_material_create_wrap,
+        name='module-material-create'
+    ),
+    
+    #list
+    url(
+        r'^(?P<module>' + MODULE_SLUG_PATTERN + ')/material/all$',
+        MaterialList.as_view(),
+        name='module-material-all'
     ),
     
 

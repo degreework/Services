@@ -31,6 +31,7 @@ from gamification.urls import routerBadges, routerAward, routerScores, routerVot
 
 from reminder.urls import *
 from module.urls import routerModule
+from material.urls import routerMaterial
 
 import notifications
 
@@ -39,6 +40,8 @@ urlpatterns = [
     url(r'^API/users/', include(routerUser)),
     
     url(r'^API/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+
+    url(r'^API/material/', include(routerMaterial, namespace='material')),
     
     url(r'^API/forum/ask/', include(routerAsk, namespace='forum_ask')),
     url(r'^API/forum/answer/', include(routerAnswer, namespace='forum_answer')),

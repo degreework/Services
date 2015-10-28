@@ -66,9 +66,9 @@ def module_forum_create_wrap(request, module):
     try:
         module = Module.objects.get(slug=module)
         response = AskCreateView.as_view({'post':'create'})(request)
-        
-        ask = Ask.objects.get(pk=response.data['id'])
-        Forum_wrap(module=module, ask=ask).save()
+        if 201 == response.status_code:
+            ask = Ask.objects.get(pk=response.data['id'])
+            Forum_wrap(module=module, ask=ask).save()
         
         return response
 
@@ -111,14 +111,19 @@ def module_activitie_create_wrap(request, module):
         badge = module
         module = Module.objects.get(slug=module)
         response = ActivitieParentCreateView.as_view({'post':'create'})(request)
-        activitie = ActivitieParent.objects.get(pk=response.data['id'])
-        
-        Activitie_wrap(module=module, activitie=activitie).save()
+        if 201 == response.status_code:
+            activitie = ActivitieParent.objects.get(pk=response.data['id'])
+            Activitie_wrap(module=module, activitie=activitie).save()
+            #Se crea el puntaje en la tabla de scores
+            Scores(id_event=activitie.id, score=10, event="Activity").save()
+            # Se envia la señal para aunmentar los puntos con los que se gana la medalla
+            calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add', element='activitie', instance_element=activitie)
 
-        #Se crea el puntaje en la tabla de scores
-        Scores(id_event=activitie.id, score=10, event="Activity").save()
-        # Se envia la señal para aunmentar los puntos con los que se gana la medalla
-        calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add', element='', instance_element='')
+        
+        
+        
+        
+
         return response
 
     except Module.DoesNotExist:
@@ -158,8 +163,9 @@ def module_wiki_create_wrap(request, module):
     try:
         module = Module.objects.get(slug=module)
         response = PageCreateView.as_view()(request)
-        page = Page.objects.get(slug=response.data['slug'])
-        Wiki_wrap(module=module, page=page).save() 
+        if 201 == response.status_code:
+            page = Page.objects.get(slug=response.data['slug'])
+            Wiki_wrap(module=module, page=page).save() 
         return response
 
     except Module.DoesNotExist:
@@ -234,13 +240,14 @@ def module_quiz_create_wrap(request, module):
         badge = module
         module = Module.objects.get(slug=module)
         response = Quiz_Create_View.as_view()(request)
-        quiz = Quiz.objects.get(id=response.data['id'])
-        Quiz_wrap(module=module, quiz=quiz).save() 
+        if 201 == response.status_code:
+            quiz = Quiz.objects.get(id=response.data['id'])
+            Quiz_wrap(module=module, quiz=quiz).save() 
+            #Se crea el puntaje en la tabla de scores
+            Scores(id_event=quiz.id, score=10, event="Quiz").save()
+            # Se envia la señal para aunmentar los puntos con los que se gana la medalla
+            calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add', element='quiz', instance_element=quiz)
 
-        #Se crea el puntaje en la tabla de scores
-        Scores(id_event=quiz.id, score=10, event="Quiz").save()
-        # Se envia la señal para aunmentar los puntos con los que se gana la medalla
-        calculate_points_end_badge.send(sender=module_quiz_create_wrap, badge=badge, points=10, action='add', element='', instance_element='')
         
         return response
 
@@ -265,4 +272,44 @@ class QuizList(generics.ListAPIView):
         module = Module.objects.get(slug=self.kwargs['module'])
         list_quiz = Quiz_wrap.objects.filter(module=module).values_list('quiz', flat=True)
         public = Quiz.objects.filter(pk__in=list_quiz)
+        return public
+
+
+"""Views for Evaluations"""
+from .models import Material_wrap
+from material.models import Material
+from material.views import MaterialFileCreateView, MaterialLinkCreateView, MaterialListView
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def module_material_create_wrap(request, module):
+    """
+    wrap create Material
+    """
+    try:
+        module = Module.objects.get(slug=module)
+        
+        if request.POST.get('file', False):
+            response = MaterialFileCreateView.as_view({'post':'create'})(request)
+        
+        elif request.POST.get('url', False):
+            response = MaterialLinkCreateView.as_view({'post':'create'})(request)
+        else:
+            raise Http404
+
+        if 201 == response.status_code:
+            material = Material.objects.get(pk=response.data['id'])
+            Material_wrap(module=module, material=material).save()
+        
+        return response
+
+    except Module.DoesNotExist:
+        raise Http404
+
+
+class MaterialList(MaterialListView):
+    def get_queryset(self):
+        module = Module.objects.get(slug=self.kwargs['module'])
+        list_material = Material_wrap.objects.filter(module=module).values_list('material', flat=True)
+        public = Material.objects.filter(pk__in=list_material).select_subclasses()
         return public

@@ -71,15 +71,12 @@ INSTALLED_APPS = (
     'easy_thumbnails', 
     'easy_thumbnails.optimize',
 
-    
-    #'pybb',
-
     'post_framework',
     'forum',
     'comment',
     
     
-
+    'material',
     'wiki',
 
     #Evaluations
@@ -234,6 +231,9 @@ CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:8000', )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 MEDIA_URL = "/media/"
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'STATICS/')
 
 
 #settings for thumbnails

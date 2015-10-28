@@ -10,7 +10,7 @@ from .serializers import *
 #---------------------------------
 #   BADGE
 #---------------------------------
-
+"""
 class BadgeCreate(viewsets.ModelViewSet):
     serializer_class = BadgeCreateSerializer
     permission_classes = (AllowAny, )
@@ -21,28 +21,28 @@ class BadgeDetail(viewsets.ReadOnlyModelViewSet):
     serializer_class = BadgeCreateSerializer
     permission_classes = (AllowAny, )
 
-
+"""
 class BadgeList(generics.ListAPIView):
     queryset = Badge.objects.all()
     serializer_class = BadgeCreateSerializer
     permission_classes = (AllowAny, )
 
-
+"""
 class BadgesUpdateView(viewsets.ModelViewSet):
     queryset = Badge.objects.all()
     serializer_class = BadgeCreateSerializer
     permission_classes = (AllowAny, )
-
+"""
 
 #---------------------------------
 #   AWARD
 #---------------------------------
-
+"""
 class AwardDetail(viewsets.ReadOnlyModelViewSet):
     queryset = Award.objects.all()
     serializer_class = AwardCreateSerializer
     permission_classes = (AllowAny, )
-
+"""
 
 class AwardList(APIView):
     def get(self,*args, **kwargs):
@@ -51,28 +51,34 @@ class AwardList(APIView):
         awards = Award.objects.filter(user = kwargs['pk'])
         serializer = AwardCreateSerializer(awards, many=True)
         return Response(serializer.data)
+
+
+class AwardListAll(generics.ListAPIView):
+    queryset = Award.objects.all()
+    serializer_class =  AwardCreateSerializer
+    permission_classes = (AllowAny, )
         
 
-
+"""
 class AwardUpdateView(viewsets.ModelViewSet):
     queryset = Award.objects.all()
     serializer_class = AwardCreateSerializer
     permission_classes = (AllowAny, )
-
+"""
 
 #---------------------------------
 #   PROGRESS
 #---------------------------------
 from badger.models import Progress
 from rest_framework.response import Response
-
+from django.shortcuts import get_list_or_404
 class ProgressDetail(APIView):
     
     def get(self,*args, **kwargs):
 
         permission_classes = (AllowAny, )
         user = self.kwargs['pk']
-        progress = Progress.objects.get(user= user)
+        progress = get_list_or_404(Progress, user= user)
         serializer = ProgressCreateSerializer(progress)
         return Response(serializer.data)
 
@@ -83,6 +89,12 @@ class ProgressDetail(APIView):
 #---------------------------------
 
 class ScoresView(viewsets.ModelViewSet):
+    queryset = Scores.objects.all()
+    serializer_class = ScoresUpdateSerializer
+    permission_classes = (AllowAny, )
+
+
+class ScoresViewAll(generics.ListAPIView):
     queryset = Scores.objects.all()
     serializer_class = ScoresUpdateSerializer
     permission_classes = (AllowAny, )

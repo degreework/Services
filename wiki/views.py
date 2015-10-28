@@ -138,8 +138,8 @@ class RequestApproveView(generics.GenericAPIView):
                 if getattr(settings, 'NOTIFICATIONS', False):
                     wiki_request_checked.send(sender=RequestApproveView, request=request_obj)
 
-                    from gamification.signals import post_points_wiki
-                    post_points_wiki.send(sender=RequestApproveView, user=request_obj.created_by)
+                    #from gamification.signals import post_points_wiki
+                    #post_points_wiki.send(sender=RequestApproveView, user=request_obj.created_by)
                 
                 data = {
                     'slug': slug,
