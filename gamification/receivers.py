@@ -146,29 +146,16 @@ def set_points(progress, points, badge, user):
 		progress.update_percent2()
 		progress.save()
 
-# de aqui para abajo acomodar notificaciones 
 		if progress.percent >= 100:
 			print 'me gane la medalla'
 			gamification_badge_award.send(sender=set_points, badge=badge, user= user)
-			#action.send(user, verb='badge', action_object=badge, target=badge)		
+			action.send(user, verb='badge', action_object=badge, target=badge)		
 
 	else:
 		progress.update_percent2()
 		progress.save()
-		# envio notificacion de que hay nuevo material y se ha quitado la medalla 
 		
-		#lista todas las medallas 
-		#badges = list(Badge.objects.order_by('prerequisites').all())
-		#medalla del usuario recien asignada
-		#badge_user =  progress.badge 
-		# indice de la medalla en la lista 
-		#i = badges.index(badge_user)
-		# se pasa a la siguiente medalla si existe 
-		#if i <= len(badges)-1:
-		#	progress.percent = 0
-		#	progress.counter = 0
-		#	progress.badge = badges[i+1]
-		#	progress.save()
+		
 
 
 # puntos del quiz 
@@ -188,6 +175,8 @@ def set_points_quiz(sender, sitting, badge, **kwargs):
 
 		# se llama a la funcion para asigna los puntos en el progreso 
 		set_points(p, points.score, b, sitting.user)
+		# se registra la accion de que hizo una actividad
+		action.send(sitting.user, verb='quiz', action_object=sitting.quiz, target=sitting.quiz)		
 			
 
 from wiki.views import RequestApproveView
@@ -217,3 +206,5 @@ def set_points_activitie(sender, user, badge, activitie, **kwargs):
 
 	# se llama a la funcion para asigna los puntos en el progreso 
 	set_points(p, points.score, b, user)
+	# se registra la accion de que hizo una actividad
+	#action.send(user, verb='activitie', action_object=activitie, target=activitie)		
