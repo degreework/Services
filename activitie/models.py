@@ -47,7 +47,7 @@ class ActivitieChild(models.Model):
         (0, 'No enviado'),
         (1, 'Enviado'),
         (2, 'En revisión'),
-        (3, 'Aprovado'),
+        (3, 'Aprobado'),
         (4, 'Rechazado'),
     )
 

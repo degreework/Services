@@ -7,6 +7,7 @@ from .models import ActivitieParent, ActivitieChild
 
 
 class ActivitieParentSerializer(serializers.ModelSerializer):
+    child = serializers.SerializerMethodField()
 
     def create(self, validated_data):
         try:
@@ -22,10 +23,17 @@ class ActivitieParentSerializer(serializers.ModelSerializer):
         except IntegrityError, e:
             raise PermissionDenied
 
+    def get_child(self, obj):
+        try:
+            return ActivitieChildSerializer(ActivitieChild.objects.get(parent=obj, author=self.context['request'].user)).data
+        except ActivitieChild.DoesNotExist:
+            return ''
+
 
     class Meta():
         model = ActivitieParent
-        fields = ('id', 'name', 'description', 'die_at')
+        fields = ('id', 'name', 'description', 'die_at', 'child')
+
 
 
 class ActivitieChildSerializer(serializers.ModelSerializer):
