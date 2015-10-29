@@ -9,6 +9,7 @@ from wiki.models import Request
 from badger.models import Badge
 from quiz.models import Quiz
 from activitie.models import ActivitieParent
+from django.shortcuts import get_list_or_404
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -67,21 +68,40 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 		elif content_type ==ContentType.objects.get_for_model(Quiz):
 			print 'entro en el quiz'
-			quiz = Quiz.objects.get(id = obj.target.id)
-			target = {
-			'id': quiz.id,
-			'type': u'Quiz',
-			'detail': quiz.title
-			}
+			if obj.target != None:	
+				quiz = Quiz.objects.get(id = obj.target.id)
+				target = {
+				'id': quiz.id,
+				'type': u'Quiz',
+				'detail': quiz.title
+				}
+			else:
+				target = {
+				'id': '',
+				'type': u'Activitie',
+				'detail': ''
+				}
 
 		elif content_type ==ContentType.objects.get_for_model(ActivitieParent):
 			print 'entro en el activitie'
-			activitie = ActivitieParent.objects.get(id = obj.target.id)
-			target = {
-			'id': activitie.id,
-			'type': u'Activitie',
-			'detail': activitie.name
-			}
+					
+			if obj.target != None:	
+				activitie = ActivitieParent.objects.get(id = obj.target.id)
+				print activitie
+				target = {
+				'id': activitie.id,
+				'type': u'Activitie',
+				'detail': activitie.name
+				}	
+			else:
+				target = {
+				'id': '',
+				'type': u'Activitie',
+				'detail': ''
+				}
+			
+			
+			
 
 		return target
 	

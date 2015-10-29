@@ -71,12 +71,12 @@ class ScoresUpdateSerializer(serializers.ModelSerializer):
 
             activitie = ActivitieParent.objects.get(id = obj.id_event)
             print activitie
-            return activitie.name
+            return {'name':activitie.name,'id':activitie.id}
         else:
             print 'entro Quiz'
             quiz = Quiz.objects.get(id = obj.id_event)
             print quiz
-            return quiz.title
+            return {'name':quiz.title, 'id': quiz.id}
         
         return{}
         

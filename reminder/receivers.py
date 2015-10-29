@@ -88,7 +88,6 @@ def wiki_request_checked(sender, request, **kwargs):
 		
 	#elimina la notificacion (wiki_request_created) del created request
 	"""
-
 		#user who to perform action
 		for noti in Notification.objects.filter(
 			actor_object_id=request.created_by,
@@ -137,7 +136,7 @@ def gamification_badge_award(sender, badge, user, **kwargs):
 	notify.send(
 			user,
 			recipient=user,
-			verb=u' Felicitaciones ganaste la medalla',#+badge.title,
+			verb=u' Felicitaciones ganaste la medalla',
 	        action_object=badge,
 	        #description=request.message,
 	        target=badge)
@@ -152,7 +151,7 @@ def create_remove_action(sender, action, instance, **kwargs):
 			notify.send(
 				user,
 				recipient=user,
-				verb=u' se ha creado ',#+badge.title,
+				verb=u' se ha creado',
 		        action_object=instance,
 		        #description=request.message,
 		        target=instance)
@@ -162,7 +161,7 @@ def create_remove_action(sender, action, instance, **kwargs):
 			notify.send(
 					user,
 					recipient=user,
-					verb=u' se ha eliminado',#+badge.title,
+					verb=u' se ha eliminado',
 			        action_object=instance,
 			        #description=request.message,
 			        target= instance)
