@@ -20,6 +20,12 @@ class Module(models.Model):
     def __str__(self):
         return u"%s" % self.name
 
+    def detail(self):
+        return u'%s' % self.name
+
+    def css_class(self):
+        return "module-type"
+
 
 class Forum_wrap(models.Model):
     module = models.ForeignKey(Module)

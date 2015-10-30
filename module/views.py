@@ -119,6 +119,10 @@ def module_activitie_create_wrap(request, module):
             # Se envia la señal para aunmentar los puntos con los que se gana la medalla
             calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add', element='activitie', instance_element=activitie)
 
+            #create Stream at User's wall
+            from actstream import action
+            action.send(request.user, verb='creado', action_object=activitie, target=module)
+
         
         
         

@@ -200,6 +200,8 @@ DEFAULT_GROUP_NAME = {
         "activitie | ActivitieParent | Can delete ActivitieParent",
 
         "activitie | ActivitieChild | Can check activities",
+
+        "module | Module | Can add Module",
         )
     }
 

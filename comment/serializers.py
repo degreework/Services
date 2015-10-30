@@ -35,7 +35,7 @@ class CreateCommentSerializer(serializers.ModelSerializer):
             #create Stream at User's wall
             from actstream import action
             queryset = Thread.objects.get_subclass(id = thread.pk)
-            action.send(user, verb='commented', action_object=comment, target=queryset)
+            action.send(user, verb='comentado', action_object=comment, target=queryset)
             
             return comment
 

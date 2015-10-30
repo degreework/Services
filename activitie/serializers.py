@@ -18,6 +18,7 @@ class ActivitieParentSerializer(serializers.ModelSerializer):
                 die_at=validated_data['die_at'],
                 name=validated_data['name'],
                 description=validated_data['description'])
+
             return activitie
 
         except IntegrityError, e:
@@ -66,7 +67,13 @@ class ActivitieChildSerializer(serializers.ModelSerializer):
                 return previous
             else:
 
-                return ActivitieChild.objects.create(author=user, parent=parent_activitie, file=validated_data['file'])
+                activitie = ActivitieChild.objects.create(author=user, parent=parent_activitie, file=validated_data['file'])
+                
+                #create Stream at User's wall
+                from actstream import action
+                action.send(user, verb='enviado', action_object=activitie, target=parent_activitie)
+
+                return activitie
 
         except IntegrityError, e:
             raise PermissionDenied

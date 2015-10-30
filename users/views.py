@@ -269,6 +269,6 @@ class UserStream(generics.ListAPIView):
     paginate_by = 10
 
     def get_queryset(self):
-        from actstream.models import user_stream
+        #from actstream.models import user_stream
         query = User.objects.get(pk=self.kwargs['pk']).actor_actions.all()
         return query

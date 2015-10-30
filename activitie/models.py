@@ -26,6 +26,12 @@ class ActivitieParent(Thread):
     def __str__(self):
         return ("%s" % self.name)
 
+    def detail(self):
+        return u'%s' % self.name
+
+    def css_class(self):
+        return "activitie-p-type"
+
     class Meta:
         verbose_name = "ActivitieParent"
         verbose_name_plural = "ActivitieParents"

@@ -136,6 +136,7 @@ class StreamSerializer(serializers.Serializer):
         except AttributeError, e:
             print e
             action_object = {}
+
         return action_object 
 
     def get_target(self, object):
@@ -154,24 +155,45 @@ class StreamSerializer(serializers.Serializer):
         from django.contrib.contenttypes.models import ContentType
         from forum.models import Ask, Answer
         from wiki.models import pageComments
-        from module.models import Forum_wrap, Wiki_wrap
+        from module.models import Forum_wrap, Wiki_wrap, Activitie_wrap, Module
         from comment.models import Comment
+        from activitie.models import ActivitieParent, ActivitieChild
         module = {}
 
+
+        """
+        if object.action_object_content_type == ContentType.objects.get_for_model(Module):
+            module = {
+                'name' : object.action_object.name,
+                'slug' : object.action_object.slug 
+            }
+        """
+
         if object.action_object_content_type == ContentType.objects.get_for_model(Ask):
-            
             wrap =  Forum_wrap.objects.get(ask=object.action_object)
             module = {
                 'name' : wrap.module.name,
                 'slug' : wrap.module.slug 
             }
-
         elif object.action_object_content_type == ContentType.objects.get_for_model(Answer):
             wrap =  Forum_wrap.objects.get(ask=object.target)
             module = {
                 'name' : wrap.module.name,
                 'slug' : wrap.module.slug 
             }
+
+        elif object.action_object_content_type == ContentType.objects.get_for_model(ActivitieChild):
+            wrap =  Activitie_wrap.objects.get(activitie=object.target)
+            module = {
+                'name' : wrap.module.name,
+                'slug' : wrap.module.slug 
+            }
+
+        elif object.target_content_type == ContentType.objects.get_for_model(Module):
+                module = {
+                    'name' : object.target.name,
+                    'slug' : object.target.slug 
+                }
 
         elif object.action_object_content_type == ContentType.objects.get_for_model(Comment):
             
@@ -186,7 +208,8 @@ class StreamSerializer(serializers.Serializer):
                 module = {
                     'name' : wrap.module.name,
                     'slug' : wrap.module.slug 
-                }
+                }    
+            
             elif object.target_content_type == ContentType.objects.get_for_model(pageComments):
                 wrap =  Wiki_wrap.objects.get(page=object.target.page)
                 module = {
