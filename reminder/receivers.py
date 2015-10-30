@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 from django.dispatch import receiver
 from django.contrib.contenttypes.models import ContentType
 
@@ -81,7 +83,7 @@ def wiki_request_checked(sender, request, **kwargs):
 		notify.send(
 			request.checked_by,
 			recipient=request.created_by,
-			verb=u'ha sido aprovado',
+			verb=u'ha sido aprobado',
 	        action_object=request,
 	        #description=u'Description',
 	        target=request)
@@ -166,3 +168,17 @@ def create_remove_action(sender, action, instance, **kwargs):
 			        #description=request.message,
 			        target= instance)
 
+from .signals import create_module
+from module.serializers import ModuleSerializer
+
+@receiver(create_module, sender=ModuleSerializer)
+def created_module(sender, module, **kwargs):
+	users = User.objects.all()
+	for user in users:
+		notify.send(
+			user,
+			recipient=user,
+			verb=u'ha creado un módulo',
+	        action_object=module,
+	        #description=request.message,
+	        target=module)

@@ -1,5 +1,8 @@
 from django.db import models
 
+from django.conf import settings
+from easy_thumbnails.fields import ThumbnailerImageField
+
 from forum.models import Ask
 
 
@@ -7,10 +10,7 @@ class Module(models.Model):
     slug = models.SlugField(unique=True)
     name = models.CharField(max_length=50)
     description = models.TextField()
-    photo = models.ImageField(upload_to='uploads/%Y/%m/%d',
-                               blank=True,
-                               null=True,
-                               )
+    photo = ThumbnailerImageField(upload_to='uploads/%Y/%m/%d', resize_source=settings.DEFAULT_MODULE_IMAGE_SETTING, blank=True, null=True)
     
 
     class Meta:

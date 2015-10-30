@@ -246,10 +246,12 @@ THUMBNAIL_ALIASES = {
     '': {
         'mini': {'size': (50, 50), 'crop': True},
         'user_profile': {'size': (168, 168), 'crop': True},
+        'module_image': {'size': (200, 200), 'crop': True},
     },
 }
 
 DEFAULT_USER_IMAGE_SETTING = THUMBNAIL_ALIASES['']['user_profile']
+DEFAULT_MODULE_IMAGE_SETTING = THUMBNAIL_ALIASES['']['module_image']
 
 
 

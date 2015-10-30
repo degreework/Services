@@ -9,6 +9,7 @@ from wiki.models import Request
 from badger.models import Badge
 from quiz.models import Quiz
 from activitie.models import ActivitieParent
+from module.models import Module
 from django.shortcuts import get_list_or_404
 
 
@@ -99,6 +100,14 @@ class NotificationSerializer(serializers.ModelSerializer):
 				'type': u'Activitie',
 				'detail': ''
 				}
+
+		elif content_type == ContentType.objects.get_for_model(Module):
+			target = {
+			'id': obj.target.id,
+			'type': u'Module',
+			'detail': obj.target.name,
+			'slug': obj.target.slug
+			}
 			
 			
 			

@@ -1,7 +1,11 @@
 from rest_framework import serializers
 from django.db import IntegrityError
+from django.core.exceptions import PermissionDenied
 from .models import Module
 from  gamification.signals import createBadgeModule
+
+from django.conf import settings
+from reminder.signals import create_module
 
 
 class ModuleSerializer(serializers.ModelSerializer):
@@ -9,11 +13,15 @@ class ModuleSerializer(serializers.ModelSerializer):
     Serializer Class to create users
     """
     def create(self, validated_data):
-    	try:		
-    		module = Module.objects.create(**validated_data)
-    		createBadgeModule.send(sender=ModuleSerializer, module=module)
-    		return module
-    	except IntegrityError, e:
+        try:        
+            module = Module.objects.create(**validated_data)
+            createBadgeModule.send(sender=ModuleSerializer, module=module)
+
+            if getattr(settings, 'NOTIFICATIONS', False):
+                create_module.send(sender=ModuleSerializer, module=module)
+
+            return module
+        except IntegrityError, e:
             raise PermissionDenied
 
 
