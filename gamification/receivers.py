@@ -113,8 +113,7 @@ def verify_users_for_award(badge, element, instance_element):
 
 # cada vez que se cree o elimine una evaluacion o actividad aumenta o disminuye los puntos para ganarse la medalla 
 @receiver(calculate_points_end_badge)
-def points_end_badge(sender, badge, points, action, element, instance_element, **kwargs):
-	print 'points_end_badge'
+def points_end_badge(sender, author, badge, points, action, element, instance_element, **kwargs):
 	# se obtiene la medalla 
 	b = get_badge(badge)
 	
@@ -124,14 +123,14 @@ def points_end_badge(sender, badge, points, action, element, instance_element, *
 		b.save()
 		# se verifica si se deben borrar medallas asignadas 
 		verify_remove_for_award(b, element, instance_element)
-		create_remove_action.send(sender=verify_remove_for_award, action= 'add', instance = instance_element)
+		create_remove_action.send(sender=verify_remove_for_award, author=author, action= 'add', instance = instance_element)
 	elif action == 'remove':
 		if b.points_end > 0:
 			b.points_end -= points
 			b.save()
 		# se verifica el elemento que se borra y se recalcula el progreso teniendo en cuenta si gana o no la medalla
 		verify_users_for_award(b, element, instance_element)
-		create_remove_action.send(sender=verify_remove_for_award, action= 'remove', instance = instance_element)
+		create_remove_action.send(sender=verify_remove_for_award, author=author, action= 'remove', instance = instance_element)
 
 
 #-------------------------------------------

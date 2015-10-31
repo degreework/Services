@@ -9,7 +9,7 @@ from wiki.models import Request
 from badger.models import Badge
 from quiz.models import Quiz
 from activitie.models import ActivitieParent, ActivitieChild
-from module.models import Module, Activitie_wrap
+from module.models import Module, Activitie_wrap, Wiki_wrap
 from django.shortcuts import get_list_or_404
 
 
@@ -43,18 +43,24 @@ class NotificationSerializer(serializers.ModelSerializer):
 			}
 
 		elif content_type == ContentType.objects.get_for_model(Request):
-			request = Request.objects.get(id=obj.target.id)
+			wrap = Wiki_wrap.objects.filter(page=obj.target.page)[0]
 			target = {
-			'id': request.id,
+			'id': obj.target.id,
 			'type': u'Request',
 			'detail': { 
-				'approved':request.approved,
+				'approved': obj.target.approved,
 				'page': {
 					#'id': request.page.id,
-					'slug': request.page.slug,
-					'title': request.page.title,
-					'commit': request.commit
+					'slug': obj.target.page.slug,
+					'title': obj.target.page.title,
+					'commit': obj.target.commit
 					}
+				},
+			'module':{
+					'id': wrap.module.id,
+					'name': wrap.module.name,
+					'slug': wrap.module.slug
+					
 				}
 			}
 
@@ -84,15 +90,18 @@ class NotificationSerializer(serializers.ModelSerializer):
 				}
 
 		elif content_type ==ContentType.objects.get_for_model(ActivitieParent):
-			print 'entro en el activitie'
-					
+			
 			if obj.target != None:	
-				activitie = ActivitieParent.objects.get(id = obj.target.id)
-				print activitie
+				wrap = Activitie_wrap.objects.filter(activitie=obj.target)[0]
 				target = {
-				'id': activitie.id,
+				'id': wrap.activitie.id,
 				'type': u'Activitie',
-				'detail': activitie.name
+				'detail': wrap.activitie.name,
+				'module':{
+					'id': wrap.module.id,
+					'name': wrap.module.name,
+					'slug': wrap.module.slug
+					}
 				}	
 			else:
 				target = {

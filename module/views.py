@@ -114,19 +114,16 @@ def module_activitie_create_wrap(request, module):
         if 201 == response.status_code:
             activitie = ActivitieParent.objects.get(pk=response.data['id'])
             Activitie_wrap(module=module, activitie=activitie).save()
+            
             #Se crea el puntaje en la tabla de scores
             Scores(id_event=activitie.id, score=10, event="Activity").save()
+            
             # Se envia la señal para aunmentar los puntos con los que se gana la medalla
-            calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add', element='activitie', instance_element=activitie)
+            calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, author=request.user, points=10, action='add', element='activitie', instance_element=activitie)
 
             #create Stream at User's wall
             from actstream import action
             action.send(request.user, verb='creado', action_object=activitie, target=module)
-
-        
-        
-        
-        
 
         return response
 

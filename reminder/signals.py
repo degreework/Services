@@ -10,8 +10,8 @@ wiki_request_created = django.dispatch.Signal(providing_args=["request"])
 
 gamification_badge_award = django.dispatch.Signal(providing_args=["badge, user"])
 
-create_remove_action = django.dispatch.Signal(providing_args=["action, instance"])
+create_remove_action = django.dispatch.Signal(providing_args=["author, action, instance"])
 
-create_module = django.dispatch.Signal(providing_args=["module"])
+create_module = django.dispatch.Signal(providing_args=["author", "module"])
 
 activitie_checked = django.dispatch.Signal(providing_args=["checker", "activitie"])

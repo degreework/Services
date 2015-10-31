@@ -18,7 +18,7 @@ class ModuleSerializer(serializers.ModelSerializer):
             createBadgeModule.send(sender=ModuleSerializer, module=module)
 
             if getattr(settings, 'NOTIFICATIONS', False):
-                create_module.send(sender=ModuleSerializer, module=module)
+                create_module.send(sender=ModuleSerializer, author=self.context['request'].user, module=module)
 
             return module
         except IntegrityError, e:

@@ -144,14 +144,14 @@ def gamification_badge_award(sender, badge, user, **kwargs):
 	        target=badge)
 
 @receiver(create_remove_action)
-def create_remove_action(sender, action, instance, **kwargs):
-	print 'create_remove_action'
+def create_remove_action(sender, author, action, instance, **kwargs):
+
 	
 	for user in User.objects.all():
 		if action == 'add':
 			
 			notify.send(
-				user,
+				author,
 				recipient=user,
 				verb=u' se ha creado',
 		        action_object=instance,
@@ -161,7 +161,7 @@ def create_remove_action(sender, action, instance, **kwargs):
 		elif action == 'remove':
 			
 			notify.send(
-					user,
+					author,
 					recipient=user,
 					verb=u' se ha eliminado',
 			        action_object=instance,
@@ -172,11 +172,11 @@ from .signals import create_module
 from module.serializers import ModuleSerializer
 
 @receiver(create_module, sender=ModuleSerializer)
-def created_module(sender, module, **kwargs):
+def created_module(sender, author, module, **kwargs):
 	users = User.objects.all()
 	for user in users:
 		notify.send(
-			user,
+			author,
 			recipient=user,
 			verb=u'ha creado un módulo',
 	        action_object=module,
