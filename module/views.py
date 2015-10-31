@@ -247,7 +247,7 @@ def module_quiz_create_wrap(request, module):
             #Se crea el puntaje en la tabla de scores
             Scores(id_event=quiz.id, score=10, event="Quiz").save()
             # Se envia la señal para aunmentar los puntos con los que se gana la medalla
-            calculate_points_end_badge.send(sender=module_activitie_create_wrap, badge=badge, points=10, action='add', element='quiz', instance_element=quiz)
+            calculate_points_end_badge.send(sender=module_activitie_create_wrap, author=request.user, badge=badge, points=10, action='add', element='quiz', instance_element=quiz)
 
         
         return response

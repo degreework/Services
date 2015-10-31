@@ -9,7 +9,7 @@ from wiki.models import Request
 from badger.models import Badge
 from quiz.models import Quiz
 from activitie.models import ActivitieParent, ActivitieChild
-from module.models import Module, Activitie_wrap, Wiki_wrap
+from module.models import Module, Activitie_wrap, Wiki_wrap, Quiz_wrap
 from django.shortcuts import get_list_or_404
 
 
@@ -74,13 +74,19 @@ class NotificationSerializer(serializers.ModelSerializer):
 			}
 
 		elif content_type ==ContentType.objects.get_for_model(Quiz):
-			print 'entro en el quiz'
+			
 			if obj.target != None:	
-				quiz = Quiz.objects.get(id = obj.target.id)
+				wrap = Quiz_wrap.objects.filter(quiz=obj.target)[0]
+				
 				target = {
-				'id': quiz.id,
-				'type': u'Quiz',
-				'detail': quiz.title
+					'id': obj.target.id,
+					'type': u'Quiz',
+					'detail': obj.target.title,
+					'module':{
+						'id': wrap.module.id,
+						'name': wrap.module.name,
+						'slug': wrap.module.slug
+					}
 				}
 			else:
 				target = {
