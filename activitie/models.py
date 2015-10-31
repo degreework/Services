@@ -35,6 +35,7 @@ class ActivitieParent(Thread):
     class Meta:
         verbose_name = "ActivitieParent"
         verbose_name_plural = "ActivitieParents"
+        permissions = (("can_view", "Can view Activitie"),)
 
 
 class ActivitieChild(models.Model):

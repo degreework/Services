@@ -16,6 +16,7 @@ class Module(models.Model):
     class Meta:
         verbose_name = "Module"
         verbose_name_plural = "Modules"
+        permissions = (("can_view", "Can view Module"),)
 
     def __str__(self):
         return u"%s" % self.name
