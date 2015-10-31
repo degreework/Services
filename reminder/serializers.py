@@ -8,8 +8,8 @@ from forum.models import Answer, Ask
 from wiki.models import Request
 from badger.models import Badge
 from quiz.models import Quiz
-from activitie.models import ActivitieParent
-from module.models import Module
+from activitie.models import ActivitieParent, ActivitieChild
+from module.models import Module, Activitie_wrap
 from django.shortcuts import get_list_or_404
 
 
@@ -100,6 +100,19 @@ class NotificationSerializer(serializers.ModelSerializer):
 				'type': u'Activitie',
 				'detail': ''
 				}
+
+		elif content_type == ContentType.objects.get_for_model(ActivitieChild):
+			module = Activitie_wrap.objects.filter(activitie=obj.target.parent)[0].module
+			target = {
+				'id': obj.target.parent.id,
+				'type': u'Activitie',
+				'detail': obj.target.parent.name,
+				'module':{
+					'id': module.id,
+					'name': module.name,
+					'slug': module.slug
+				}
+			}
 
 		elif content_type == ContentType.objects.get_for_model(Module):
 			target = {

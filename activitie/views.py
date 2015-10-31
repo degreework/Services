@@ -1,5 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 
@@ -146,10 +147,13 @@ class ActivitieChildCheckView(generics.GenericAPIView):
             elif request.POST['action'] == "rejected":
                 activitie.do_rejected(request.user)
 
-                #if getattr(settings, 'NOTIFICATIONS', False):
-                    #wiki_request_checked.send(sender=RequestApproveView, request=request_obj)
+                
                 msg['msg'] = 'rejected'
                 r_status = status.HTTP_200_OK
+
+            from reminder.signals import activitie_checked
+            if getattr(settings, 'NOTIFICATIONS', False):
+                    activitie_checked.send(sender=ActivitieChildCheckView, checker=request.user, activitie=activitie)
             
             return Response(msg, status=r_status)
         except ObjectDoesNotExist, e:

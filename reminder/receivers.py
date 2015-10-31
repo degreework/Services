@@ -21,7 +21,7 @@ from users.models import User
 from quiz.models import Quiz
 from activitie.models import ActivitieParent
 
-from .signals import forum_answered, forum_ask_updated, post_comment, wiki_request_checked, wiki_request_created, gamification_badge_award, create_remove_action
+from .signals import forum_answered, forum_ask_updated, post_comment, wiki_request_checked, wiki_request_created, gamification_badge_award, create_remove_action, activitie_checked
 
 
 """FORUM"""
@@ -182,3 +182,17 @@ def created_module(sender, module, **kwargs):
 	        action_object=module,
 	        #description=request.message,
 	        target=module)
+
+from activitie.views import ActivitieChildCheckView
+@receiver(activitie_checked, sender=ActivitieChildCheckView)
+def activitie_checked(sender, checker, activitie, **kwargs):
+	print "notificacion activitie checked"
+	print activitie
+	notify.send(
+		checker,
+		recipient=activitie.author,
+		verb=u'ha revisado',
+        action_object=activitie,
+        #description=request.message,
+        target=activitie)
+	
