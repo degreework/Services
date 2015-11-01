@@ -196,3 +196,15 @@ def activitie_checked(sender, checker, activitie, **kwargs):
         #description=request.message,
         target=activitie)
 	
+
+from django.db.models.signals import pre_delete
+from waliki.models import Page
+from notifications.models import Notification
+
+@receiver(pre_delete, sender=Page)
+def log_deleted_page(sender, instance, using, **kwargs):
+	"""
+	if a Page is deleted, Notification must be deleted too
+	"""
+	page_type = ContentType.objects.get(model="request")
+	Notification.objects.filter(target_content_type=page_type).delete()

@@ -43,26 +43,26 @@ class NotificationSerializer(serializers.ModelSerializer):
 			}
 
 		elif content_type == ContentType.objects.get_for_model(Request):
-			wrap = Wiki_wrap.objects.filter(page=obj.target.page)[0]
-			target = {
-			'id': obj.target.id,
-			'type': u'Request',
-			'detail': { 
-				'approved': obj.target.approved,
-				'page': {
-					#'id': request.page.id,
-					'slug': obj.target.page.slug,
-					'title': obj.target.page.title,
-					'commit': obj.target.commit
+				wrap = Wiki_wrap.objects.filter(page=obj.target.page)[0]
+				target = {
+				'id': obj.target.id,
+				'type': u'Request',
+				'detail': { 
+					'approved': obj.target.approved,
+					'page': {
+						#'id': request.page.id,
+						'slug': obj.target.page.slug,
+						'title': obj.target.page.title,
+						'commit': obj.target.commit
+						}
+					},
+				'module':{
+						'id': wrap.module.id,
+						'name': wrap.module.name,
+						'slug': wrap.module.slug
+						
 					}
-				},
-			'module':{
-					'id': wrap.module.id,
-					'name': wrap.module.name,
-					'slug': wrap.module.slug
-					
 				}
-			}
 
 		elif content_type == ContentType.objects.get_for_model(Badge):
 			print 'entro en el badge'
