@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.core.exceptions import PermissionDenied
+
 
 from django.conf import settings
 
@@ -7,9 +9,7 @@ from django.conf import settings
 from post_framework.models import Thread
 
 
-import datetime
 from django.utils import timezone
-from django.utils.timezone import utc
 
 
 class ActivitieParent(Thread):
@@ -83,23 +83,15 @@ class ActivitieChild(models.Model):
         self.status = 4
         self.save()
         return True
-"""
-    def save(self, *args, **kwargs):
-        print("save")
 
-        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+    def save(self, *args, **kwargs):
+        now = timezone.now()
         die_at = self.parent.die_at
 
         delta = die_at - now
-
+        
         if delta.total_seconds() > 0:
-            print("ok")
+            super(ActivitieChild, self).save(*args, **kwargs)
         else:
-            print("late")
+            raise PermissionDenied
             
-            raise SomeException("Too late")
-            
-
-        #super(ActivitieChild).objects.create(author=user, parent=parent_activitie, file=validated_data['file'])
-
-"""

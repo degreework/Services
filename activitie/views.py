@@ -39,7 +39,7 @@ class ActivitieParentUpdateView(viewsets.ModelViewSet):
 
         # Se envia la senal para disminuir los puntos con los que se gana la medalla
         badge = kwargs['slug']
-        calculate_points_end_badge.send(sender=ActivitieParentUpdateView, badge=badge, points=score.score, action='remove', element='activitie', instance_element=activitie)
+        calculate_points_end_badge.send(sender=ActivitieParentUpdateView, author=request.user, badge=badge, points=score.score, action='remove', element='activitie', instance_element=activitie)
         
         # se borra el puntaje y el quiz 
         score.delete()

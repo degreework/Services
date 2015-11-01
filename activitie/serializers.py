@@ -1,13 +1,18 @@
 from django.db import IntegrityError
+from django.core.exceptions import PermissionDenied
+
 
 from rest_framework import serializers
 
+from django.utils import timezone
 
 from .models import ActivitieParent, ActivitieChild
 
 
+
 class ActivitieParentSerializer(serializers.ModelSerializer):
     child = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
 
     def create(self, validated_data):
         try:
@@ -30,10 +35,23 @@ class ActivitieParentSerializer(serializers.ModelSerializer):
         except ActivitieChild.DoesNotExist:
             return ''
 
+    def get_status(self, obj):
+        now = timezone.now()
+        die_at = obj.die_at
+
+        delta = die_at - now
+        
+        if delta.total_seconds() > 0:
+            return 'open'
+        else:
+            return 'close'
+            
+        return 'close'
+
 
     class Meta():
         model = ActivitieParent
-        fields = ('id', 'name', 'description', 'die_at', 'child')
+        fields = ('id', 'name', 'description', 'die_at', 'child', 'status')
 
 
 
@@ -52,8 +70,7 @@ class ActivitieChildSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         try:
             user = self.context['request'].user
-            parent_activitie = validated_data['parent']
-            parent_activitie = ActivitieParent.objects.get(pk=parent_activitie)
+            parent_activitie = ActivitieParent.objects.get(pk=validated_data['parent'])
 
             try:
                 previous = ActivitieChild.objects.get(author=user, parent=parent_activitie)

@@ -18,6 +18,7 @@ from django.contrib.auth.models import Group
 from users.models import User
 from activitie.models import ActivitieParent, ActivitieChild
 from gamification.models import Scores
+from module.models import Module
 
 class ActivitieCommon(object):
     id = 1
@@ -68,6 +69,12 @@ class ActivitieCommon(object):
             authorization_grant_type=Application.GRANT_AUTHORIZATION_CODE,
         )
         self.application.save()
+
+
+    def _create_module(self):
+        call_command('Badge')
+        self.module = Module(name='Modulo', slug='modulo')
+        self.module.save()
 
 
     def _create_file(self):
@@ -128,6 +135,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
     def setUp(self):
         self._create_user()
         self._create_application()
+        self._create_module()
 
 
     def test_create_activitie_only_name_user_anonymous(self):
@@ -174,7 +182,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can't be deleted by a anonymous user
         """
-        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.id})
+        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.id, 'slug':self.module.slug})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -242,7 +250,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
 
         self._create_activitie()
 
-        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.activitie.id})
+        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.activitie.id, 'slug': self.module.slug})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
