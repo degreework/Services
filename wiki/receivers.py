@@ -7,8 +7,10 @@ from django.conf import settings
 from reminder.signals import wiki_request_created
 
 @receiver(page_request, sender=Request)
-def generate_request(sender, page, commit, author, message, **kwargs):
-    request = Request(page=page, commit=commit, checked_by=None, created_by=author, message=message)
+def generate_request(sender, new_title, page, commit, author, message, **kwargs):
+
+    request = Request(page=page, page_new_title=new_title, commit=commit, checked_by=None, created_by=author, message=message)
     request.save()
+    
     if getattr(settings, 'NOTIFICATIONS', False):
-    	wiki_request_created.send(sender=generate_request, request=request)
+        wiki_request_created.send(sender=generate_request, request=request)

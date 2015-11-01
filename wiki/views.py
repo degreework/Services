@@ -130,7 +130,7 @@ class RequestApproveView(generics.GenericAPIView):
     def post(self, request, slug, version, *args, **kwargs):
 
         try:
-            request_obj = Request.objects.get(commit=version)
+            request_obj = Request.objects.filter(commit=version).reverse()[0]
             
             if request.POST['action'] == "approved":
                 request_obj.approve_request(request.user)

@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Request, pageComments, PublicPage
 
 class RequestAdmin(admin.ModelAdmin):
-    list_display = ('id', 'page', 'commit', 'created_at', 'approved',)
+    list_display = ('id', 'page', 'page_new_title', 'commit', 'created_at', 'approved',)
 
 
 class PublicPageAdmin(admin.ModelAdmin):

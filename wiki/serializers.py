@@ -34,7 +34,7 @@ class PageCreateSerializer(serializers.ModelSerializer):
  
 
     def save(self, *args, **kwargs):
-        """call to waliki new function""" 
+        """call to waliki new function"""
         #call waliki new function
         mutable = self.context['request'].POST._mutable
         self.context['request'].POST._mutable = True
@@ -64,6 +64,7 @@ class PageCreateSerializer(serializers.ModelSerializer):
         commit = json.loads(self.get_extra_data(self.instance))['parent']
         page_request.send(
             sender=Request,
+            new_title=page.title,
             page=page,
             commit=commit,
             author=self.context['request'].user,
@@ -101,8 +102,16 @@ class PageEditSerializer(serializers.HyperlinkedModelSerializer):
     def save(self, *args, **kwargs):
         """call to waliki edit function"""
 
+
         mutable = self.context['request'].POST._mutable
         self.context['request'].POST._mutable = True
+
+        kwargs['slug'] = self.instance.slug
+        page = Page.objects.filter(slug=kwargs['slug'])[0]
+        new_title = self.context['request'].POST.get('title', page.title)
+        self.context['request'].POST['title'] = page.title
+
+
         self.context['request'].POST['markup'] = WALIKI_DEFAULT_MARKUP
         self.context['request'].POST._mutable = mutable
 
@@ -114,16 +123,18 @@ class PageEditSerializer(serializers.HyperlinkedModelSerializer):
             self.context['request'].POST['extra_data'] = self.get_extra_data(self.instance)
             self.context['request'].POST._mutable = mutable
 
-        kwargs['slug'] = self.instance.slug
+        
 
         response = views.edit(self.context['request'],*args, **kwargs)
 
-        page = Page.objects.filter(slug=kwargs['slug'])[0]
+        
 
         #Create new reques
         commit = json.loads(self.get_extra_data(self.instance))['parent']
+        
         page_request.send(
             sender=Request,
+            new_title=new_title,
             page=page,
             commit=commit,
             author=self.context['request'].user,
@@ -132,7 +143,7 @@ class PageEditSerializer(serializers.HyperlinkedModelSerializer):
 
         #if user have permissions, then automatic aprove the request
         if self.context['request'].user.has_perm( 'wiki.can_approve_request' ):
-            request = Request.objects.filter(commit=commit)[0]
+            request = Request.objects.filter(commit=commit).reverse()[0]
             request.approve_request(self.context['request'].user)
 
 

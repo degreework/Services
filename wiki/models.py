@@ -12,6 +12,8 @@ class Request(models.Model):
     Represent change request from a user
     """
     page = models.ForeignKey(Page)
+    page_new_title = models.CharField(max_length=200)
+
     commit = models.CharField(max_length=7)
 
     checked = models.BooleanField(default=False)
@@ -32,7 +34,11 @@ class Request(models.Model):
         self.approved = True
         self.checked_by = user
         self.checked_at = datetime.datetime.now()
+
+        self.page.title = self.page_new_title
+        self.page.save()
         self.save()
+
         PublicPage.objects.filter(request__page=self.page).delete()
         PublicPage(request=self).save()
         return True
