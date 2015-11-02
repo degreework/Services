@@ -290,13 +290,13 @@ def module_material_create_wrap(request, module):
     try:
         module = Module.objects.get(slug=module)
         
-        if request.POST.get('file', False):
+        #if field url come in POST then to create a new Link else is a File
+        if request.POST.get('url', False):
+            response = MaterialLinkCreateView.as_view({'post':'create'})(request)
+        
+        else:
             response = MaterialFileCreateView.as_view({'post':'create'})(request)
         
-        elif request.POST.get('url', False):
-            response = MaterialLinkCreateView.as_view({'post':'create'})(request)
-        else:
-            raise Http404
 
         if 201 == response.status_code:
             material = Material.objects.get(pk=response.data['id'])
