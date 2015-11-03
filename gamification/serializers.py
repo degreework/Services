@@ -27,13 +27,9 @@ class AwardCreateSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_badge(self, obj):
-        module = Module.objects.get(name = obj.badge.title)
-        try:
-            img = module.photo.url
-        except:
-            img = ''
-            
-        return {'title': obj.badge.title, 'img': img}
+        module = Module.objects.get(slug = obj.badge.slug)
+        return {'title': obj.badge.title, 'img': module.photo.url}
+
 
     def get_user(self, obj):
         return {obj.user.first_name+' '+obj.user.last_name}
@@ -51,14 +47,13 @@ class ProgressCreateSerializer(serializers.ModelSerializer):
     badge = serializers.SerializerMethodField()
 
     def get_badge(self, obj):
-        if obj.badge.image != "":
-            return {'title': obj.badge.title, 'img': obj.badge.image.url}
-        else:
-            return {'title': obj.badge.title, 'img': 'none'}
+
+        module = Module.objects.get(slug= obj.badge.slug)
+        return {'slug':obj.badge.slug}
 
     class Meta():
         model = Progress
-        fields = ('percent', 'badge', 'get_points_end',  )
+        fields = ('percent', 'badge',)
 
 
 

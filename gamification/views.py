@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
-
+from rest_framework.response import Response
 from .serializers import *
 
 # Create your views here.
@@ -70,17 +70,15 @@ class AwardUpdateView(viewsets.ModelViewSet):
 #   PROGRESS
 #---------------------------------
 from badger.models import Progress
-from rest_framework.response import Response
-from django.shortcuts import get_list_or_404
-class ProgressDetail(APIView):
+class ProgressDetail(generics.ListAPIView):
     
-    def get(self,*args, **kwargs):
-
-        permission_classes = (AllowAny, )
+    permission_classes = (AllowAny, )
+    serializer_class = ProgressCreateSerializer
+    def get_queryset(self,*args, **kwargs):        
         user = self.kwargs['pk']
-        progress = get_list_or_404(Progress, user= user)
-        serializer = ProgressCreateSerializer(progress)
-        return Response(serializer.data)
+        progress = Progress.objects.filter(user= user)
+        return progress
+        
 
 
 
