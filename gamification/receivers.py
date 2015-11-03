@@ -196,14 +196,14 @@ from activitie.views import ActivitieChildCheckView
 # puntos de las actvidades  
 @receiver(post_points_activity, sender = ActivitieChildCheckView)
 def set_points_activitie(sender, user, badge, activitie, **kwargs):
-	print 'set_points_activitie'
 	# se trae la medalla y el progreso del usario en esa medalla
 	b = get_badge(badge)
 	p = b.progress_for(user)
 	# se consulta cuantos puntos tiene ese quiz 
-	points = Scores.objects.get(id_event=activitie)
+	points = Scores.objects.get(id_event=activitie.id, event="Activity")
 
 	# se llama a la funcion para asigna los puntos en el progreso 
 	set_points(p, points.score, b, user)
+	
 	# se registra la accion de que hizo una actividad
-	#action.send(user, verb='activitie', action_object=activitie, target=activitie)		
+	action.send(user, verb='activitie', action_object=activitie, target=activitie)

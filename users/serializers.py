@@ -4,6 +4,16 @@ from .models import User
 
 from gamification.serializers import ProgressCreateSerializer
 
+
+from django.contrib.contenttypes.models import ContentType
+from forum.models import Ask, Answer
+from wiki.models import pageComments
+from module.models import Quiz_wrap, Forum_wrap, Wiki_wrap, Activitie_wrap, Module
+from comment.models import Comment
+from activitie.models import ActivitieParent, ActivitieChild
+from quiz.models import Quiz
+from badger.models import Badge
+
 class CreateUserSerializer(serializers.ModelSerializer):
     """
     Serializer Class to create users
@@ -129,13 +139,17 @@ class StreamSerializer(serializers.Serializer):
         try:
             action_object = {
                 'id': object.action_object.pk,
-                'type': object.action_object.css_class(),
+                #'type': object.action_object.css_class(),
                 'detail': object.action_object.detail()
             }
 
         except AttributeError, e:
             print e
-            action_object = {}
+            action_object = {
+                'id': object.action_object.pk,
+                #'type': object.action_object.css_class(),
+                'detail': object.action_object.__str__()
+            }
 
         return action_object 
 
@@ -143,7 +157,7 @@ class StreamSerializer(serializers.Serializer):
         try:
             target = {
             'id': object.target.pk,
-            'type': object.target.css_class(),
+            #'type': object.target.css_class(),
             'detail': object.target.detail()
             }
         except AttributeError:
@@ -151,25 +165,23 @@ class StreamSerializer(serializers.Serializer):
         return target
 
     def get_module(self, object):
-
-        from django.contrib.contenttypes.models import ContentType
-        from forum.models import Ask, Answer
-        from wiki.models import pageComments
-        from module.models import Forum_wrap, Wiki_wrap, Activitie_wrap, Module
-        from comment.models import Comment
-        from activitie.models import ActivitieParent, ActivitieChild
         module = {}
-
-
-        """
-        if object.action_object_content_type == ContentType.objects.get_for_model(Module):
+        
+        if object.action_object_content_type == ContentType.objects.get_for_model(Badge):
+            module =  Module.objects.get(slug = object.action_object.slug)
             module = {
-                'name' : object.action_object.name,
-                'slug' : object.action_object.slug 
+                'name' : module.name,
+                'slug' : module.slug 
             }
-        """
-
-        if object.action_object_content_type == ContentType.objects.get_for_model(Ask):
+        
+        elif object.action_object_content_type == ContentType.objects.get_for_model(Quiz):
+            wrap =  Quiz_wrap.objects.get(quiz=object.action_object)    
+            module = {
+                'name' : wrap.module.name,
+                'slug' : wrap.module.slug 
+            }
+            
+        elif object.action_object_content_type == ContentType.objects.get_for_model(Ask):
             wrap =  Forum_wrap.objects.get(ask=object.action_object)
             module = {
                 'name' : wrap.module.name,

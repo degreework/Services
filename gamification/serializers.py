@@ -28,7 +28,12 @@ class AwardCreateSerializer(serializers.ModelSerializer):
 
     def get_badge(self, obj):
         module = Module.objects.get(name = obj.badge.title)
-        return {'title': obj.badge.title, 'img': module.photo.url}
+        try:
+            img = module.photo.url
+        except:
+            img = ''
+            
+        return {'title': obj.badge.title, 'img': img}
 
     def get_user(self, obj):
         return {obj.user.first_name+' '+obj.user.last_name}
