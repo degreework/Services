@@ -69,7 +69,7 @@ urlpatterns = [
 
     url(r'^API/inbox/notifications/', include(routerNotification)),
 
-    url(r'^API/module/', include(routerModule)),
+    url(r'^API/module/', include(routerModule, namespace='module')),
 
 
     url(r'^admin/', include(admin.site.urls)),

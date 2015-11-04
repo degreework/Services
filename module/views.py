@@ -11,13 +11,15 @@ from .serializers import ModuleSerializer, ModuleUpdateSerializer
 from gamification.models import Scores
 from  gamification.signals import calculate_points_end_badge
 
+from .permissions import IsTeacher
 
 class ModuleCreateView(viewsets.ModelViewSet):
     """
     API endpoint for creating a Module
     """
     serializer_class = ModuleSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsTeacher, )
+
 
 class ModuleUpdateView(viewsets.ModelViewSet):
     """
@@ -26,7 +28,7 @@ class ModuleUpdateView(viewsets.ModelViewSet):
     lookup_field = 'slug'
     queryset = Module.objects.all()
     serializer_class = ModuleUpdateSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsTeacher, )
     
 
 class ModuleReadView(viewsets.ReadOnlyModelViewSet):
@@ -43,10 +45,10 @@ class ModuleListView(generics.ListAPIView):
     """
     View to list all Modules in app
     """
-    permission_classes = (IsAuthenticated, )
     queryset = Module.objects.all()
     serializer_class = ModuleSerializer
-    paginate_by = 100
+    permission_classes = (IsAuthenticated, )
+    paginate_by = 10
 
 
 """Views for Forum wrap"""
