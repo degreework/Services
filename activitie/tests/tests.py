@@ -72,6 +72,7 @@ class ActivitieCommon(object):
 
 
     def _create_module(self):
+        from module.serializers import ModuleSerializer
         call_command('Badge')
         self.module = Module(name='Modulo', slug='modulo')
         self.module.save()
@@ -106,8 +107,9 @@ class ActivitieCommon(object):
 
     def _create_activitie(self):
         from django.utils import timezone
+        import datetime
         self.activitie = ActivitieParent(
-            die_at=timezone.now(),
+            die_at=timezone.now() + datetime.timedelta(days=1),
             name=self.name,
             description=self.description,
             author=self.user)

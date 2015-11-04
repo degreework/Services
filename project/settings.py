@@ -110,6 +110,11 @@ INSTALLED_APPS = (
     
 )
 
+"""
+if DEBUG:
+    INSTALLED_APPS += ('django_extensions', )
+"""
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -192,6 +197,8 @@ DEFAULT_GROUP_NAME = {
         "forum | Ask | Can view Asks",
         "forum | Ask | Can add Ask",
         "forum | Ask | Can change Ask",
+
+        "module | Module | Can view Module",
 
         ),
     "Teacher":(
