@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from .models import ActivitieParent, ActivitieChild
 from .serializers import ActivitieParentSerializer, ActivitieChildSerializer
 
+from project.permissions import IsTeacher
 from .permissions import IsAuthor, CanCreate, CanCheck
 
 class ActivitieParentCreateView(viewsets.ModelViewSet):
@@ -18,7 +19,7 @@ class ActivitieParentCreateView(viewsets.ModelViewSet):
     API endpoint for creating an Activitie
     """
     serializer_class = ActivitieParentSerializer
-    permission_classes = (CanCreate, )
+    permission_classes = (IsTeacher, )
 
 from gamification.models import Scores
 from  gamification.signals import calculate_points_end_badge
@@ -28,7 +29,7 @@ class ActivitieParentUpdateView(viewsets.ModelViewSet):
     """
     queryset = ActivitieParent.objects.all()
     serializer_class = ActivitieParentSerializer
-    permission_classes = (IsAuthenticated, IsAuthor, )
+    permission_classes = (IsTeacher, )
 
     def destroy(self, request, pk, format=None, **kwargs):
         print 'deletio'
@@ -104,9 +105,9 @@ class ActivitieChildListView(generics.ListAPIView):
     """
     View to list all Activities
     """
-    queryset = ActivitieParent.objects.all()
+    #queryset = ActivitieParent.objects.all()
     #add permission
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsTeacher, )
     serializer_class = ActivitieChildSerializer
     paginate_by = 5
 

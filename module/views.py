@@ -11,7 +11,7 @@ from .serializers import ModuleSerializer, ModuleUpdateSerializer
 from gamification.models import Scores
 from  gamification.signals import calculate_points_end_badge
 
-from .permissions import IsTeacher
+from project.permissions import IsTeacher
 
 class ModuleCreateView(viewsets.ModelViewSet):
     """

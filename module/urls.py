@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, url
 
+import receivers
+
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views import (

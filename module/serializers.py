@@ -2,7 +2,6 @@ from rest_framework import serializers
 from django.db import IntegrityError
 from django.core.exceptions import PermissionDenied
 from .models import Module
-from  gamification.signals import createBadgeModule
 
 from django.conf import settings
 from reminder.signals import create_module
@@ -15,7 +14,6 @@ class ModuleSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         try:        
             module = Module.objects.create(**validated_data)
-            createBadgeModule.send(sender=ModuleSerializer, module=module)
 
             if getattr(settings, 'NOTIFICATIONS', False):
                 create_module.send(sender=ModuleSerializer, author=self.context['request'].user, module=module)

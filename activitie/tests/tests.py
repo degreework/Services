@@ -34,10 +34,18 @@ class ActivitieCommon(object):
     u_password = 'nonsecur3'
 
 
+    #Teacher User
     u_t_first_name = 'teacher'
     u_t_last_name = 'last_teacher'
     u_t_email = 'teacher@test.com'
     u_t_codigo = '000000'
+
+
+    #Student User
+    u_s_first_name = 'student'
+    u_s_last_name = 'last_student'
+    u_s_email = 'student@test.com'
+    u_s_codigo = '000001'
 
 
     def _create_user(self):
@@ -59,6 +67,18 @@ class ActivitieCommon(object):
             password=self.u_password)
         g = Group.objects.get(name='Teacher') 
         g.user_set.add(self.user_teacher)
+
+    def _create_user_Student(self):
+        call_command('Group')
+        self.user_student = User.objects.create_user(
+            email=self.u_s_email,
+            first_name=self.u_s_first_name,
+            last_name=self.u_s_last_name,
+            codigo=self.u_s_codigo,
+            password=self.u_password)
+
+        g = Group.objects.get(name='Registered') 
+        g.user_set.add(self.user_student)
 
     def _create_application(self):
         self.application = Application(
@@ -136,9 +156,13 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
 
     def setUp(self):
         self._create_user()
+        self._create_user_Student()
+        self._create_user_teacher()
         self._create_application()
         self._create_module()
 
+
+    """ANONYMOUS USER"""
 
     def test_create_activitie_only_name_user_anonymous(self):
         """
@@ -150,7 +174,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_create_activitie_all_required_fieldsuser_anonymous(self):
+    def test_create_activitie_all_required_field_suser_anonymous(self):
         """
         Check Activitie can't be created by a anonymous user
         """
@@ -169,6 +193,8 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can't be updated by a anonymous user
         """
+        ActivitieParent(author=self.user_teacher, name=self.name,description=self.description,die_at=self.die_at).save()
+
         url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.id})
         data = {
             'name': self.name,
@@ -189,13 +215,13 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-    """AUTHENTICATED USER"""
+    """AUTHENTICATED USER (Student)"""
 
     def test_create_activitie_only_name_user_authenticated(self):
         """
         Check Activitie can't be created only with name field and by user authenticated
         """
-        token = self._create_authorization_header(self.user)
+        token = self._create_authorization_header(self.user_student)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         url = reverse('activitie_parent:activitie_parent_create')
@@ -208,7 +234,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can be created by a authenticated user
         """
-        token = self._create_authorization_header(self.user)
+        token = self._create_authorization_header(self.user_student)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         url = reverse('activitie_parent:activitie_parent_create')
@@ -226,7 +252,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can be updated by a authenticated user
         """
-        token = self._create_authorization_header(self.user)
+        token = self._create_authorization_header(self.user_student)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         self._create_activitie()
@@ -239,7 +265,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
             }
 
         response = self.client.put(url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
     def test_delete_activitie_user_authenticated(self):
@@ -247,14 +273,14 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         Check Activitie can be deleted by a authenticated user
         """
 
-        token = self._create_authorization_header(self.user)
+        token = self._create_authorization_header(self.user_student)
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
         self._create_activitie()
 
         url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.activitie.id, 'slug': self.module.slug})
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 
