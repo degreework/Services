@@ -12,7 +12,7 @@ class AskCreateView(viewsets.ModelViewSet):
     API endpoint for creating a Ask
     """
     serializer_class = CreateAskSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
 from .models import Ask
 from post_framework.permissions import IsAuthor
@@ -23,8 +23,7 @@ class AskUpdateView(viewsets.ModelViewSet):
     """
     queryset = Ask.objects.all()
     serializer_class = UpdateAskSelializer
-    permission_classes = (AllowAny, )
-    #permission_classes = (TokenHasReadWriteScope, IsAuthor,)
+    permission_classes = (IsAuthor, )
 
 
 from rest_framework.views import APIView
@@ -35,10 +34,11 @@ class AskList(generics.ListAPIView):
     View to list all aks in the foro.
     """
 
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (AllowAny,)
     queryset = Ask.objects.all()
     serializer_class = ShortAskSerializer
+    
+    permission_classes = (IsAuthenticated,)
+    #authentication_classes = (authentication.TokenAuthentication,)
     paginate_by = 10
 
 
@@ -47,23 +47,25 @@ class AskDetail(viewsets.ReadOnlyModelViewSet):
     View to list all aks in the foro.
     """
 
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (AllowAny,)
     queryset = Ask.objects.all()
     serializer_class = AskDetailSerializer
+    
+    permission_classes = (IsAuthenticated,)
+    #authentication_classes = (authentication.TokenAuthentication,)
 
 
 """Classes for Answers"""
+from .models import Answer
 
 class AnswerCreateView(viewsets.ModelViewSet):
     """
     API endpoint for creating a Answer
     """
     serializer_class = AnswerCreateSerializer
-    permission_classes = (AllowAny, )
+    
+    permission_classes = (IsAuthenticated, )
     #permission_classes = (TokenHasReadWriteScope, )
 
-from .models import Answer
 
 class AnswerUpdateView(viewsets.ModelViewSet):
     """
@@ -71,8 +73,9 @@ class AnswerUpdateView(viewsets.ModelViewSet):
     """
     queryset = Answer.objects.all()
     serializer_class = AnswerUpdateSelializer
+    
+    permission_classes = (IsAuthor, )
     #permission_classes = (TokenHasReadWriteScope, IsAuthor,)
-    permission_classes = (AllowAny, )
 
 
 from django.shortcuts import get_object_or_404
@@ -82,11 +85,10 @@ class AnswerList(generics.ListAPIView):
     """
     #lookup_field = 'ask'
 
-    #authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (AllowAny,)
-    #ueryset = Answer.objects.all()
-    #queryset = Answer.objects.filter(ask = '48')
     serializer_class = AnswerShortSerializer
+    
+    #authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (IsAuthenticated, )
     paginate_by = 10
 
     def get_queryset(self):

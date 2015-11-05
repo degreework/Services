@@ -7,4 +7,7 @@ class ForumConfig(AppConfig):
     verbose_name = "Forum"
 
     def ready(self):
-        registry.register(self.get_model('Ask'), self.get_model('Answer'))
+        registry.register(
+        	self.get_model('Ask'),
+        	self.get_model('Answer')
+        	)
