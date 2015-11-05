@@ -278,7 +278,19 @@ class QuizList(generics.ListAPIView):
         return public
 
 
-"""Views for Evaluations"""
+from servicio.views import Quiz_Marking_List_View
+from quiz.models import Sitting
+
+
+class QuizMarkingList(Quiz_Marking_List_View):
+    def get_queryset(self):
+        module = Module.objects.get(slug=self.kwargs['module'])
+        list_quiz = Quiz_wrap.objects.filter(module=module).values_list('quiz', flat=True)
+        queryset = Sitting.objects.filter(complete=True, quiz__in=list_quiz)
+        return queryset
+
+
+"""Views for Material"""
 from .models import Material_wrap
 from material.models import Material
 from material.views import MaterialFileCreateView, MaterialLinkCreateView, MaterialListView
