@@ -15,7 +15,7 @@ class CommentCreateView(viewsets.ModelViewSet):
     """
     serializer_class = CreateCommentSerializer
     #permission_classes = (IsAuthenticated, )
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
 from post_framework.permissions import IsAuthor
 
