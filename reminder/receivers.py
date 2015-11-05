@@ -146,27 +146,36 @@ def gamification_badge_award(sender, badge, user, **kwargs):
 @receiver(create_remove_action)
 def create_remove_action(sender, author, action, instance, **kwargs):
 
-	
+	tipo = ContentType.objects.get_for_model(instance)
+	print tipo
+
+	if str(tipo) == 'ActivitieParent':
+		objeto = 'una actividad'
+	else:
+		objeto = 'un quiz'
+
 	for user in User.objects.all():
 		if action == 'add':
 			
 			notify.send(
 				author,
 				recipient=user,
-				verb=u' se ha creado',
-		        action_object=instance,
-		        #description=request.message,
-		        target=instance)
+				verb=u'modificar',
+		        #action_object=instance,
+		        description='se ha creado '+objeto+' , tu progreso se ha recalculado',
+		        #target=instance
+		        )
 
 		elif action == 'remove':
 			
 			notify.send(
 					author,
 					recipient=user,
-					verb=u' se ha eliminado',
-			        action_object=instance,
-			        #description=request.message,
-			        target= instance)
+					verb=u'modificar',
+			        #action_object=instance,
+			        description= 'se ha elimidado '+objeto+' , tu progreso se ha recalculado',
+			        #target= instance)
+					)
 
 from .signals import create_module
 from module.serializers import ModuleSerializer
