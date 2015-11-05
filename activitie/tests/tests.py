@@ -195,7 +195,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         """
         ActivitieParent(author=self.user_teacher, name=self.name,description=self.description,die_at=self.die_at).save()
 
-        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.id})
+        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.id, 'slug': 'dummy'})
         data = {
             'name': self.name,
             'description': self.description,
@@ -210,7 +210,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
         """
         Check Activitie can't be deleted by a anonymous user
         """
-        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.id, 'slug':self.module.slug})
+        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.id, 'slug': 'dummy'})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -257,7 +257,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
 
         self._create_activitie()
 
-        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.activitie.id})
+        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.activitie.id, 'slug': 'dummy'})
         data = {
             'name': self.name,
             'description': self.name,
@@ -278,7 +278,7 @@ class ActivitieParentTests(ActivitieCommon, APITestCase):
 
         self._create_activitie()
 
-        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.activitie.id, 'slug': self.module.slug})
+        url = reverse('activitie_parent:activitie_parent_update', kwargs={'pk': self.activitie.id, 'slug': 'dummy'})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

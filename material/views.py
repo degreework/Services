@@ -7,6 +7,9 @@ from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+
+from project.permissions import IsTeacher
+
 from .serializers import MaterialFileSerializer, MaterialLinkSerializer, MaterialSerializer
 
 class MaterialFileCreateView(viewsets.ModelViewSet):
@@ -14,7 +17,7 @@ class MaterialFileCreateView(viewsets.ModelViewSet):
     API endpoint for creating Material
     """
     serializer_class = MaterialFileSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsTeacher, )
 
 
 class MaterialLinkCreateView(viewsets.ModelViewSet):
@@ -22,7 +25,7 @@ class MaterialLinkCreateView(viewsets.ModelViewSet):
     API endpoint for creating Material
     """
     serializer_class = MaterialLinkSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsTeacher, )
 
 
 from .models import Material, MaterialLink, MaterialFile
