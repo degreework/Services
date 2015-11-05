@@ -14,8 +14,8 @@ class CommentCreateView(viewsets.ModelViewSet):
     API endpoint for creating a Comment
     """
     serializer_class = CreateCommentSerializer
-    #permission_classes = (IsAuthenticated, )
     permission_classes = (IsAuthenticated, )
+
 
 from post_framework.permissions import IsAuthor
 
@@ -25,8 +25,7 @@ class CommentUpdateView(viewsets.ModelViewSet):
     """
     queryset = Comment.objects.all()
     serializer_class = UpdateCommentSelializer
-    #permission_classes = (TokenHasReadWriteScope, IsAuthor,)
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthor, )
 
 
 from rest_framework.views import APIView
@@ -36,9 +35,8 @@ class CommentList(generics.ListAPIView):
     """
     View to list all Comment
     """
-    #authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (AllowAny, )
     serializer_class = ShortCommentSerializer
+    permission_classes = (IsAuthenticated, )
     paginate_by = 3
 
     def get_queryset(self):
