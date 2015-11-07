@@ -215,7 +215,9 @@ DEFAULT_GROUP_NAME = {
         "activitie | ActivitieChild | Can check activities",
 
         "quiz | Question | Can add Question",
+        "quiz | Question | Can change Question",
         "quiz | Quiz | Can add Quiz",
+        "quiz | Quiz | Can change Quiz",
 
         "module | Module | Can add Module",
 
