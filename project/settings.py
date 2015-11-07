@@ -198,10 +198,15 @@ DEFAULT_GROUP_NAME = {
         "forum | Ask | Can add Ask",
         "forum | Ask | Can change Ask",
 
+
+        #"material | MaterialFile | Can view MaterialFile",
+
         "module | Module | Can view Module",
 
         ),
     "Teacher":(
+        "users | user | Can list Users",
+
         "activitie | ActivitieParent | Can add ActivitieParent",
         "activitie | ActivitieParent | Can change ActivitieParent",
         "activitie | ActivitieParent | Can delete ActivitieParent",
@@ -209,6 +214,8 @@ DEFAULT_GROUP_NAME = {
         "activitie | ActivitieChild | Can check activities",
 
         "module | Module | Can add Module",
+
+        "material | MaterialFile | Can add MaterialFile",
         )
     }
 
