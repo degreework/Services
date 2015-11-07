@@ -216,6 +216,9 @@ DEFAULT_GROUP_NAME = {
         "module | Module | Can add Module",
 
         "material | MaterialFile | Can add MaterialFile",
+
+
+        "wiki | Request | Can approve requests",
         )
     }
 
