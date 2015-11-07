@@ -201,6 +201,8 @@ DEFAULT_GROUP_NAME = {
 
         #"material | MaterialFile | Can view MaterialFile",
 
+        "activitie | ActivitieParent | Can view Activitie",
+
         "module | Module | Can view Module",
 
         ),
