@@ -131,4 +131,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         #app_label = 'users'
         swappable = 'AUTH_USER_MODEL'
-        permissions = (("can_view", "Can view Users"),)
+        permissions = (("can_view", "Can view Users"),("can_list", "Can list Users"))
