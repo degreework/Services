@@ -156,6 +156,7 @@ class PermissionsCurrentUser(APIView):
 # Import the built-in password reset view and password reset confirmation view.
 from django.contrib.auth.views import password_reset, password_reset_confirm
 from django.template.context_processors import csrf
+from django.http import HttpResponseRedirect
 
 
 class RecoveryPassword(APIView):
@@ -166,21 +167,25 @@ class RecoveryPassword(APIView):
     permission_classes = (AllowAny, )
 
     def get(self, request, *args, **kwargs):
-        print("GET")
         c = middleware.csrf.get_token(request)
-        print(c)
         return Response({'csrf_token':c})
     
     def post(self, request, *args, **kwargs):
-        print ("POST")
-        print(request.get_host())
+        #Hack to avoid csrf_protect
+        request.csrf_processing_done = True
+
         response = password_reset(
             request,
             email_template_name='password_reset_email.html')
+
+
+        if type(response) is HttpResponseRedirect:
+            return password_reset_done(request)
+
         return response
         
 
-@api_view(('GET',))
+@api_view(('POST',))
 @permission_classes((AllowAny, ))
 def password_reset_done(request):
     return Response(
@@ -220,16 +225,20 @@ class RecoveryPassword_confirm(APIView):
     permission_classes = (AllowAny, )
 
     def get(self, request, *args, **kwargs):
-        print("GET")
         c = middleware.csrf.get_token(request)
-        print(c)
         return Response({'csrf_token':c})
     
     #@method_decorator(sensitive_post_parameters())
     #@csrf_protect
     #@method_decorator(csrf_protect)
     #@sensitive_post_parameters()
+    #@sensitive_post_parameters('password')
     def post(self, request, uidb64=None, token=None):
+        print "POST rec"
+
+        sensitive_post_parameters = getattr(request, 'sensitive_post_parameters', [])
+        request.sensitive_post_parameters = request.POST
+        print sensitive_post_parameters
         if request.POST.get('new_password1') != request.POST.get('new_password2'):
             raise ValidationError("Passwords don't match")
 
@@ -249,12 +258,18 @@ class RecoveryPassword_confirm(APIView):
 
 
         # si el link aún es válido
+        #Hack to avoid csrf_protect
         if user is not None and default_token_generator.check_token(user, token):
+            print "call func"
+            request.csrf_processing_done = True
             response = password_reset_confirm(
                 request,
                 uidb64=uidb64,
                 token=token)
-            return response
+            
+            if type(response) is HttpResponseRedirect:
+                return Response({'msg': "Su contraseña ha sido establecida. Ahora puede seguir adelante e iniciar sesión."})
+
         else:
             return Response({'msg': "El enlace de restablecimiento de contraseña era invalido, seguramente por haberse utilizado previamente. Por favor, solicite un nuevo restablecimiento de contraseña."})
 
