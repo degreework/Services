@@ -74,7 +74,7 @@ def verify_users_for_award(badge, element, instance_element):
 			sitting = Sitting.objects.filter(quiz = instance_element, user = item.user, complete = True, check_if_passed = True)
 			#si ya lo realizo se le restan los puntos asignados si no se recalcula el progreso 
 			if len(sitting) > 0:
-				points = Scores.objects.get(id_event = instance_element.id)
+				points = Scores.objects.get(id_event = instance_element.id, event='Quiz')
 				item.counter -= points.score
 				item.update_percent2()
 				item.save()  
@@ -91,7 +91,7 @@ def verify_users_for_award(badge, element, instance_element):
 			activitie_child = ActivitieChild.objects.filter(parent = instance_element, author = item.user, status = 3)
 			#si ya lo realizo se le restan los puntos asignados si no se recalcula el progreso 
 			if len(activitie_child)>0:
-				points = Scores.objects.get(id_event = instance_element.id)
+				points = Scores.objects.get(id_event = instance_element.id, event='Activity')
 				item.counter -= points.score
 				item.update_percent2()
 				item.save()
@@ -171,7 +171,7 @@ def set_points_quiz(sender, sitting, badge, **kwargs):
 		p = b.progress_for(sitting.user)
 
 		# se consulta cuantos puntos tiene ese quiz 
-		points = Scores.objects.get(id_event=sitting.quiz.id)
+		points = Scores.objects.get(id_event=sitting.quiz.id, event='Quiz')
 
 		# se llama a la funcion para asigna los puntos en el progreso 
 		set_points(p, points.score, b, sitting.user)

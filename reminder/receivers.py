@@ -111,16 +111,18 @@ def wiki_request_checked(sender, request, **kwargs):
 
 
 #from waliki.git.views import version as git_version
+from django.db.models import Q
 @receiver(wiki_request_created, sender=generate_request)
 def wiki_request_created(sender, request, **kwargs):
 	#version = git_version(request._request, slug=request.page.slug, version=request.commit, raw=True)
 	users = []
 
 	#for now is to superusers but must be to teachers
-	for user in User.objects.filter(is_superuser=True):
+
+	for user in User.objects.filter( Q(groups__name='Teacher')|Q(is_superuser=True) ): #Q(pub_date=date(2005, 5, 2))
 		if user != request.created_by:
 			users.append(user)
-	
+
 	for user in users:
 		notify.send(
 			request.created_by,
