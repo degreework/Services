@@ -19,7 +19,7 @@ class MaterialFile(Material):
     class Meta:
         verbose_name = "MaterialFile"
         verbose_name_plural = "MaterialFiles"
-        permissions = (("can_view", "Can view Material"),)
+        permissions = (("can_view", "Can view MaterialFile"),)
 
 
 class MaterialLink(Material):
@@ -28,4 +28,4 @@ class MaterialLink(Material):
     class Meta:
         verbose_name = "MaterialLink"
         verbose_name_plural = "MaterialLinks"
-        permissions = (("can_view", "Can view Material"),)
+        permissions = (("can_view", "Can view MaterialLink"),)

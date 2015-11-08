@@ -198,17 +198,33 @@ DEFAULT_GROUP_NAME = {
         "forum | Ask | Can add Ask",
         "forum | Ask | Can change Ask",
 
+
+        #"material | MaterialFile | Can view MaterialFile",
+
+        "activitie | ActivitieParent | Can view Activitie",
+
         "module | Module | Can view Module",
 
         ),
     "Teacher":(
+        "users | user | Can list Users",
+
         "activitie | ActivitieParent | Can add ActivitieParent",
         "activitie | ActivitieParent | Can change ActivitieParent",
         "activitie | ActivitieParent | Can delete ActivitieParent",
-
         "activitie | ActivitieChild | Can check activities",
 
+        "quiz | Question | Can add Question",
+        "quiz | Question | Can change Question",
+        "quiz | Quiz | Can add Quiz",
+        "quiz | Quiz | Can change Quiz",
+
         "module | Module | Can add Module",
+
+        "material | MaterialFile | Can add MaterialFile",
+
+
+        "wiki | Request | Can approve requests",
         )
     }
 
