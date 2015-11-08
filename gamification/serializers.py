@@ -49,7 +49,7 @@ class ProgressCreateSerializer(serializers.ModelSerializer):
     def get_badge(self, obj):
 
         module = Module.objects.get(slug= obj.badge.slug)
-        return {'slug':obj.badge.slug}
+        return {'slug':obj.badge.slug, 'title': obj.badge.title}
 
     class Meta():
         model = Progress
@@ -58,6 +58,9 @@ class ProgressCreateSerializer(serializers.ModelSerializer):
 
 
 #----------------
+
+from django.core.exceptions import PermissionDenied
+from  gamification.signals import update_points_end_badge
 
 class ScoresUpdateSerializer(serializers.ModelSerializer):
     """
@@ -79,6 +82,21 @@ class ScoresUpdateSerializer(serializers.ModelSerializer):
             return {'name':quiz.title, 'id': quiz.id}
         
         return{}
+
+    def update(self, instance, validated_data, **kwargs):
+        try:
+            # se emite senal para actualizar los puntos del progreso
+            update_points_end_badge.send(sender = ScoresUpdateSerializer, old_score = instance.score, new_score = validated_data.get('score'), id_instance = instance.id_event, type_instance = instance.event)
+
+            instance.event = validated_data.get('event', instance.event)
+            instance.id_event = validated_data.get('id_event', instance.id_event)
+            instance.score = validated_data.get('score', instance.score)
+            
+            instance.save()
+            return instance
+        except IntegrityError:
+            raise PermissionDenied
+
         
     class Meta():
         model = Scores
