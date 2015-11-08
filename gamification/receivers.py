@@ -9,13 +9,14 @@ from module.serializers import ModuleSerializer
 
 from badger.models import Badge, Award, Progress
 from quiz.models import Sitting, Quiz
-from activitie.models import ActivitieChild
+from activitie.models import ActivitieChild, ActivitieParent
 from .models import Scores
 
+from gamification.serializers import ScoresUpdateSerializer
 
 
 from badger.signals import badge_was_awarded, badge_will_be_awarded
-from  .signals import createBadgeModule, post_points_quiz, post_points_wiki, post_points_activity ,calculate_points_end_badge
+from  .signals import createBadgeModule, post_points_quiz, post_points_wiki, post_points_activity ,calculate_points_end_badge, update_points_end_badge
 
 from reminder.signals import gamification_badge_award, create_remove_action
 
@@ -207,3 +208,60 @@ def set_points_activitie(sender, user, badge, activitie, **kwargs):
 	
 	# se registra la accion de que hizo una actividad
 	action.send(user, verb='activitie', action_object=activitie, target=activitie)
+
+
+from module.models import Activitie_wrap, Quiz_wrap
+@receiver(update_points_end_badge, sender=ScoresUpdateSerializer)
+def update_points_end_badge(sender, old_score, new_score, id_instance, type_instance,**kwargs):
+
+	wrapsito = ''
+	badge = ''
+	instance = ''
+
+	if type_instance == 'Activity':
+		instance = ActivitieParent.objects.get(id = id_instance)
+		wrapsito = Activitie_wrap.objects.get(activitie = instance)
+		badge = get_badge(wrapsito.module.slug)
+	else:
+		instance = Quiz.objects.get(id = id_instance)
+		wrapsito = Quiz_wrap.objects.get(quiz = id_instance)
+		badge = get_badge(wrapsito.module.slug)
+
+	badge.points_end -= old_score
+	badge.points_end += new_score
+
+	badge.save()
+
+	# recalculo los progresos 
+	# se obtienen los progresos de los usuarios en esa medalla
+	progress = Progress.objects.filter(badge=badge)
+	for item in progress:
+		if type_instance == 'Activity':
+
+			activitie_child = ActivitieChild.objects.filter(parent = instance, author = item.user, status = 3)
+			#si ya lo realizo se le restan los puntos asignados si no se recalcula el progreso 
+			if len(activitie_child)>0:
+				item.counter -= old_score
+				item.counter += new_score
+				item.update_percent2()
+				item.save()
+			else:
+				item.update_percent2()
+
+		elif type_instance == 'Quiz':
+			# se verifica si el usuario realizo y aprobo el quiz
+			sitting = Sitting.objects.filter(quiz = instance, user = item.user, complete = True, check_if_passed = True)
+			#si ya lo realizo se le restan los puntos asignados si no se recalcula el progreso 
+			if len(sitting) > 0:
+				item.counter -= old_score
+				item.counter += new_score
+				item.update_percent2()
+				item.save()
+			else:
+				item.update_percent2()
+
+
+
+
+
+
