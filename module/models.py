@@ -10,7 +10,10 @@ class Module(models.Model):
     slug = models.SlugField(unique=True)
     name = models.CharField(max_length=50)
     description = models.TextField()
-    photo = ThumbnailerImageField(upload_to='uploads/%Y/%m/%d', resize_source=settings.DEFAULT_MODULE_IMAGE_SETTING, blank=True, null=True)
+    photo = ThumbnailerImageField(upload_to='uploads/%Y/%m/%d', resize_source=settings.DEFAULT_MODULE_IMAGE_SETTING)
+
+    #requires this fields
+    REQUIRED_FIELDS = ['slug', 'name', 'photo']
     
 
     class Meta:
