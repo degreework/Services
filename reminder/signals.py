@@ -15,3 +15,5 @@ create_remove_action = django.dispatch.Signal(providing_args=["author, action, i
 create_module = django.dispatch.Signal(providing_args=["author", "module"])
 
 activitie_checked = django.dispatch.Signal(providing_args=["checker", "activitie"])
+
+finish_quiz = django.dispatch.Signal(providing_args=["sitting"])

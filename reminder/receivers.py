@@ -13,7 +13,7 @@ from wiki.views import RequestApproveView
 from wiki.receivers import generate_request
 
 #----------------------------------------------
-from gamification.receivers import set_points
+from gamification.receivers import set_points, set_points_quiz
 #----------------------------------------------
 
 from forum.models import Answer
@@ -21,7 +21,7 @@ from users.models import User
 from quiz.models import Quiz
 from activitie.models import ActivitieParent
 
-from .signals import forum_answered, forum_ask_updated, post_comment, wiki_request_checked, wiki_request_created, gamification_badge_award, create_remove_action, activitie_checked
+from .signals import forum_answered, forum_ask_updated, post_comment, wiki_request_checked, wiki_request_created, gamification_badge_award, create_remove_action, activitie_checked, finish_quiz
 
 
 """FORUM"""
@@ -111,16 +111,18 @@ def wiki_request_checked(sender, request, **kwargs):
 
 
 #from waliki.git.views import version as git_version
+from django.db.models import Q
 @receiver(wiki_request_created, sender=generate_request)
 def wiki_request_created(sender, request, **kwargs):
 	#version = git_version(request._request, slug=request.page.slug, version=request.commit, raw=True)
 	users = []
 
 	#for now is to superusers but must be to teachers
-	for user in User.objects.filter(is_superuser=True):
+
+	for user in User.objects.filter( Q(groups__name='Teacher')|Q(is_superuser=True) ): #Q(pub_date=date(2005, 5, 2))
 		if user != request.created_by:
 			users.append(user)
-	
+
 	for user in users:
 		notify.send(
 			request.created_by,
@@ -200,7 +202,7 @@ def activitie_checked(sender, checker, activitie, **kwargs):
 	notify.send(
 		checker,
 		recipient=activitie.author,
-		verb=u'ha revisado',
+		verb=u'ha revisado la actividad',
         action_object=activitie,
         #description=request.message,
         target=activitie)
@@ -217,3 +219,16 @@ def log_deleted_page(sender, instance, using, **kwargs):
 	"""
 	page_type = ContentType.objects.get(model="request")
 	Notification.objects.filter(target_content_type=page_type).delete()
+
+
+@receiver(finish_quiz,sender=set_points_quiz)
+def finish_quiz(sender, sitting, **kwargs):
+	print 'finish_quiz'
+	for user in User.objects.filter( Q(groups__name='Teacher')|Q(is_superuser=True) ):
+		notify.send(
+			sitting.user,
+			recipient=user,
+			verb=u'a terminado el quiz y tiene una pregunta por calificar',
+	        action_object=sitting.quiz,
+	        #description=request.message,
+	        target=sitting.quiz)

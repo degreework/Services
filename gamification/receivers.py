@@ -8,7 +8,7 @@ from users.serializers import CreateUserSerializer
 from module.serializers import ModuleSerializer
 
 from badger.models import Badge, Award, Progress
-from quiz.models import Sitting, Quiz
+from quiz.models import Sitting, Quiz, Question
 from activitie.models import ActivitieChild, ActivitieParent
 from .models import Scores
 
@@ -18,25 +18,16 @@ from gamification.serializers import ScoresUpdateSerializer
 from badger.signals import badge_was_awarded, badge_will_be_awarded
 from  .signals import createBadgeModule, post_points_quiz, post_points_wiki, post_points_activity ,calculate_points_end_badge, update_points_end_badge
 
-from reminder.signals import gamification_badge_award, create_remove_action
+from reminder.signals import gamification_badge_award, create_remove_action, finish_quiz
 
 from badger.utils import get_badge
 from actstream import action
 
+from django.contrib.contenttypes.models import ContentType
 
 
-#------------------------------------------
-# crea el progreso de la insignia con la cual inicia el usuario
-"""
 
-@receiver(set_progress_user, sender = CreateUserSerializer)
-def progress_user_registered(sender, user, **kwargs):
-	print 'progress init'
-	badge = get_badge('slug')
-	progress = badge.progress_for(user)
-	progress.save()
-"""
-	
+#------------------------------------------	
 # crea una medalla por cada modulo que se crea 
 @receiver(createBadgeModule, sender = ModuleSerializer)
 def badgeModule(sender, module, **kwargs):
@@ -74,13 +65,13 @@ def verify_users_for_award(badge, element, instance_element):
 			sitting = Sitting.objects.filter(quiz = instance_element, user = item.user, complete = True, check_if_passed = True)
 			#si ya lo realizo se le restan los puntos asignados si no se recalcula el progreso 
 			if len(sitting) > 0:
-				points = Scores.objects.get(id_event = instance_element.id)
+				points = Scores.objects.get(id_event = instance_element.id, event='Quiz')
 				item.counter -= points.score
 				item.update_percent2()
 				item.save()  
 				if item.percent >= 100:
 					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
-					#action.send(user, verb='badge', action_object=badge, target=badge)
+					action.send(user, verb='badge', action_object=badge, target=badge)
 			else:	
 				set_points(item, 0, badge, item.user)
 
@@ -91,13 +82,13 @@ def verify_users_for_award(badge, element, instance_element):
 			activitie_child = ActivitieChild.objects.filter(parent = instance_element, author = item.user, status = 3)
 			#si ya lo realizo se le restan los puntos asignados si no se recalcula el progreso 
 			if len(activitie_child)>0:
-				points = Scores.objects.get(id_event = instance_element.id)
+				points = Scores.objects.get(id_event = instance_element.id, event='Activity')
 				item.counter -= points.score
 				item.update_percent2()
 				item.save()
 				if item.percent >= 100:
 					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
-					#action.send(user, verb='badge', action_object=badge, target=badge)  
+					action.send(user, verb='badge', action_object=badge, target=badge)  
 				
 			else:
 				set_points(item, 0, badge, item.user)
@@ -171,12 +162,21 @@ def set_points_quiz(sender, sitting, badge, **kwargs):
 		p = b.progress_for(sitting.user)
 
 		# se consulta cuantos puntos tiene ese quiz 
-		points = Scores.objects.get(id_event=sitting.quiz.id)
+		points = Scores.objects.get(id_event=sitting.quiz.id, event='Quiz')
 
 		# se llama a la funcion para asigna los puntos en el progreso 
 		set_points(p, points.score, b, sitting.user)
 		# se registra la accion de que hizo una actividad
-		action.send(sitting.user, verb='quiz', action_object=sitting.quiz, target=sitting.quiz)		
+		action.send(sitting.user, verb='quiz', action_object=sitting.quiz, target=sitting.quiz)	
+
+		questions = sitting.incorrect_questions.split(',')
+		if len(sitting.incorrect_questions) > 0:
+			for question in questions:
+				if question != '':
+					tipo = str(ContentType.objects.get_for_model (Question.objects.get_subclass(id = question)))
+					if tipo == 'Essay style question':
+						finish_quiz.send(sender=set_points_quiz, sitting=sitting)
+
 			
 
 from wiki.views import RequestApproveView
@@ -245,6 +245,9 @@ def update_points_end_badge(sender, old_score, new_score, id_instance, type_inst
 				item.counter += new_score
 				item.update_percent2()
 				item.save()
+				if item.percent >= 100:
+					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
+					action.send(user, verb='badge', action_object=badge, target=badge)
 			else:
 				item.update_percent2()
 
@@ -257,6 +260,9 @@ def update_points_end_badge(sender, old_score, new_score, id_instance, type_inst
 				item.counter += new_score
 				item.update_percent2()
 				item.save()
+				if item.percent >= 100:
+					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
+					action.send(user, verb='badge', action_object=badge, target=badge)
 			else:
 				item.update_percent2()
 
