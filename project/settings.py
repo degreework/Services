@@ -199,7 +199,7 @@ DEFAULT_GROUP_NAME = {
         "forum | Ask | Can change Ask",
 
 
-        #"material | MaterialFile | Can view MaterialFile",
+        "material | MaterialFile | Can view MaterialFile",
 
         "activitie | ActivitieParent | Can view Activitie",
 
