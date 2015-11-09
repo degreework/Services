@@ -225,6 +225,8 @@ DEFAULT_GROUP_NAME = {
 
 
         "wiki | Request | Can approve requests",
+
+        "gamification | Score | Can change Score",
         )
     }
 
