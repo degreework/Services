@@ -143,7 +143,7 @@ class PageEditSerializer(serializers.HyperlinkedModelSerializer):
 
         #if user have permissions, then automatic aprove the request
         if self.context['request'].user.has_perm( 'wiki.can_approve_request' ):
-            request = Request.objects.filter(commit=commit).reverse()[0]
+            request = Request.objects.filter(commit=commit)[0]
             request.approve_request(self.context['request'].user)
 
 
