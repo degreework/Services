@@ -35,7 +35,7 @@ class ActivitieParentUpdateView(viewsets.ModelViewSet):
         print 'deletio'
         activitie = self.get_object()
         print activitie
-        score = Scores.objects.get(id_event=activitie.id)
+        score = Scores.objects.get(id_event=activitie.id, event='Activity')
         print score
 
         # Se envia la senal para disminuir los puntos con los que se gana la medalla

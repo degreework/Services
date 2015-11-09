@@ -71,7 +71,7 @@ def verify_users_for_award(badge, element, instance_element):
 				item.save()  
 				if item.percent >= 100:
 					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
-					action.send(user, verb='badge', action_object=badge, target=badge)
+					action.send(item.user, verb='badge', action_object=badge, target=badge)
 			else:	
 				set_points(item, 0, badge, item.user)
 
@@ -88,7 +88,7 @@ def verify_users_for_award(badge, element, instance_element):
 				item.save()
 				if item.percent >= 100:
 					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
-					action.send(user, verb='badge', action_object=badge, target=badge)  
+					action.send(item.user, verb='badge', action_object=badge, target=badge)  
 				
 			else:
 				set_points(item, 0, badge, item.user)
