@@ -51,6 +51,6 @@ Create default Groups
 	python manage.py Group
 	
 Step 4
-Create default Badge
+Create default Degrees 
 	
-	python manage.py Badge
+	python manage.py Degress
