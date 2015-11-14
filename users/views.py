@@ -234,11 +234,6 @@ class RecoveryPassword_confirm(APIView):
     #@sensitive_post_parameters()
     #@sensitive_post_parameters('password')
     def post(self, request, uidb64=None, token=None):
-        print "POST rec"
-
-        sensitive_post_parameters = getattr(request, 'sensitive_post_parameters', [])
-        request.sensitive_post_parameters = request.POST
-        print sensitive_post_parameters
         if request.POST.get('new_password1') != request.POST.get('new_password2'):
             raise ValidationError("Passwords don't match")
 
@@ -260,10 +255,10 @@ class RecoveryPassword_confirm(APIView):
         # si el link aún es válido
         #Hack to avoid csrf_protect
         if user is not None and default_token_generator.check_token(user, token):
-            print "call func"
+
             request.csrf_processing_done = True
             response = password_reset_confirm(
-                request,
+                request._request,
                 uidb64=uidb64,
                 token=token)
             
