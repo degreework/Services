@@ -325,8 +325,8 @@ EMAIL_HOST_PASSWORD = 'Gp4ssm41L'
 
 
 ########################
-# Badge default 
-DEFAULT_BADGE_SETTING = {'title':'titulo' , 'slug':'slug', 'description':'description', 'image':'', 'unique':True ,'nominations_accepted':False, 'nominations_autoapproved':False, 'points_end': 50}
+# Degrees default 
+DEFAULT_DEGREE_SETTING = [{'name': 'Ingenieria Sistemas', 'code': 3743},{'name': 'Tecnologia Sistemas', 'code': 2711}]
 
 
 
