@@ -3,6 +3,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
 from rest_framework.response import Response
+
+from project.permissions import IsTeacher
 from .serializers import *
 
 # Create your views here.
@@ -45,8 +47,9 @@ class AwardDetail(viewsets.ReadOnlyModelViewSet):
 """
 
 class AwardList(APIView):
+        permission_classes = (IsAuthenticated, )
+
     def get(self,*args, **kwargs):
-        permission_classes = (AllowAny, )
         user = self.kwargs['pk']
         awards = Award.objects.filter(user = kwargs['pk'])
         serializer = AwardCreateSerializer(awards, many=True)
@@ -56,7 +59,7 @@ class AwardList(APIView):
 class AwardListAll(generics.ListAPIView):
     queryset = Award.objects.all()
     serializer_class =  AwardCreateSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
         
 
 """
@@ -71,9 +74,9 @@ class AwardUpdateView(viewsets.ModelViewSet):
 #---------------------------------
 from badger.models import Progress
 class ProgressDetail(generics.ListAPIView):
-    
-    permission_classes = (AllowAny, )
     serializer_class = ProgressCreateSerializer
+    permission_classes = (IsAuthenticated, )
+
     def get_queryset(self,*args, **kwargs):        
         user = self.kwargs['pk']
         progress = Progress.objects.filter(user= user)
@@ -89,13 +92,13 @@ class ProgressDetail(generics.ListAPIView):
 class ScoresView(viewsets.ModelViewSet):
     queryset = Scores.objects.all()
     serializer_class = ScoresUpdateSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (IsTeacher, )
 
 
 class ScoresViewAll(generics.ListAPIView):
     queryset = Scores.objects.all()
     serializer_class = ScoresUpdateSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (IsTeacher, )
 
 
 

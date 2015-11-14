@@ -20,10 +20,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_URL='http://127.0.0.1:8080/'
 SITE_NAME='Back-end'
 
-#client site settings
+#Client site settings
 SITE_CLIENT_URL = "http://127.0.0.1:8000"
 SITE_CLIENT_NAME = "Front-end"
 SITE_CLIENT_URL_CONFIRM_PASSWORD_RECOVERY = SITE_CLIENT_URL + "/password/reset/"
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/

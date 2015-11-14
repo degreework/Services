@@ -1,6 +1,7 @@
 import json
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from project.permissions import IsTeacher
 
 from waliki.rest.views import (
         PageCreateView as CreateView,
@@ -125,7 +126,7 @@ class RequestApproveView(generics.GenericAPIView):
     A simple View to approve a Requet
     """
     #Add permissions
-    #permission_classes = (permissions.AllowAny, )
+    permission_classes = (IsTeacher, )
 
     def post(self, request, slug, version, *args, **kwargs):
 
@@ -168,7 +169,7 @@ class HistoryListView(ListView):
     A simple View to list all Request
     """
     serializer_class = RequestSerializer
-    #permission_classes = (permissions.AllowAny, )
+    #permission_classes = (IsA )
 
     def get_queryset(self):
         return Request.objects.filter(approved=True)
