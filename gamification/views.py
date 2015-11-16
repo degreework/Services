@@ -47,7 +47,7 @@ class AwardDetail(viewsets.ReadOnlyModelViewSet):
 """
 
 class AwardList(APIView):
-        permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     def get(self,*args, **kwargs):
         user = self.kwargs['pk']
