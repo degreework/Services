@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import IntegrityError
 from django.core.exceptions import PermissionDenied
 
@@ -88,7 +89,7 @@ class ActivitieChildSerializer(serializers.ModelSerializer):
                 
                 #create Stream at User's wall
                 from actstream import action
-                action.send(user, verb='enviado', action_object=activitie, target=parent_activitie)
+                action.send(user, verb='envió una solución', action_object=activitie, target=parent_activitie)
 
                 return activitie
 

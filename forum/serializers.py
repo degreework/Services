@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.http import Http404
 from django.db import IntegrityError
 from django.contrib.auth.models import AnonymousUser
@@ -22,7 +23,7 @@ class CreateAskSerializer(serializers.ModelSerializer):
             
             #create Stream at User's wall
             from actstream import action
-            action.send(user, verb='asked', action_object=ask)
+            action.send(user, verb='creó la discusion', action_object=ask)
 
             return ask
         except IntegrityError, e:
@@ -120,7 +121,7 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 
             #create Stream at User's wall
             from actstream import action
-            action.send(user, verb='answered', action_object=answer, target=answer.ask)
+            action.send(user, verb='respondió', action_object=answer, target=answer.ask)
             
             return answer
 
