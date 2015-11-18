@@ -21,7 +21,7 @@ SITE_URL='http://127.0.0.1:8080/'
 SITE_NAME='Back-end'
 
 #Client site settings
-SITE_CLIENT_URL = "http://127.0.0.1:8000"
+SITE_CLIENT_URL = "http://192.168.14.231:8002"
 SITE_CLIENT_NAME = "Front-end"
 SITE_CLIENT_URL_CONFIRM_PASSWORD_RECOVERY = SITE_CLIENT_URL + "/password/reset/"
 
@@ -257,7 +257,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:8000', )
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+MEDIA_ROOT = '/var/www/html/trabajodegrado/uploads/'
+#os.path.join(BASE_DIR, 'uploads/')
 MEDIA_URL = "/media/"
 
 
