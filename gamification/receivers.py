@@ -72,7 +72,7 @@ def verify_users_for_award(badge, element, instance_element):
 				item.save()  
 				if item.percent >= 100:
 					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
-					action.send(item.user, verb='ganó una medalla', action_object=badge, target=badge)
+					action.send(item.user, verb=u'ganó una medalla', action_object=badge, target=badge)
 			else:	
 				set_points(item, 0, badge, item.user)
 
@@ -89,7 +89,7 @@ def verify_users_for_award(badge, element, instance_element):
 				item.save()
 				if item.percent >= 100:
 					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
-					action.send(item.user, verb='ganó una medalla', action_object=badge, target=badge)  
+					action.send(item.user, verb=u'ganó una medalla', action_object=badge, target=badge)  
 				
 			else:
 				set_points(item, 0, badge, item.user)
@@ -140,7 +140,7 @@ def set_points(progress, points, badge, user):
 
 		if progress.percent >= 100:
 			gamification_badge_award.send(sender=set_points, badge=badge, user= user)
-			action.send(user, verb='ganó una medalla', action_object=badge, target=badge)		
+			action.send(user, verb=u'ganó una medalla', action_object=badge, target=badge)		
 
 	else:
 		progress.update_percent2()
@@ -167,7 +167,7 @@ def set_points_quiz(sender, sitting, badge, **kwargs):
 		# se llama a la funcion para asigna los puntos en el progreso 
 		set_points(p, points.score, b, sitting.user)
 		# se registra la accion de que hizo una actividad
-		action.send(sitting.user, verb='Aprobó', action_object=sitting.quiz, target=sitting.quiz)	
+		action.send(sitting.user, verb=u'Aprobó', action_object=sitting.quiz, target=sitting.quiz)	
 
 		questions = sitting.incorrect_questions.split(',')
 		if len(sitting.incorrect_questions) > 0:
@@ -207,7 +207,7 @@ def set_points_activitie(sender, user, badge, activitie, **kwargs):
 	set_points(p, points.score, b, user)
 	
 	# se registra la accion de que hizo una actividad
-	action.send(user, verb='Aprobó una actividad', action_object=activitie, target=activitie)
+	action.send(user, verb=u'Aprobó una actividad', action_object=activitie, target=activitie)
 
 
 from module.models import Activitie_wrap, Quiz_wrap
@@ -247,7 +247,7 @@ def update_points_end_badge(sender, old_score, new_score, id_instance, type_inst
 				item.save()
 				if item.percent >= 100:
 					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
-					action.send(user, verb='ganó una medalla', action_object=badge, target=badge)
+					action.send(user, verb=u'ganó una medalla', action_object=badge, target=badge)
 			else:
 				item.update_percent2()
 
@@ -262,7 +262,7 @@ def update_points_end_badge(sender, old_score, new_score, id_instance, type_inst
 				item.save()
 				if item.percent >= 100:
 					gamification_badge_award.send(sender = set_points, badge = badge, user = item.user)
-					action.send(user, verb='ganó una medalla', action_object=badge, target=badge)
+					action.send(user, verb=u'ganó una medalla', action_object=badge, target=badge)
 			else:
 				item.update_percent2()
 

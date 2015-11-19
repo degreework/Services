@@ -9,5 +9,5 @@ class Degree(models.Model):
         return u'%s - %s' % (self.code, self.name)
 
     class Meta:
-    	app_label = 'users'
+    	app_label = 'degree'
     

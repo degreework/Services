@@ -17,11 +17,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ####################
 #site settings
-SITE_URL='http://127.0.0.1:8080/'
+SITE_URL='http://192.168.14.231:8002/'
 SITE_NAME='Back-end'
 
 #Client site settings
-SITE_CLIENT_URL = "http://127.0.0.1:8000"
+SITE_CLIENT_URL = "http://192.168.14.231:8001"
 SITE_CLIENT_NAME = "Front-end"
 SITE_CLIENT_URL_CONFIRM_PASSWORD_RECOVERY = SITE_CLIENT_URL + "/password/reset/"
 
@@ -38,7 +38,7 @@ SECRET_KEY = '-8_@1g4*^8efmhj^rc!j(&o@=zd5_^4^5y_(^zwa@9l4uxx+i6'
 DEBUG = True
 
 #ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     #'django.contrib.sessions.backends.signed_cookies',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'module',
 
     #3
     'waliki',
@@ -101,8 +102,6 @@ INSTALLED_APPS = (
     #
     'notifications',
     'reminder',
-
-    'module',
 
 
    #App REST for Users
@@ -156,18 +155,31 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+"""
+DATABASES = {
+	'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': '',                      # Or path to database file if using sqlite3.
+            # The following settings are not used with sqlite3:
+            'USER': '',
+            'PASSWORD': '',
+            'HOST': '',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
+            'PORT': '',                      # Set to empty string for default.
+        }
+}
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'es-co'
 
 TIME_ZONE = 'UTC'
 
@@ -254,11 +266,12 @@ REST_FRAMEWORK = {
 
 # Cross-origin
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:8000', )
+#CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:8000', 'http://192.168.14.231:8001')
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
-MEDIA_URL = "/media/"
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+MEDIA_ROOT = '/var/www/html/trabajodegrado/uploads/'
+MEDIA_URL = "/static/uploads/"
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'STATICS/')
@@ -285,7 +298,7 @@ DEFAULT_MODULE_IMAGE_SETTING = THUMBNAIL_ALIASES['']['module_image']
 
 #waliki
 #Walikis content path. By default its <project_root>/waliki_data
-#WALIKI_DATA_DIR = <path>
+WALIKI_DATA_DIR = '/var/www/html/trabajodegrado/wiki'
 
 #The slug of the index page
 #WALIKI_INDEX_SLUG = 'index'

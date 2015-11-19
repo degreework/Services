@@ -51,36 +51,35 @@ class UserManager(BaseUserManager):
         return self._create_user( email, codigo, first_name, last_name, password, True,
                                  **extra_fields)
 
+
+def _content_file_name(instance, filename):
+    #generate new path
+    out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )
+    path = '/'.join([instance.generate_folder_path(), 'photos',  out_file])
+    #remove current files (photos)
+    ### WARNING ####
+    #this way is not secure, but easy-thumbnails 2.2 not have a functional delete method
+    try:
+        
+        old_path = MEDIA_ROOT + path
+        print old_path
+        
+        dir = os.path.dirname(old_path) + '/'     
+        if os.path.exists(dir):
+            for f in os.listdir(dir):
+                file = dir + f
+                os.remove(file)
+    except Exception(e):
+        print(e)
+    # end remove
+    
+    return path
+
 #Anexo 1
 class User(AbstractBaseUser, PermissionsMixin):
     """
     Class User, define a user
-    """ 
-    def _content_file_name(instance, filename):
-        #generate new path
-        out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )
-        path = '/'.join([instance.generate_folder_path(), 'photos',  out_file])
-
-        #remove current files (photos)
-        ### WARNING ####
-        #this way is not secure, but easy-thumbnails 2.2 not have a functional delete method
-        try:
-            
-            old_path = MEDIA_ROOT + path
-            print old_path
-            
-            dir = os.path.dirname(old_path) + '/'     
-            if os.path.exists(dir):
-                for f in os.listdir(dir):
-                    file = dir + f
-                    os.remove(file)
-        except Exception(e):
-            print(e)
-        # end remove
-        
-        return path
-
-
+    """
     photo = ThumbnailerImageField(upload_to=_content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True, null=True)
     first_name = models.CharField(max_length=20, blank=False)
     last_name = models.CharField(max_length=20, blank=False)
