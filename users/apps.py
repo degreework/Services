@@ -7,4 +7,6 @@ class UserConfig(AppConfig):
     verbose_name = "User"
 
     def ready(self):
-        registry.register(self.get_model('User'))
+        registry.register(
+		self.get_model('User')
+	)

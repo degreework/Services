@@ -10,5 +10,6 @@ class WikiConfig(AppConfig):
     def ready(self):
         registry.register(
         	Page,
+		self.get_model('PublicPage'),
         	self.get_model('pageComments'),
         	self.get_model('Request'))

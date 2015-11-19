@@ -23,7 +23,7 @@ class CreateAskSerializer(serializers.ModelSerializer):
             
             #create Stream at User's wall
             from actstream import action
-            action.send(user, verb='creó la discusion', action_object=ask)
+            action.send(user, verb=u'creó la discusion', action_object=ask)
 
             return ask
         except IntegrityError, e:

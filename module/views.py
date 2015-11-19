@@ -125,7 +125,7 @@ def module_activitie_create_wrap(request, module):
 
             #create Stream at User's wall
             from actstream import action
-            action.send(request.user, verb='creó', action_object=activitie, target=module)
+            action.send(request.user, verb=u'creó', action_object=activitie, target=module)
 
         return response
 
