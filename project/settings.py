@@ -155,25 +155,25 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-"""
-DATABASES = {
-	'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': '',                      # Or path to database file if using sqlite3.
-            # The following settings are not used with sqlite3:
-            'USER': '',
-            'PASSWORD': '',
-            'HOST': '',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
-            'PORT': '',                      # Set to empty string for default.
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
-}
+    }
+else:
+    DATABASES = {
+    	'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+                'NAME': '',                      # Or path to database file if using sqlite3.
+                # The following settings are not used with sqlite3:
+                'USER': '',
+                'PASSWORD': '',
+                'HOST': '',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
+                'PORT': '',                      # Set to empty string for default.
+            }
+    }
 
 
 # Internationalization
@@ -269,9 +269,18 @@ CORS_ORIGIN_ALLOW_ALL = True
 #CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:8000', 'http://192.168.14.231:8001')
 
 
+
 #MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
-MEDIA_ROOT = '/var/www/html/trabajodegrado/uploads/'
-MEDIA_URL = "/static/uploads/"
+
+if DEBUG:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+    MEDIA_URL = "/static/uploads/"
+
+else:
+    MEDIA_ROOT = '/var/www/html/trabajodegrado/uploads/'
+    MEDIA_URL = "/media/"
+
+
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'STATICS/')
@@ -298,7 +307,10 @@ DEFAULT_MODULE_IMAGE_SETTING = THUMBNAIL_ALIASES['']['module_image']
 
 #waliki
 #Walikis content path. By default its <project_root>/waliki_data
-WALIKI_DATA_DIR = '/var/www/html/trabajodegrado/wiki'
+if DEBUG:
+    WALIKI_DATA_DIR = 'wiki_data'
+else:
+    WALIKI_DATA_DIR = '/var/www/html/trabajodegrado/wiki'
 
 #The slug of the index page
 #WALIKI_INDEX_SLUG = 'index'
