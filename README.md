@@ -17,7 +17,6 @@ Services
 * Evaluations
 * Activities
 
-#To do
 ### Sprint 4
  * Badges
 
@@ -38,6 +37,7 @@ ______________________
 
 Step 1
 Create Date base
+
     python manage.py syncdb
 
 Step 2
@@ -53,4 +53,4 @@ Create default Groups
 Step 4
 Create default Degrees 
 	
-	python manage.py Degress
+	python manage.py Degrees
