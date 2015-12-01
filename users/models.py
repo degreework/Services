@@ -13,6 +13,7 @@ from django.conf import settings
 from project.settings import REGISTRATION_DEFAULT_GROUP_NAME
 from django.contrib.auth.models import Group
 
+from django.utils.translation import ugettext as _
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -81,11 +82,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     Class User, define a user
     """
     photo = ThumbnailerImageField(upload_to=_content_file_name, resize_source=settings.DEFAULT_USER_IMAGE_SETTING, blank=True, null=True)
-    first_name = models.CharField(max_length=20, blank=False)
-    last_name = models.CharField(max_length=20, blank=False)
+    first_name = models.CharField(_('Nombre'), max_length=20, blank=False)
+    last_name = models.CharField(_('Apellido'), max_length=20, blank=False)
 
 
-    codigo = models.IntegerField(blank=False, unique=True)
+    codigo = models.IntegerField(_(u'Código'), blank=False, unique=True)
     plan = models.ForeignKey(Degree, null=True, blank=True)
 
     email = models.EmailField(unique=True)

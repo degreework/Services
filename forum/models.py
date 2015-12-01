@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 
 from post_framework.models import Post, Thread
 
+from django.utils.translation import ugettext as _
 
 class Ask(Thread, Post, models.Model):
-    title = models.CharField(null=False, max_length=300)
+    title = models.CharField(_(u'Título'), null=False, max_length=300)
     text = models.TextField(null=False)
 
     def __str__(self):

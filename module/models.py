@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 
 from django.conf import settings
@@ -5,11 +6,12 @@ from easy_thumbnails.fields import ThumbnailerImageField
 
 from forum.models import Ask
 
+from django.utils.translation import ugettext as _
 
 class Module(models.Model):
     slug = models.SlugField(unique=True)
-    name = models.CharField(max_length=50)
-    description = models.TextField()
+    name = models.CharField(_(u'Nombre'), max_length=50)
+    description = models.TextField(_(u'Descripción'))
     photo = ThumbnailerImageField(upload_to='uploads/%Y/%m/%d', resize_source=settings.DEFAULT_MODULE_IMAGE_SETTING)
 
     #requires this fields

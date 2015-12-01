@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from model_utils.managers import InheritanceManager
 
+from django.utils.translation import ugettext as _
 
 class Material(models.Model):
     
-    title = models.CharField(max_length=50)
-    description = models.TextField()
+    title = models.CharField(_(u'Título'), max_length=50)
+    description = models.TextField(_(u'Descripción'),)
     created = models.DateTimeField(auto_now_add=True)
 
     objects = InheritanceManager()

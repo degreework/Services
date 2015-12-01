@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for project project.
 
@@ -274,7 +275,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 if DEBUG:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
-    MEDIA_URL = "/static/uploads/"
+    MEDIA_URL = "/media/"
 
 else:
     MEDIA_ROOT = '/var/www/html/trabajodegrado/uploads/'
@@ -308,7 +309,7 @@ DEFAULT_MODULE_IMAGE_SETTING = THUMBNAIL_ALIASES['']['module_image']
 #waliki
 #Walikis content path. By default its <project_root>/waliki_data
 if DEBUG:
-    WALIKI_DATA_DIR = 'wiki_data'
+    WALIKI_DATA_DIR = 'waliki_data'
 else:
     WALIKI_DATA_DIR = '/var/www/html/trabajodegrado/wiki'
 
@@ -351,7 +352,7 @@ EMAIL_HOST_PASSWORD = 'Gp4ssm41L'
 
 ########################
 # Degrees default 
-DEFAULT_DEGREE_SETTING = [{'name': 'Ingenieria Sistemas', 'code': 3743},{'name': 'Tecnologia Sistemas', 'code': 2711}]
+DEFAULT_DEGREE_SETTING = [{'name': u'Ingeniería Sistemas', 'code': 3743},{'name': u'Tecnología en Sistemas de Información', 'code': 2711}]
 
 
 

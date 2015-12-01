@@ -2,15 +2,12 @@
 from django.db import models
 from django.core.exceptions import PermissionDenied
 
-
 from django.conf import settings
-
 
 from post_framework.models import Thread
 
-
 from django.utils import timezone
-
+from django.utils.translation import ugettext as _
 
 class ActivitieParent(Thread):
     """
@@ -18,8 +15,8 @@ class ActivitieParent(Thread):
     """
     die_at = models.DateTimeField()
 
-    name = models.CharField(max_length=50)
-    description = models.TextField()
+    name = models.CharField(_(u'Nombre'), max_length=50)
+    description = models.TextField(_(u'Descripción'))
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
 
