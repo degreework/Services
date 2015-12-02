@@ -16,7 +16,7 @@ class Material(models.Model):
         return self.title
 
 class MaterialFile(Material):
-    file = models.FileField()
+    file = models.FileField(blank=True)
 
     class Meta:
         verbose_name = "MaterialFile"
