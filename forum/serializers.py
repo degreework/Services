@@ -121,7 +121,7 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 
             #create Stream at User's wall
             from actstream import action
-            action.send(user, verb='respondió', action_object=answer, target=answer.ask)
+            action.send(user, verb=u'respondió', action_object=answer, target=answer.ask)
             
             return answer
 

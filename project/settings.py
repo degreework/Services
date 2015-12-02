@@ -309,7 +309,8 @@ DEFAULT_MODULE_IMAGE_SETTING = THUMBNAIL_ALIASES['']['module_image']
 #waliki
 #Walikis content path. By default its <project_root>/waliki_data
 if DEBUG:
-    WALIKI_DATA_DIR = 'waliki_data'
+    #WALIKI_DATA_DIR = 'waliki_data/'
+    pass
 else:
     WALIKI_DATA_DIR = '/var/www/html/trabajodegrado/wiki'
 

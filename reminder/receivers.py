@@ -32,7 +32,7 @@ def forum_generate_answer(sender, ask, answer, author, **kwargs):
 		notify.send(
 			author,
 			recipient=ask.author,
-			verb=u'se ha dado respuesta',
+			verb=u'ha dado respuesta a',
 	        action_object=answer,
 	        #description=u'Description',
 	        target=ask)
@@ -68,7 +68,7 @@ def post_generate_comment(sender, post, comment, author, **kwargs):
 			notify.send(
 				author,
 				recipient=post.author,
-				verb=u'ha sido comentado',
+				verb=u'ha comentado en',
 		        action_object=comment,
 		        #description=u'Description',
 		        target=post)
@@ -127,7 +127,7 @@ def wiki_request_created(sender, request, **kwargs):
 		notify.send(
 			request.created_by,
 			recipient=user,
-			verb=u'una pagina de la wiki ha sido editada',
+			verb=u'ha editado una página de la wiki',
 	        action_object=request,
 	        description=request.message,
 	        target=request)
@@ -147,10 +147,7 @@ def gamification_badge_award(sender, badge, user, **kwargs):
 
 @receiver(create_remove_action)
 def create_remove_action(sender, author, action, instance, **kwargs):
-
 	tipo = ContentType.objects.get_for_model(instance)
-	print tipo
-
 	if str(tipo) == 'ActivitieParent':
 		objeto = 'una actividad'
 	else:
@@ -164,8 +161,8 @@ def create_remove_action(sender, author, action, instance, **kwargs):
 				recipient=user,
 				verb=u'modificar',
 		        #action_object=instance,
-		        description='se ha creado '+objeto+' , tu progreso se ha recalculado',
-		        #target=instance
+		        description='ha creado '+objeto+' , tu progreso se ha recalculado',
+		        target=instance
 		        )
 
 		elif action == 'remove':
@@ -175,7 +172,7 @@ def create_remove_action(sender, author, action, instance, **kwargs):
 					recipient=user,
 					verb=u'modificar',
 			        #action_object=instance,
-			        description= 'se ha elimidado '+objeto+' , tu progreso se ha recalculado',
+			        description= 'ha elimidado '+objeto+' , tu progreso se ha recalculado',
 			        #target= instance)
 					)
 

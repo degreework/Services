@@ -9,7 +9,7 @@ from wiki.models import Request
 from badger.models import Badge
 from quiz.models import Quiz
 from activitie.models import ActivitieParent, ActivitieChild
-from module.models import Module, Activitie_wrap, Wiki_wrap, Quiz_wrap
+from module.models import Module, Activitie_wrap, Wiki_wrap, Quiz_wrap, Forum_wrap
 from django.shortcuts import get_list_or_404
 
 
@@ -23,15 +23,25 @@ class NotificationSerializer(serializers.ModelSerializer):
 		return {'id': obj.actor_object_id, 'name': obj.actor.get_full_name()}
 
 	def get_target(self, obj):
+		#print "get target"
+		#print obj.action
+		#print obj.target_content_type
 		content_type = obj.target_content_type
 		target = {}
 
 		if content_type == ContentType.objects.get_for_model(Ask):
-			ask = Ask.objects.get(id=obj.target.id)
+			ask = obj.target
+
+			wrap = Forum_wrap.objects.filter(ask=obj.target)[0]
 			target = {
 			'id': ask.id,
 			'type': u'Ask',
-			'detail': ask.title
+			'detail': ask.title,
+			'module':{
+						'id': wrap.module.id,
+						'name': wrap.module.name,
+						'slug': wrap.module.slug	
+					}
 			}
 		
 		elif content_type == ContentType.objects.get_for_model(Answer):
@@ -65,7 +75,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 				}
 
 		elif content_type == ContentType.objects.get_for_model(Badge):
-			print 'entro en el badge'
+			#print 'entro en el badge'
 			badge = Badge.objects.get(id = obj.target.id)
 			target = {
 			'id': badge.id,
