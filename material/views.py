@@ -10,7 +10,9 @@ from rest_framework.response import Response
 
 from project.permissions import IsTeacher
 
+from .models import MaterialFile, MaterialLink
 from .serializers import MaterialFileSerializer, MaterialLinkSerializer, MaterialSerializer
+
 
 class MaterialFileCreateView(viewsets.ModelViewSet):
     """
@@ -20,10 +22,28 @@ class MaterialFileCreateView(viewsets.ModelViewSet):
     permission_classes = (IsTeacher, )
 
 
+class MaterialFileUpdateView(viewsets.ModelViewSet):
+    """
+    API endpoint for updating a Material
+    """
+    queryset = MaterialFile.objects.all()
+    serializer_class = MaterialFileSerializer
+    permission_classes = (IsTeacher, )
+
+
 class MaterialLinkCreateView(viewsets.ModelViewSet):
     """
     API endpoint for creating Material
     """
+    serializer_class = MaterialLinkSerializer
+    permission_classes = (IsTeacher, )
+
+
+class MaterialLinkUpdateView(viewsets.ModelViewSet):
+    """
+    API endpoint for updating a Material
+    """
+    queryset = MaterialLink.objects.all()
     serializer_class = MaterialLinkSerializer
     permission_classes = (IsTeacher, )
 
