@@ -18,6 +18,8 @@ class ActivitieParent(Thread):
     name = models.CharField(_(u'Nombre'), max_length=50)
     description = models.TextField(_(u'Descripción'))
 
+    file = models.FileField(blank=True)
+
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     def __str__(self):
@@ -35,17 +37,18 @@ class ActivitieParent(Thread):
         permissions = (("can_view", "Can view Activitie"),)
 
 
+def generate_filename(instance, filename):
+        #generate new path
+        out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )
+
+        path = '/'.join([instance.author.generate_folder_path(), 'activities', str(instance.parent.pk) , out_file])
+        return path
+
 class ActivitieChild(models.Model):
     """
     This model define a Activite sent by a Student in response to ActiviteParent
     """
 
-    def generate_filename(instance, filename):
-        #generate new path
-        out_file = unicode( instance.id) +"."+ unicode( filename.split(".")[-1] )
-        
-        path = '/'.join([instance.author.generate_folder_path(), 'activities', str(instance.parent.pk) , out_file])
-        return path
 
     STATUS = (
         (0, 'No enviado'),

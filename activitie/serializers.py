@@ -52,7 +52,7 @@ class ActivitieParentSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = ActivitieParent
-        fields = ('id', 'name', 'description', 'die_at', 'child', 'status')
+        fields = ('id', 'name', 'description', 'file', 'die_at', 'child', 'status')
 
 
 
