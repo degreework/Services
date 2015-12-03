@@ -11,6 +11,8 @@ class ModuleSerializer(serializers.ModelSerializer):
     """
     Serializer Class to create users
     """
+    photo = serializers.SerializerMethodField()
+
     def create(self, validated_data):
         try:        
             module = Module.objects.create(**validated_data)
@@ -22,6 +24,8 @@ class ModuleSerializer(serializers.ModelSerializer):
         except IntegrityError, e:
             raise PermissionDenied
 
+    def get_photo(self, obj):
+        return obj.photo.url
 
 
     class Meta():

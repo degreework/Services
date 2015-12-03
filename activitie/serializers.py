@@ -14,6 +14,7 @@ from .models import ActivitieParent, ActivitieChild
 class ActivitieParentSerializer(serializers.ModelSerializer):
     child = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
+    file = serializers.SerializerMethodField()    
 
     def create(self, validated_data):
         try:
@@ -48,6 +49,9 @@ class ActivitieParentSerializer(serializers.ModelSerializer):
             return 'close'
             
         return 'close'
+
+    def get_file(self, obj):
+        return obj.file.url
 
 
     class Meta():

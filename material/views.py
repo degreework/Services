@@ -56,7 +56,7 @@ class MaterialListView(generics.ListAPIView):
     #add permission
     permission_classes = (IsAuthenticated, )
     serializer_class = MaterialSerializer
-    paginate_by = 5
+    paginate_by = 500
 
     def get_queryset(self):
         return Material.objects.select_subclasses("materialfile", "materiallink")
