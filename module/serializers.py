@@ -9,9 +9,8 @@ from reminder.signals import create_module
 
 class ModuleSerializer(serializers.ModelSerializer):
     """
-    Serializer Class to create users
+    Serializer Class to create Modules
     """
-    photo = serializers.SerializerMethodField()
 
     def create(self, validated_data):
         try:        
@@ -24,9 +23,24 @@ class ModuleSerializer(serializers.ModelSerializer):
         except IntegrityError, e:
             raise PermissionDenied
 
-    def get_photo(self, obj):
-        return obj.photo.url
+    class Meta():
+        model = Module
+        fields = ('name', 'description', 'slug', 'photo', 'id')
+        read_only = ('id', 'slug',)
 
+
+
+class ModuleDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer Class to retrieve a Module
+    """
+    photo = serializers.SerializerMethodField()
+
+    def get_photo(self, obj):
+        try:
+            return obj.photo.url
+        except Exception:
+            return ''
 
     class Meta():
         model = Module

@@ -6,10 +6,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import Module
-from .serializers import ModuleSerializer, ModuleUpdateSerializer
+from .serializers import ModuleSerializer, ModuleUpdateSerializer, ModuleDetailSerializer
 
 from gamification.models import Scores
-from  gamification.signals import calculate_points_end_badge
+from gamification.signals import calculate_points_end_badge
 
 from project.permissions import IsTeacher
 
@@ -36,7 +36,7 @@ class ModuleReadView(viewsets.ReadOnlyModelViewSet):
     API endpoint for retreive an Module
     """
     queryset = Module.objects.all()
-    serializer_class = ModuleSerializer
+    serializer_class = ModuleDetailSerializer
     permission_classes = (IsAuthenticated, )
     lookup_field = 'slug'
 
@@ -46,7 +46,7 @@ class ModuleListView(generics.ListAPIView):
     View to list all Modules in app
     """
     queryset = Module.objects.all()
-    serializer_class = ModuleSerializer
+    serializer_class = ModuleDetailSerializer
     permission_classes = (IsAuthenticated, )
     paginate_by = 10
 
